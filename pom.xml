@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.5.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.alex</groupId>
+    <artifactId>alex_blog</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>alex_admin</module>
+        <module>alex_picture</module>
+        <module>alex_common</module>
+        <module>alex_gateway</module>
+        <module>alex_base</module>
+        <module>alex_utils</module>
+    </modules>
+    <properties>
+        <alibaba.version>2.2.3.RELEASE</alibaba.version>
+        <swagger.version>2.10.5</swagger.version>
+        <mybatisplus.version>3.4.0</mybatisplus.version>
+        <druid.version>1.2.2</druid.version>
+        <lombok.version>1.18.16</lombok.version>
+        <alex_base.version>1.0-SNAPSHOT</alex_base.version>
+        <alex_common.version>1.0-SNAPSHOT</alex_common.version>
+        <alex_utils.version>1.0-SNAPSHOT</alex_utils.version>
+        <shiro-spring.version>1.7.0</shiro-spring.version>
+        <java-jwt.version>3.11.0</java-jwt.version>
+        <alibaba.fastjson.version>1.2.73</alibaba.fastjson.version>
+        <jackson.mapper.asl.version>1.9.13</jackson.mapper.asl.version>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Hoxton.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
