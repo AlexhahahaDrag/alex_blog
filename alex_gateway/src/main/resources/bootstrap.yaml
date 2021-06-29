@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: alex-gateway
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+        group: gulimall-dev
+        namespace: bfe18019-b186-48eb-b164-7379ae3c318d

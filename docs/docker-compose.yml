@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  user:
+    build: .
+    depends_on:
+      - mysql
+      - nacos
+    ports:
+      - 8001:8001
+  nacos:
+    image: nacos
+    container_name: nacos/nacos-server:1.4.0
+    depends_on:
+      - mysql8
+    ports:
+      - 8848:8848
+    environment:
+      PREFER_HOST_MODE: hostname #如果支持主机名可以使用hostname,否则使用ip，默认也是ip
+      SPRING_DATASOURCE_PLATFORM: mysql #数据源平台 仅支持mysql或不保存empty
+      MODE: standalone
+      MYSQL_SERVICE_HOST: mysql5.7
+      MYSQL_SERVICE_DB_NAME: nacos
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: mysql
+      NACOS_APPLICATION_PORT: 8848
+      JVM_XMS: 512m
+      JVM_MMS: 320m
+      volumes:
+        - /mydata/blog/nacos/standalone-logs/:/home/nacos/logs
+        - /mydata/blog/nacos/plugins/:/home/nacos/plugins
+        - /mydata/blog/nacos/conf/application.properties:/home/nacos/conf/application.properties
+  mysql:
+    image: mysql:8.0.22
+    container_name: mysql8.0
+    ports:
+      - 3306:3306
+    command: --default-authentication-plugin=mysql
+    volumes:
+      - /mydata/blog/mysql/log:/var/log/mysql
+      - /mydata/blog/mysql/data:/var/lib/mysql
+      - /mydata/blog/mysql/conf:/etc/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
