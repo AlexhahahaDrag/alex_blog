@@ -36,7 +36,15 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-        <!--common-->
+
+        <!-- alex-utils -->
+        <dependency>
+            <groupId>com.alex</groupId>
+            <artifactId>alex_utils</artifactId>
+            <version>${alex_utils.version}</version>
+        </dependency>
+
+        <!-- alex-common -->
         <dependency>
             <groupId>com.alex</groupId>
             <artifactId>alex_common</artifactId>

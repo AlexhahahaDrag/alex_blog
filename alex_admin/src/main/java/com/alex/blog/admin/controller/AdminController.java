@@ -27,14 +27,4 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class AdminController {
 
-    @PostMapping("/login")
-    @ApiOperation(value = "登录", tags = "登录")
-    public String login(@RequestBody LoginParams loginParams) {
-        System.out.println(loginParams);
-//        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-//            return ResultUtil.resultWithMessage("200", "账号或密码为空");
-//        }
-        return ResultUtil.resultWithMessage("200", "登录成功");
-        //return ResultUtil.
-    }
 }

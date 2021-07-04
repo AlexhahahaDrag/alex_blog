@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
  *createDate:   2020/11/7 9:38
  *version:      1.0.0
  */
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "基础类", description = "基础类")
 @Data
 @AllArgsConstructor
