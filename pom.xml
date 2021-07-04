@@ -36,6 +36,7 @@
         <java-jwt.version>3.11.0</java-jwt.version>
         <alibaba.fastjson.version>1.2.73</alibaba.fastjson.version>
         <jackson.mapper.asl.version>1.9.13</jackson.mapper.asl.version>
+        <protostuff.version>1.7.4</protostuff.version>
     </properties>
     <dependencyManagement>
         <dependencies>
