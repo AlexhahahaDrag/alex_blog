@@ -22,6 +22,7 @@
         <module>alex_gateway</module>
         <module>alex_base</module>
         <module>alex_utils</module>
+        <module>alex_xo</module>
     </modules>
     <properties>
         <alibaba.version>2.2.3.RELEASE</alibaba.version>
@@ -37,6 +38,7 @@
         <alibaba.fastjson.version>1.2.73</alibaba.fastjson.version>
         <jackson.mapper.asl.version>1.9.13</jackson.mapper.asl.version>
         <protostuff.version>1.7.4</protostuff.version>
+        <alex_xo.version>1.0-SNAPSHOT</alex_xo.version>
     </properties>
     <dependencyManagement>
         <dependencies>
