@@ -3,17 +3,22 @@ package com.alex.blog.xo.service.impl;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.Admin;
+import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.JsonUtils;
 import com.alex.blog.utils.utils.RedisUtil;
+import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.service.AdminService;
 import com.alex.blog.xo.service.mapper.AdminMapper;
 import com.alex.blog.xo.vo.AdminVo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *description:  管理员service实现类
@@ -29,6 +34,9 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private AdminService adminService;
 
     @Override
     public Admin getAdminByUid(String uid) {
@@ -46,14 +54,28 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         int start = Math.max((currentPage - 1) * pageSize, 0);
         int end = Math.min(currentPage * pageSize, total);
         List<String> onlineAdminSubList = onlineAdminJsonList.subList(start, end);
-        onlineAdminSubList.stream().forEach(
-                OnlineAdmin  = JsonUtils.
-        );
-        return null;
+        List<OnlineAdmin> onlineAdminList = onlineAdminSubList.stream().map(item -> {
+            OnlineAdmin onlineAdmin = JsonUtils.jsonToPojo(item, OnlineAdmin.class);
+            onlineAdmin.setToken("");
+            return onlineAdmin;
+        }).collect(Collectors.toList());
+        Page<OnlineAdmin> page = new Page<>();
+        page.setCurrent(currentPage);
+        page.setTotal(total);
+        page.setSize(pageSize);
+        page.setRecords(onlineAdminList);
+        return ResultUtil.resultWithData(SysConf.SUCCESS, page);
     }
 
     @Override
     public Admin getAdminByUser(String username) {
+        QueryWrapper<Admin> query = new QueryWrapper<>();
+        query.eq(SysConf.USERNAME, username);
+        query.last(SysConf.LIMIT_ONE);
+        Admin admin = adminService.getOne(query);
+        //清空密码，防止密码泄露
+        admin.setPassword(null);
+
         return null;
     }
 
