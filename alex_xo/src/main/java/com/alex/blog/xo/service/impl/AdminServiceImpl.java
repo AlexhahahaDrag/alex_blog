@@ -7,6 +7,7 @@ import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.JsonUtils;
 import com.alex.blog.utils.utils.RedisUtil;
 import com.alex.blog.utils.utils.ResultUtil;
+import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.service.AdminService;
 import com.alex.blog.xo.service.mapper.AdminMapper;
@@ -75,12 +76,23 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         Admin admin = adminService.getOne(query);
         //清空密码，防止密码泄露
         admin.setPassword(null);
+        // TODO: 2021/7/14 获取图片信息
+        if (StringUtils.isNotEmpty(admin.getAvatar())) {
 
-        return null;
+        }
+        Admin res = new Admin();
+        res.setOccupation(admin.getOccupation());
+        res.setNickName(admin.getNickName());
+        res.setPersonResume(admin.getPersonResume());
+        res.setAvatar(admin.getAvatar());
+        res.setSummary(admin.getSummary());
+        res.setPhotoList(admin.getPhotoList());
+        return res;
     }
 
     @Override
     public Admin getMe() {
+        RequestHolder
         return null;
     }
 

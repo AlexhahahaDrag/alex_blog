@@ -62,31 +62,31 @@ public class Admin extends BaseEntity {
     @TableField(value = "summary")
     private String summary;
 
-    @ApiModelProperty(value = "login_count", name="登录次数")
+    @ApiModelProperty(value = "loginCount", name="登录次数")
     @TableField(value = "login_count")
     private Integer loginCount;
 
-    @ApiModelProperty(value = "last_login_time", name="最后登录时间")
+    @ApiModelProperty(value = "lastLoginTime", name="最后登录时间")
     @TableField(value = "last_login_time")
     @DateTimeFormat(pattern = "yyyymmdd HH:mi:ss")
     @JsonFormat(pattern = "yyyymmdd HH:mi:ss")
     private LocalDateTime lastLoginTime;
 
-    @ApiModelProperty(value = "last_login_ip", name="最后登录IP")
+    @ApiModelProperty(value = "lastLoginIp", name="最后登录IP")
     @TableField(value = "last_login_ip")
     private String lastLoginIp;
 
-    @ApiModelProperty(value = "nick_name", name="昵称")
+    @ApiModelProperty(value = "nickName", name="昵称")
     @TableField(value = "nick_name")
     private String nickName;
 
-    @ApiModelProperty(value = "qq_number", name="QQ号")
+    @ApiModelProperty(value = "qqNumber", name="QQ号")
     @TableField(value = "qq_number")
     private String qqNumber;
 
-    @ApiModelProperty(value = "we_chat", name="微信号")
+    @ApiModelProperty(value = "weChat", name="微信号")
     @TableField(value = "we_chat")
-    private String we_chat;
+    private String weChat;
 
     @ApiModelProperty(value = "occupation", name="职业")
     @TableField(value = "occupation")
@@ -100,13 +100,13 @@ public class Admin extends BaseEntity {
     @TableField(value = "gitee")
     private String gitee;
 
-    @ApiModelProperty(value = "role_uid", name="拥有的角色uid")
+    @ApiModelProperty(value = "roleUid", name="拥有的角色uid")
     @TableField(value = "role_uid")
-    private String role_uid;
+    private String roleUid;
 
-    @ApiModelProperty(value = "person_resume", name="履历")
+    @ApiModelProperty(value = "personResume", name="履历")
     @TableField(value = "person_resume")
-    private String person_resume;
+    private String personResume;
 
 
     // 以下字段不存入数据库
@@ -132,7 +132,7 @@ public class Admin extends BaseEntity {
     /**
      * 验证码
      */
-    @ApiModelProperty(value = "valid_code", name="验证码")
+    @ApiModelProperty(value = "validCode", name="验证码")
     @TableField(exist = false)
     private String validCode;
 

@@ -38,4 +38,6 @@ public class BaseSysConf {
     public final static String TOKEN = "token";
     public final static String PLATFORM = "platform";
     public final static String ACCESS_TOKEN = "accessToken";
+
+    public static final String ADMIN_ID = "adminId";
 }
