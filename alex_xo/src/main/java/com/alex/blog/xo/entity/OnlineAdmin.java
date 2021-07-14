@@ -18,7 +18,7 @@ public class OnlineAdmin {
     private String token;
 
     //管理员id
-    private String adminUid;
+    private String adminId;
 
     //用户名
     private String username;

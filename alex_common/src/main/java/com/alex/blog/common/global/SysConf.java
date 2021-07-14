@@ -25,5 +25,11 @@ public final class SysConf extends BaseSysConf {
 
 
     public static final String LIMIT_ONE = "limit 1";
+
+    //IP相关
+    public static final String OS = "OS";
+    public static final String BROWSER = "BROWSER";
+    public static final String IP = "ip";
+    public static final String UTF_8 = "utf-8";
 }
 

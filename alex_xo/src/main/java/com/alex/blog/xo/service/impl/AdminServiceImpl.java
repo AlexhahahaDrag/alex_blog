@@ -1,9 +1,12 @@
 package com.alex.blog.xo.service.impl;
 
+import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
+import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.Admin;
 import com.alex.blog.common.global.SysConf;
+import com.alex.blog.common.utils.DateUtil;
 import com.alex.blog.utils.utils.JsonUtils;
 import com.alex.blog.utils.utils.RedisUtil;
 import com.alex.blog.utils.utils.ResultUtil;
@@ -12,13 +15,18 @@ import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.service.AdminService;
 import com.alex.blog.xo.service.mapper.AdminMapper;
 import com.alex.blog.xo.vo.AdminVo;
+import com.alibaba.nacos.common.utils.IpUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sun.xml.internal.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -90,15 +98,61 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         return res;
     }
 
+    /**
+     * @description:  通过request对象获取当前登录管理员信息
+     * @author:       alex
+     * @return:       com.alex.blog.common.entity.Admin
+    */
     @Override
     public Admin getMe() {
-        RequestHolder
-        return null;
+        String adminId = RequestHolder.getAdminId();
+        if (StringUtils.isEmpty(adminId)) {
+            return new Admin();
+        }
+        Admin admin = adminService.getById(adminId);
+        admin.setPassword("");
+        // TODO: 2021/7/15获取图片
+        if (StringUtils.isNotEmpty(admin.getAvatar())) {
+
+        }
+        return admin;
     }
 
     @Override
     public void addOnLineAdmin(Admin admin, Long expirationSecond) {
-
+        HttpServletRequest request = RequestHolder.getRequest();
+        // TODO: 2021/7/15 根据iputil获取request中的系统和浏览器信息
+        Map<String, String> map = IpUtils.getOsAndBrowserInfo(request);
+        String os = map.get(SysConf.OS);
+        String browser = map.get(SysConf.BROWSER);
+        String ip = map.get(SysConf.IP);
+        //设置在线管理员信息
+        OnlineAdmin onlineAdmin = new OnlineAdmin();
+        onlineAdmin.setAdminId(admin.getId());
+        onlineAdmin.setTokenId(admin.getTokenId());
+        onlineAdmin.setToken(admin.getValidCode());
+        onlineAdmin.setOs(os);
+        onlineAdmin.setBrowser(browser);
+        onlineAdmin.setIpAddr(ip);
+        // TODO: 2021/7/15 编写时间工具
+        onlineAdmin.setLoginTime(DateUtils.getNewDate());
+        onlineAdmin.setRoleName(admin.getRole().getRoleName());
+        onlineAdmin.setUsername(admin.getUsername());
+        onlineAdmin.setExpireTime(DateUtils.getDateStr(new Date(), expirationSecond));
+        //从redis中获取ip来源
+        String jsonResult = redisUtil.get(RedisConf.IP_SOURCE + RedisConf.SEGMENTATION + ip);
+        if (StringUtils.isEmpty(jsonResult)) {
+            String addresses = IpUtils.getAddresses(SysConf.IP, RedisConf.EQUAL_TO + ip, SysConf.UTF_8);
+            if (StringUtils.isNotEmpty(addresses)) {
+                jsonResult = addresses;
+                redisUtil.setEx(RedisConf.IP_SOURCE + Constants.SYMBOL_COLON + ip, addresses, 24, TimeUnit.HOURS);
+            }
+        }
+        onlineAdmin.setLoginLocation(jsonResult);
+        //将登陆的管理员储存到在线用户列表中
+        redisUtil.setEx(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + admin.getValidCode(), JsonUtils.objectToJson(onlineAdmin), expirationSecond, TimeUnit.MINUTES);
+        //在维护一张用于tokenid - toekn转化的表
+        redisUtil.setEx(RedisConf.LOGIN_ID_KEY + RedisConf.SEGMENTATION + admin.getTokenId(), admin.getValidCode(), expirationSecond, TimeUnit.MINUTES);
     }
 
     @Override

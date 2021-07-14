@@ -70,7 +70,7 @@ public class RedisConf {
     public static final String LOGIN_TOKEN_KEY = "LOGIN_TOKEN_KEY";
 
     //登陆的UUID
-    public static final String LOGIN_UUID_KEY = "LOGIN_UUID_KEY";
+    public static final String LOGIN_ID_KEY = "LOGIN_ID_KEY";
 
     /**
      * 用户提交无效评论的次数

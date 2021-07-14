@@ -149,8 +149,8 @@ public class Admin extends BaseEntity {
     private Long maxStorageSize;
 
     /**
-     * 令牌UID【主要用于换取token令牌，防止token直接暴露到在线用户管理中】
+     * 令牌ID【主要用于换取token令牌，防止token直接暴露到在线用户管理中】
      */
     @TableField(exist = false)
-    private String tokenUid;
+    private String tokenId;
 }

@@ -20,7 +20,6 @@ public class Constants {
     public final static String SYMBOL_COMMA = ",";
     public final static String SYMBOL_POINT = ".";
     public final static String SYMBOL_QUESTION = "?";
-    public final static String SYMBOL_COLON = ":";
     public final static String SYMBOL_STAR = "*";
     public final static String SYMBOL_WELL = "#";
     public final static String SYMBOL_HYPHEN = "-";
