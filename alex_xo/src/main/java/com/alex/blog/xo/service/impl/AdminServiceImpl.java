@@ -1,24 +1,17 @@
 package com.alex.blog.xo.service.impl;
 
-import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.Admin;
 import com.alex.blog.common.global.SysConf;
-import com.alex.blog.common.utils.DateUtil;
-import com.alex.blog.utils.utils.JsonUtils;
-import com.alex.blog.utils.utils.RedisUtil;
-import com.alex.blog.utils.utils.ResultUtil;
-import com.alex.blog.utils.utils.StringUtils;
+import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.service.AdminService;
 import com.alex.blog.xo.service.mapper.AdminMapper;
 import com.alex.blog.xo.vo.AdminVo;
-import com.alibaba.nacos.common.utils.IpUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.sun.xml.internal.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -145,7 +138,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
             String addresses = IpUtils.getAddresses(SysConf.IP, RedisConf.EQUAL_TO + ip, SysConf.UTF_8);
             if (StringUtils.isNotEmpty(addresses)) {
                 jsonResult = addresses;
-                redisUtil.setEx(RedisConf.IP_SOURCE + Constants.SYMBOL_COLON + ip, addresses, 24, TimeUnit.HOURS);
+                redisUtil.setEx(RedisConf.IP_SOURCE + RedisConf.SEGMENTATION + ip, addresses, 24, TimeUnit.HOURS);
             }
         }
         onlineAdmin.setLoginLocation(jsonResult);
@@ -157,6 +150,11 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
 
     @Override
     public String getList(AdminVo adminVo) {
+        QueryWrapper<Object> query = new QueryWrapper<>();
+        String pictureResult = null;
+        if (StringUtils.isNotEmpty(adminVo.getKeyword())) {
+            query.like(SQLConf.)
+        }
         return null;
     }
 

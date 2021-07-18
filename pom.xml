@@ -40,6 +40,8 @@
         <protostuff.version>1.7.4</protostuff.version>
         <alex_xo.version>1.0-SNAPSHOT</alex_xo.version>
         <hutool.version>5.7.3</hutool.version>
+        <ip2region.version>1.7.2</ip2region.version>
+        <commons-fileupload.version>1.4</commons-fileupload.version>
     </properties>
     <dependencyManagement>
         <dependencies>
