@@ -205,7 +205,7 @@ public class IpUtils {
      * @author:       alex
      * @return:       java.lang.String
      */
-    public static String getAddress(String content, String encodingString) {
+    public static String getAddresses(String content, String encodingString) {
         String ip = content.substring(3);
         if (!Util.isIpAddress(ip)) {
             log.info("IP地址为空");

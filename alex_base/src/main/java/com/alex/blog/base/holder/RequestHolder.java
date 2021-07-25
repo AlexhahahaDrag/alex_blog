@@ -145,7 +145,8 @@ public class RequestHolder {
         String adminId = getAdminId();
         if (StringUtils.isEmpty(adminId)) {
             log.error("用户未登录");
-            throw new QueryException(ErrorCode.INVALID_TOKEN, BaseMessageConf.INVALID_TOKEN);
+            // TODO: 2021/7/25 添加query异常
+//            throw new QueryException(ErrorCode.INVALID_TOKEN, BaseMessageConf.INVALID_TOKEN);
         }
         return adminId;
     }

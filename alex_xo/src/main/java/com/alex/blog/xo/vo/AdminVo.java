@@ -42,7 +42,7 @@ public class AdminVo extends BaseVo<AdminVo> {
     private String qqNumber;
 
     //微信号
-    private String wechat;
+    private String weChat;
 
     //职业
     private String occupation;

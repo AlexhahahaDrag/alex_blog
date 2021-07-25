@@ -42,6 +42,7 @@
         <hutool.version>5.7.3</hutool.version>
         <ip2region.version>1.7.2</ip2region.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
+        <jjwt.version>0.9.1</jjwt.version>
     </properties>
     <dependencyManagement>
         <dependencies>

@@ -100,9 +100,9 @@ public class Admin extends BaseEntity {
     @TableField(value = "gitee")
     private String gitee;
 
-    @ApiModelProperty(value = "roleUid", name="拥有的角色uid")
-    @TableField(value = "role_uid")
-    private String roleUid;
+    @ApiModelProperty(value = "roleId", name="拥有的角色uid")
+    @TableField(value = "role_id")
+    private String roleId;
 
     @ApiModelProperty(value = "personResume", name="履历")
     @TableField(value = "person_resume")

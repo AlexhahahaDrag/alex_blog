@@ -502,6 +502,18 @@ public class DateUtils {
         return LocalDateTime.ofEpochSecond(startTime, 0, ZoneOffset.ofHours(8));
     }
 
+    /**
+     * @param endDate
+     * @param startDate
+     * @description:   计算两个时间差
+     * @author:       alex
+     * @return:       java.lang.String
+    */
+    public static String getDatePoor(LocalDateTime endDate, LocalDateTime startDate) {
+        Duration diff = Duration.between(startDate, endDate);
+        return diff.toDays() + "天" + diff.toHours() + "小时" + diff.toMinutes() + "分钟";
+    }
+
     public static void main(String[] args) {
         System.out.println(parseStringToTime("2021-07-19 09:23:22", YYYY_MM_DD_HH_MM_SS));
         System.out.println(getDaysBetweenDates("2021-07-19 00:00:00", "2021-07-25 12:00:34").toString());

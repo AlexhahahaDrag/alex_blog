@@ -40,4 +40,7 @@ public class BaseSysConf {
     public final static String ACCESS_TOKEN = "accessToken";
 
     public static final String ADMIN_ID = "adminId";
+
+    //文件分割符
+    public static final String FILE_SEGMENTATION = ",";
 }

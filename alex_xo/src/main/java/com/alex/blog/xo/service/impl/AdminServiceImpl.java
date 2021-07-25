@@ -1,5 +1,7 @@
 package com.alex.blog.xo.service.impl;
 
+import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
@@ -7,15 +9,20 @@ import com.alex.blog.common.entity.Admin;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
+import com.alex.blog.xo.global.SQLConf;
 import com.alex.blog.xo.service.AdminService;
 import com.alex.blog.xo.service.mapper.AdminMapper;
 import com.alex.blog.xo.vo.AdminVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -95,7 +102,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
      * @description:  通过request对象获取当前登录管理员信息
      * @author:       alex
      * @return:       com.alex.blog.common.entity.Admin
-    */
+     */
     @Override
     public Admin getMe() {
         String adminId = RequestHolder.getAdminId();
@@ -114,7 +121,6 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
     @Override
     public void addOnLineAdmin(Admin admin, Long expirationSecond) {
         HttpServletRequest request = RequestHolder.getRequest();
-        // TODO: 2021/7/15 根据iputil获取request中的系统和浏览器信息
         Map<String, String> map = IpUtils.getOsAndBrowserInfo(request);
         String os = map.get(SysConf.OS);
         String browser = map.get(SysConf.BROWSER);
@@ -127,15 +133,14 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         onlineAdmin.setOs(os);
         onlineAdmin.setBrowser(browser);
         onlineAdmin.setIpAddr(ip);
-        // TODO: 2021/7/15 编写时间工具
-        onlineAdmin.setLoginTime(DateUtils.getNewDate());
-        onlineAdmin.setRoleName(admin.getRole().getRoleName());
+        onlineAdmin.setLoginTime(DateUtils.getNowTimeStr());
+//        onlineAdmin.setRoleName(admin.getRole().getRoleName());
         onlineAdmin.setUsername(admin.getUsername());
-        onlineAdmin.setExpireTime(DateUtils.getDateStr(new Date(), expirationSecond));
+        onlineAdmin.setExpireTime(DateUtils.getTimeStr(DateUtils.addTime(LocalDateTime.now(), expirationSecond, ChronoUnit.MILLIS)));
         //从redis中获取ip来源
         String jsonResult = redisUtil.get(RedisConf.IP_SOURCE + RedisConf.SEGMENTATION + ip);
         if (StringUtils.isEmpty(jsonResult)) {
-            String addresses = IpUtils.getAddresses(SysConf.IP, RedisConf.EQUAL_TO + ip, SysConf.UTF_8);
+            String addresses = IpUtils.getAddresses(SysConf.IP + RedisConf.EQUAL_TO + ip, SysConf.UTF_8);
             if (StringUtils.isNotEmpty(addresses)) {
                 jsonResult = addresses;
                 redisUtil.setEx(RedisConf.IP_SOURCE + RedisConf.SEGMENTATION + ip, addresses, 24, TimeUnit.HOURS);
@@ -150,12 +155,33 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
 
     @Override
     public String getList(AdminVo adminVo) {
-        QueryWrapper<Object> query = new QueryWrapper<>();
-        String pictureResult = null;
+        QueryWrapper<Admin> query = new QueryWrapper<>();
         if (StringUtils.isNotEmpty(adminVo.getKeyword())) {
-            query.like(SQLConf.)
+            query.like(SQLConf.USERNAME, adminVo.getKeyword()).or().like(SQLConf.USER_EMAIL, adminVo.getKeyword()).or().like(SQLConf.MOBILE, adminVo.getKeyword());
         }
-        return null;
+        Page<Admin> page = new Page<>();
+        page.setCurrent(adminVo.getCurrentPage());
+        page.setSize(adminVo.getPageSize());
+        //去除密码
+        query.select(Admin.class, i -> !i.getProperty().equals(SQLConf.PASSWORD));
+        query.eq(SQLConf.STATUS, EStatus.ENABLE);
+        IPage<Admin> pageList = adminService.page(page, query);
+        StringBuffer fileIds = new StringBuffer();
+        List<Admin> list = pageList.getRecords();
+        List<String> adminIdList = list.stream()
+                .map(admin -> {
+                    if (StringUtils.isNotEmpty(admin.getAvatar())) {
+                        fileIds.append(admin.getAvatar()).append(SysConf.FILE_SEGMENTATION);
+                    }
+                    return admin.getId();
+                }).collect(Collectors.toList());
+        Map<String, String> pictureMap = new HashMap<>(Constants.NUM_TEN);
+        //获取图片信息
+        String pictureResult = null;
+//        if (fileIds.length() > 0) {
+//            pictureResult = pictureFeignClient.getPicture(fileIds.toString());
+//        }
+        return ResultUtil.resultWithData(SysConf.SUCCESS, pageList);
     }
 
     @Override
