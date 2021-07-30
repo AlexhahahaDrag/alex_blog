@@ -6,7 +6,7 @@ spring:
 
 logging:
   level:
-    com.alex.blog.mapper: debug
+    com.alex.blog.xo.mapper: debug
 
   redis:
     host: localhost #redis服务地址

@@ -49,8 +49,8 @@ public class Admin extends BaseEntity {
 
     @ApiModelProperty(value = "birthday", name="出生年月日")
     @TableField(value = "birthday")
-    @DateTimeFormat(pattern = "yyyymmdd HH:mi:ss")
-    @JsonFormat(pattern = "yyyymmdd HH:mi:ss")
+    @DateTimeFormat(pattern = "yyyymmdd hh24:mi:ss")
+    @JsonFormat(pattern = "yyyymmdd hh24:mi:ss")
     private LocalDateTime birthday;
 
     @ApiModelProperty(value = "mobile", name="手机")
@@ -68,8 +68,8 @@ public class Admin extends BaseEntity {
 
     @ApiModelProperty(value = "lastLoginTime", name="最后登录时间")
     @TableField(value = "last_login_time")
-    @DateTimeFormat(pattern = "yyyymmdd HH:mi:ss")
-    @JsonFormat(pattern = "yyyymmdd HH:mi:ss")
+    @DateTimeFormat(pattern = "yyyymmdd hh24:mi:ss")
+    @JsonFormat(pattern = "yyyymmdd hh24:mi:ss")
     private LocalDateTime lastLoginTime;
 
     @ApiModelProperty(value = "lastLoginIp", name="最后登录IP")

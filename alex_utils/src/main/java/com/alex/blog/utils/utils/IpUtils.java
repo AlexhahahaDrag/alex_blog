@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 /**
  *description:  ip工具类
+ * 因为使用静态块，如果初始化的时候报错，系统就找不到这个类，后续就会一直报java.lang.NoClassDefFoundError: Could not initialize class com.alex.blog.utils.utils.IpUtils错
  *author:       alex
  *createDate:   2021/7/17 21:02
  *version:      1.0.0
@@ -238,7 +239,7 @@ public class IpUtils {
         try {
             //获取当前下项目所在的绝对路径
             String proFilePath = System.getProperty("user.dir");
-            String newFilePath = proFilePath + File.separator + "city" + File.separator + ftlPath;
+            String newFilePath = proFilePath + File.separator + ftlPath;
             newFilePath = newFilePath.replace("/", File.separator);
             //检查对应目录下是否存在文件
             File newFile = new File(newFilePath + ftlName);
@@ -246,6 +247,7 @@ public class IpUtils {
                 return newFilePath;
             }
             certStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(ftlPath + ftlName);
+            assert certStream != null;
             byte[] certData = IOUtils.toByteArray(certStream);
             FileUtils.writeByteArrayToFile(newFile, certData);
             return newFilePath;
@@ -253,7 +255,9 @@ public class IpUtils {
             log.info(e.getMessage());
         } finally {
             try {
-                certStream.close();
+                if (certStream != null) {
+                    certStream.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -4,27 +4,25 @@ import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.common.config.jwt.Audience;
-import com.alex.blog.common.config.jwt.JwtTokenUtil;
 import com.alex.blog.common.entity.Admin;
 import com.alex.blog.common.global.SysConf;
-import com.alex.blog.utils.utils.IpUtils;
-import com.alex.blog.utils.utils.RedisUtil;
-import com.alex.blog.utils.utils.ResultUtil;
-import com.alex.blog.utils.utils.StringUtils;
+import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.global.SQLConf;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+@Service
 public class LoginService {
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils RedisUtils;
 
     @Autowired
     private AdminService adminService;
@@ -38,26 +36,20 @@ public class LoginService {
     @Autowired
     private Audience audience;
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+//    @Autowired
+//    private JwtTokenUtil jwtTokenUtil;
 
     public String login(HttpServletRequest request, String username, String password, boolean isRemember) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             return ResultUtil.resultWithMessage(SysConf.ERROR, "账号或密码为空");
         }
         String ip = IpUtils.getIpAddr(request);
-        String limitCount = redisUtil.get(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip);
-        if(StringUtils.isEmpty(limitCount)) {
-            int count = Integer.parseInt(limitCount);
-            if (count >= Constants.NUM_FIVE){
-                return ResultUtil.result(SysConf.ERROR, "密码输错次数过多，已被锁定30分钟");
-            }
+        String limitCount = RedisUtils.get(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip);
+        if(StringUtils.isNotEmpty(limitCount) && Integer.parseInt(limitCount) >= Constants.NUM_FIVE) {
+            return ResultUtil.result(SysConf.ERROR, "密码输错次数过多，已被锁定30分钟");
         }
-        // TODO: 2021/7/25 添加校验工具类
-//        Boolean isEmail = CheckUtil.checkEmail(username);
-//        Boolean isMobile = CheckUtil.checkMobile(username);
-        Boolean isEmail = false;
-        Boolean isMobile = false;
+        boolean isEmail = CheckUtils.checkEmail(username);
+        boolean isMobile = CheckUtils.checkPhone(username);
         QueryWrapper<Admin> query = new QueryWrapper<>();
         if (isEmail) {
             query.eq(SysConf.EMAIL, username);
@@ -66,7 +58,7 @@ public class LoginService {
             query.eq(SysConf.USERNAME, username);
         }
         query.last(SysConf.LIMIT_ONE);
-        query.eq(SQLConf.STATUS, EStatus.ENABLE);
+        query.eq(SQLConf.STATUS, EStatus.ENABLE.getCode());
         Admin admin = adminService.getOne(query);
         if (admin == null) {
             //设置错误登录次数
@@ -78,8 +70,9 @@ public class LoginService {
 //        String roleId = admin.getRoleId();
         long expiration = isRemember ? isRememberMeExpiresSecond : audience.getExpiresSecond();
         // TODO: 2021/7/25 添加角色信息
-        String jwtToken = jwtTokenUtil.createJwt(admin.getUsername(), admin.getId(), "admin.getRoleNames()", audience.getClientId(), audience.getName()
-                , expiration, audience.getBase64Secret());
+//        String jwtToken = jwtTokenUtil.createJwt(admin.getUsername(), admin.getId(), "admin.getRoleNames()", audience.getClientId(), audience.getName()
+//                , expiration, audience.getBase64Secret());
+        String jwtToken = "123213";
         String token = tokenHead + jwtToken;
         HashMap<String, Object> result = new HashMap<>(Constants.NUM_ONE);
         result.put(SysConf.TOKEN, token);
@@ -102,16 +95,16 @@ public class LoginService {
 
     private Integer setLoginCommit(HttpServletRequest request) {
         String ip = IpUtils.getIpAddr(request);
-        String count = redisUtil.get(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip);
+        String count = RedisUtils.get(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip);
         int surplusCount = Constants.NUM_FIVE;
         if (StringUtils.isNotEmpty(count)) {
             int curCount = Integer.parseInt(count) + 1;
             surplusCount -= curCount;
-            redisUtil.setEx(RedisConf.LOGIN_LIMIT +
+            RedisUtils.setEx(RedisConf.LOGIN_LIMIT +
                     RedisConf.SEGMENTATION + ip, String.valueOf(curCount), 10, TimeUnit.MINUTES);
         } else {
             surplusCount -= 1;
-            redisUtil.setEx(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip, Constants.STR_ONE, 30, TimeUnit.MINUTES);
+            RedisUtils.setEx(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip, Constants.STR_ONE, 30, TimeUnit.MINUTES);
         }
         return surplusCount;
     }

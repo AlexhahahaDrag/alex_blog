@@ -125,6 +125,17 @@ public class JwtTokenUtil {
     /**
      * @param token
      * @param base64Security
+     * @description:  获取用户id
+     * @author:       alex
+     * @return:       java.lang.String
+     */
+    public String getUserId(String token, String base64Security) {
+        return parseJwt(token, base64Security).get(SysConf.ADMIN_ID, String.class);
+    }
+
+    /**
+     * @param token
+     * @param base64Security
      * @param TTLMillis
      * @description:  刷新token
      * @author:       alex
