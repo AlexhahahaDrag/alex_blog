@@ -4,18 +4,25 @@ import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.common.config.jwt.Audience;
+import com.alex.blog.common.config.jwt.JwtTokenUtil;
 import com.alex.blog.common.entity.Admin;
+import com.alex.blog.common.entity.Role;
+import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.global.SQLConf;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -36,8 +43,11 @@ public class LoginService {
     @Autowired
     private Audience audience;
 
-//    @Autowired
-//    private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private RoleService roleService;
 
     public String login(HttpServletRequest request, String username, String password, boolean isRemember) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
@@ -54,6 +64,7 @@ public class LoginService {
         if (isEmail) {
             query.eq(SysConf.EMAIL, username);
         } else if (isMobile) {
+            query.eq(SysConf.MOBILE, username);
         } else {
             query.eq(SysConf.USERNAME, username);
         }
@@ -62,21 +73,34 @@ public class LoginService {
         Admin admin = adminService.getOne(query);
         if (admin == null) {
             //设置错误登录次数
-            // TODO: 2021/7/25 添加提示信息配置文件
-//            return ResultUtil.result(SysConf.ERROR, String.format(MessageConf.LOGIN_ERROR, setLoginCommit(request)));
-            return ResultUtil.result(SysConf.ERROR, "error");
+            return ResultUtil.result(SysConf.ERROR, String.format(MessageConf.LOGIN_ERROR, setLoginCommit(request)));
         }
-//        设置角色信息
-//        String roleId = admin.getRoleId();
+        //对密码进行加盐加密验证，采用SHA-256 + 随机盐【动态加盐】 + 密钥对密码进行加密
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        boolean isPassword = encoder.matches(password, admin.getPassword());
+        if (!isPassword) {
+            //密码错误，返回提示信息
+            return ResultUtil.result(SysConf.ERROR, String.format(MessageConf.LOGIN_ERROR, setLoginCommit(request)));
+        }
+        //设置角色信息
+        List<String> roleIds = new ArrayList<>();
+        roleIds.add(admin.getRoleId());
+        List<Role> roles = roleService.listByIds(roleIds);
+        if (roles == null && roles.size() <= 0) {
+            return ResultUtil.result(SysConf.ERROR, MessageConf.NO_ROLE);
+        }
+        StringBuffer sb = new StringBuffer();
+        for (Role role : roles) {
+            sb.append(role.getRoleName()).append(Constants.SYMBOL_COMMA);
+        }
+        String roleName = sb.replace(sb.length() - 1, sb.length(), "").toString();
         long expiration = isRemember ? isRememberMeExpiresSecond : audience.getExpiresSecond();
         // TODO: 2021/7/25 添加角色信息
-//        String jwtToken = jwtTokenUtil.createJwt(admin.getUsername(), admin.getId(), "admin.getRoleNames()", audience.getClientId(), audience.getName()
-//                , expiration, audience.getBase64Secret());
-        String jwtToken = "123213";
+        String jwtToken = jwtTokenUtil.createJwt(admin.getUsername(), admin.getId(), roleName, audience.getClientId(), audience.getName()
+                , expiration, audience.getBase64Secret());
         String token = tokenHead + jwtToken;
         HashMap<String, Object> result = new HashMap<>(Constants.NUM_ONE);
         result.put(SysConf.TOKEN, token);
-
         //进行登陆相关操作
         int count = admin.getLoginCount() + 1;
         admin.setLoginCount(count);
@@ -90,7 +114,7 @@ public class LoginService {
 //        admin.setRole();
         //添加在线用户到redis中，设置过期时间
         adminService.addOnLineAdmin(admin, expiration);
-        return ResultUtil.resultWithMessage(SysConf.SUCCESS, "登录成功");
+        return ResultUtil.result(SysConf.SUCCESS, result);
     }
 
     private Integer setLoginCommit(HttpServletRequest request) {

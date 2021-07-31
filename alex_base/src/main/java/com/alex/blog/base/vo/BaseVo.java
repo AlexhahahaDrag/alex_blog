@@ -15,7 +15,7 @@ import lombok.Data;
 public class BaseVo<T> extends PageInfo<T> {
 
     @IdValid(groups = {Update.class, Delete.class})
-    private String uid;
+    private String id;
 
     private Integer status;
 }

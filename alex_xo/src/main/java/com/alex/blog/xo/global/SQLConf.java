@@ -95,4 +95,8 @@ public final class SQLConf extends BaseSqlConf {
     public final static String FILE_TYPE = "file_type";
     public final static String EXTEND_NAME = "extend_name";
     public final static String IS_DIR = "is_dir";
+
+    //role
+    public static final String ROLEID = "role_id";
+    public static final String ROLENAME = "role_name";
 }

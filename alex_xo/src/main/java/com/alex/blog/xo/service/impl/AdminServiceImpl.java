@@ -10,8 +10,8 @@ import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.global.SQLConf;
-import com.alex.blog.xo.service.AdminService;
 import com.alex.blog.xo.mapper.AdminMapper;
+import com.alex.blog.xo.service.AdminService;
 import com.alex.blog.xo.vo.AdminVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -121,36 +121,38 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
     @Override
     public void addOnLineAdmin(Admin admin, Long expirationSecond) {
         HttpServletRequest request = RequestHolder.getRequest();
-        Map<String, String> map = IpUtils.getOsAndBrowserInfo(request);
-        String os = map.get(SysConf.OS);
-        String browser = map.get(SysConf.BROWSER);
-        String ip = map.get(SysConf.IP);
-        //设置在线管理员信息
-        OnlineAdmin onlineAdmin = new OnlineAdmin();
-        onlineAdmin.setAdminId(admin.getId());
-        onlineAdmin.setTokenId(admin.getTokenId());
-        onlineAdmin.setToken(admin.getValidCode());
-        onlineAdmin.setOs(os);
-        onlineAdmin.setBrowser(browser);
-        onlineAdmin.setIpAddr(ip);
-        onlineAdmin.setLoginTime(DateUtils.getNowTimeStr());
-//        onlineAdmin.setRoleName(admin.getRole().getRoleName());
-        onlineAdmin.setUsername(admin.getUsername());
-        onlineAdmin.setExpireTime(DateUtils.getTimeStr(DateUtils.addTime(LocalDateTime.now(), expirationSecond, ChronoUnit.MILLIS)));
-        //从redis中获取ip来源
-        String jsonResult = redisUtils.get(RedisConf.IP_SOURCE + RedisConf.SEGMENTATION + ip);
-        if (StringUtils.isEmpty(jsonResult)) {
-            String addresses = IpUtils.getAddresses(SysConf.IP + RedisConf.EQUAL_TO + ip, SysConf.UTF_8);
-            if (StringUtils.isNotEmpty(addresses)) {
-                jsonResult = addresses;
-                redisUtils.setEx(RedisConf.IP_SOURCE + RedisConf.SEGMENTATION + ip, addresses, 24, TimeUnit.HOURS);
+        if (request != null) {
+            Map<String, String> map = IpUtils.getOsAndBrowserInfo(request);
+            String os = map.get(SysConf.OS);
+            String browser = map.get(SysConf.BROWSER);
+            String ip = map.get(SysConf.IP);
+            //设置在线管理员信息
+            OnlineAdmin onlineAdmin = new OnlineAdmin();
+            onlineAdmin.setAdminId(admin.getId());
+            onlineAdmin.setTokenId(admin.getTokenId());
+            onlineAdmin.setToken(admin.getValidCode());
+            onlineAdmin.setOs(os);
+            onlineAdmin.setBrowser(browser);
+            onlineAdmin.setIpAddr(ip);
+            onlineAdmin.setLoginTime(DateUtils.getNowTimeStr());
+            //onlineAdmin.setRoleName(admin.getRole().getRoleName());
+            onlineAdmin.setUsername(admin.getUsername());
+            onlineAdmin.setExpireTime(DateUtils.getTimeStr(DateUtils.addTime(LocalDateTime.now(), expirationSecond, ChronoUnit.MILLIS)));
+            //从redis中获取ip来源
+            String jsonResult = redisUtils.get(RedisConf.IP_SOURCE + RedisConf.SEGMENTATION + ip);
+            if (StringUtils.isEmpty(jsonResult)) {
+                String addresses = IpUtils.getAddresses(SysConf.IP + RedisConf.EQUAL_TO + ip, SysConf.UTF_8);
+                if (StringUtils.isNotEmpty(addresses)) {
+                    jsonResult = addresses;
+                    redisUtils.setEx(RedisConf.IP_SOURCE + RedisConf.SEGMENTATION + ip, addresses, 24, TimeUnit.HOURS);
+                }
             }
+            onlineAdmin.setLoginLocation(jsonResult);
+            //将登陆的管理员储存到在线用户列表中
+            redisUtils.setEx(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + admin.getValidCode(), JsonUtils.objectToJson(onlineAdmin), expirationSecond, TimeUnit.MINUTES);
+            //在维护一张用于tokenid - toekn转化的表
+            redisUtils.setEx(RedisConf.LOGIN_ID_KEY + RedisConf.SEGMENTATION + admin.getTokenId(), admin.getValidCode(), expirationSecond, TimeUnit.MINUTES);
         }
-        onlineAdmin.setLoginLocation(jsonResult);
-        //将登陆的管理员储存到在线用户列表中
-        redisUtils.setEx(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + admin.getValidCode(), JsonUtils.objectToJson(onlineAdmin), expirationSecond, TimeUnit.MINUTES);
-        //在维护一张用于tokenid - toekn转化的表
-        redisUtils.setEx(RedisConf.LOGIN_ID_KEY + RedisConf.SEGMENTATION + admin.getTokenId(), admin.getValidCode(), expirationSecond, TimeUnit.MINUTES);
     }
 
     @Override
