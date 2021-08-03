@@ -1,4 +1,4 @@
-package com.alex.blog.base.enums;
+package com.alex.blog.common.enums;
 
 /**
  *description:  状态枚举类
@@ -25,15 +25,7 @@ public enum EStatus {
         return code;
     }
 
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 }

@@ -31,5 +31,16 @@ public final class SysConf extends BaseSysConf {
     public static final String BROWSER = "BROWSER";
     public static final String IP = "ip";
     public static final String UTF_8 = "utf-8";
+
+    public static final String ROLES = "roles";
+
+    public static final String CODE = "code";
+    public static final String DATA = "data";
+
+
+    public static final String PIC_URL = "picUrl";
+    public static final String QI_NIU_URL = "qiNiuUrl";
+    public static final String MINIO = "minio";
+    public static final String ID = "id";
 }
 
