@@ -1,8 +1,9 @@
 package com.alex.blog.xo.service;
 
-import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.common.enums.EStatus;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
+import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.common.config.jwt.Audience;
 import com.alex.blog.common.config.jwt.JwtTokenUtil;
 import com.alex.blog.common.entity.Admin;
@@ -10,19 +11,28 @@ import com.alex.blog.common.entity.Role;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.*;
+import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.global.SQLConf;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -48,6 +58,12 @@ public class LoginService {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private RedisUtils redisUtils;
+
+    @Autowired
+    private WebConfigService webConfigService;
 
     public String login(HttpServletRequest request, String username, String password, boolean isRemember) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
@@ -86,7 +102,7 @@ public class LoginService {
         List<String> roleIds = new ArrayList<>();
         roleIds.add(admin.getRoleId());
         List<Role> roles = roleService.listByIds(roleIds);
-        if (roles == null && roles.size() <= 0) {
+        if (roles == null || roles.size() <= 0) {
             return ResultUtil.result(SysConf.ERROR, MessageConf.NO_ROLE);
         }
         StringBuffer sb = new StringBuffer();
@@ -95,7 +111,6 @@ public class LoginService {
         }
         String roleName = sb.replace(sb.length() - 1, sb.length(), "").toString();
         long expiration = isRemember ? isRememberMeExpiresSecond : audience.getExpiresSecond();
-        // TODO: 2021/7/25 添加角色信息
         String jwtToken = jwtTokenUtil.createJwt(admin.getUsername(), admin.getId(), roleName, audience.getClientId(), audience.getName()
                 , expiration, audience.getBase64Secret());
         String token = tokenHead + jwtToken;
@@ -111,12 +126,62 @@ public class LoginService {
         admin.setValidCode(token);
         //设置tokenId，主要用于换取token令牌，防止token直接暴露到在线用户管理中
         admin.setTokenId(StringUtils.getUUID());
-//        admin.setRole();
+        admin.setRole(roles.get(0));
         //添加在线用户到redis中，设置过期时间
         adminService.addOnLineAdmin(admin, expiration);
         return ResultUtil.result(SysConf.SUCCESS, result);
     }
 
+    @ApiOperation(value = "用户信息", notes = "用户信息", response = String.class)
+    @GetMapping(value = "/info")
+    public String info(HttpServletRequest request, @ApiParam(name = "token", value = "token令牌") @RequestParam(value = "token", required = false) String token) {
+        Map<String, Object> map = new HashMap<>(Constants.NUM_THREE);
+        String adminId = (String) request.getAttribute(SysConf.ADMIN_ID);
+        boolean isExpiration = jwtTokenUtil.isExpiration(token, audience.getBase64Secret());
+        if (adminId == null || isExpiration) {
+            return ResultUtil.result(SysConf.ERROR, "token用户过期");
+        }
+        Admin admin = adminService.getById(adminId);
+        map.put(SysConf.TOKEN, token);
+        // TODO: 2021/7/31 获取图片信息
+        List<Role> roles = roleService.listByIds(Lists.newArrayList(admin.getRoleId()));
+        map.put(SysConf.ROLES, roles);
+        return ResultUtil.result(SysConf.SUCCESS, map);
+    }
+
+    @ApiOperation(value = "获取网站名称", notes = "获取网站名称", response = String.class)
+    @GetMapping(value = "/getWebSiteName")
+    public String getWebSiteName() {
+        return ResultUtil.result(SysConf.SUCCESS, webConfigService.getWebSiteName());
+    }
+
+    @ApiOperation(value = "退出登录", notes = "退出登录", response = String.class)
+    @PostMapping(value = "logout")
+    public String logout() {
+        String adminToken = RequestHolder.getAdmindToken();
+        if (StringUtils.isEmpty(adminToken)) {
+            return ResultUtil.result(SysConf.ERROR, MessageConf.OPERATION_FAIL);
+        } else {
+            //获取在线用户信息
+            String adminJson = redisUtils.get(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + adminToken);
+            if (StringUtils.isNotEmpty(adminJson)) {
+                OnlineAdmin onlineAdmin = JsonUtils.jsonToPojo(adminJson, OnlineAdmin.class);
+                //移除redis中tokenId
+                redisUtils.delete(RedisConf.LOGIN_ID_KEY + RedisConf.SEGMENTATION + onlineAdmin.getTokenId());
+            }
+            //移除redis中的用户
+            redisUtils.delete(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + adminToken);
+            SecurityContextHolder.clearContext();
+            return ResultUtil.result(SysConf.SUCCESS, MessageConf.OPERATION_SUCCESS);
+        }
+    }
+
+    /**
+     * @param request
+     * @description:  设置登录限制，返回剩余次数
+     * @author:       alex
+     * @return:       java.lang.Integer
+    */
     private Integer setLoginCommit(HttpServletRequest request) {
         String ip = IpUtils.getIpAddr(request);
         String count = RedisUtils.get(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip);

@@ -83,6 +83,18 @@
             <artifactId>commons-fileupload</artifactId>
             <version>${commons-fileupload.version}</version>
         </dependency>
+
+        <!--alex-common模块-->
+        <dependency>
+            <groupId>com.alex</groupId>
+            <artifactId>alex_common</artifactId>
+            <version>${alex_common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alex</groupId>
+            <artifactId>alex_xo</artifactId>
+            <version>${alex_xo.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

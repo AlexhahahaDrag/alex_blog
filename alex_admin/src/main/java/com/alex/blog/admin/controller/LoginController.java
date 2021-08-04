@@ -1,6 +1,5 @@
 package com.alex.blog.admin.controller;
 
-import com.alex.blog.common.entity.LoginParams;
 import com.alex.blog.xo.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,12 +24,6 @@ public class LoginController {
 
     @Autowired
     private LoginService loginService;
-
-    @PostMapping("/test")
-    @ApiOperation(value = "登录", tags = "登录")
-    public String test(HttpServletRequest request, @RequestBody LoginParams loginParams) {
-        return "test";
-    }
 
     @PostMapping("/login")
     @ApiOperation(value = "登录", tags = "登录")

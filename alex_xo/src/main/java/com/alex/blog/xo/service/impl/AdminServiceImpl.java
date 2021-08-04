@@ -1,6 +1,6 @@
 package com.alex.blog.xo.service.impl;
 
-import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.common.enums.EStatus;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
