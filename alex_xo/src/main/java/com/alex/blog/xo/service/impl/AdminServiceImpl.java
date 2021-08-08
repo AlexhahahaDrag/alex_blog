@@ -5,14 +5,14 @@ import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
-import com.alex.blog.common.entity.Admin;
+import com.alex.blog.common.entity.admin.Admin;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.global.SQLConf;
 import com.alex.blog.xo.mapper.AdminMapper;
 import com.alex.blog.xo.service.AdminService;
-import com.alex.blog.xo.vo.AdminVo;
+import com.alex.blog.common.vo.admin.AdminVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -101,7 +101,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
     /**
      * @description:  通过request对象获取当前登录管理员信息
      * @author:       alex
-     * @return:       com.alex.blog.common.entity.Admin
+     * @return:       com.alex.blog.common.entity.admin.Admin
      */
     @Override
     public Admin getMe() {

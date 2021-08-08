@@ -1,8 +1,8 @@
 package com.alex.blog.xo.service;
 
 import com.alex.blog.base.service.SuperService;
-import com.alex.blog.common.entity.Admin;
-import com.alex.blog.xo.vo.AdminVo;
+import com.alex.blog.common.entity.admin.Admin;
+import com.alex.blog.common.vo.admin.AdminVo;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface AdminService extends SuperService<Admin> {
      * @param uid
      * @description:  通过uid获取admin信息
      * @author:       alex
-     * @return:       com.alex.blog.common.entity.Admin
+     * @return:       com.alex.blog.common.entity.admin.Admin
      */
     Admin getAdminByUid(String uid);
 
@@ -35,14 +35,14 @@ public interface AdminService extends SuperService<Admin> {
      * @param username 用户名
      * @description:   web端通过用户名获取一个admin
      * @author:        alex
-     * @return:        com.alex.blog.common.entity.Admin
+     * @return:        com.alex.blog.common.entity.admin.Admin
      */
     Admin getAdminByUser(String username);
 
     /**
      * @description:  获取当前管理员
      * @author:       alex
-     * @return:       com.alex.blog.common.entity.Admin
+     * @return:       com.alex.blog.common.entity.admin.Admin
      */
     Admin getMe();
 

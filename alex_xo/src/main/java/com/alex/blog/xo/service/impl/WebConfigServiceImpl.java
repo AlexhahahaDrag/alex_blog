@@ -4,7 +4,7 @@ import com.alex.blog.base.exception.exceptionType.QueryException;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
-import com.alex.blog.common.entity.WebConfig;
+import com.alex.blog.common.entity.admin.WebConfig;
 import com.alex.blog.common.enums.EAccountType;
 import com.alex.blog.common.enums.ELoginType;
 import com.alex.blog.common.global.MessageConf;
@@ -13,7 +13,7 @@ import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.global.SQLConf;
 import com.alex.blog.xo.mapper.WebConfigMapper;
 import com.alex.blog.xo.service.WebConfigService;
-import com.alex.blog.xo.vo.WebConfigVo;
+import com.alex.blog.common.vo.admin.WebConfigVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
     /**
      * @description:  获取网站配置
      * @author:       alex
-     * @return:       com.alex.blog.common.entity.WebConfig
+     * @return:       com.alex.blog.common.entity.admin.WebConfig
     */
     @Override
     public WebConfig getWebConfig() {
@@ -92,7 +92,7 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
     /**
      * @description:  获取网站配置显示列表    
      * @author:       alex
-     * @return:       com.alex.blog.common.entity.WebConfig
+     * @return:       com.alex.blog.common.entity.admin.WebConfig
     */
     @Override
     public WebConfig getWebConfigByShowList() {

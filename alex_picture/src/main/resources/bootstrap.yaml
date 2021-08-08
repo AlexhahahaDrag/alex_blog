@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+        group: majf-dev-test
+        namespace: 85bc68b5-8c6c-4ef4-a139-0a0c08a57763
+  application:
+    name: alex-picture
+server:
+  port: 30020

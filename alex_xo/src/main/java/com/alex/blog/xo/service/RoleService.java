@@ -1,8 +1,8 @@
 package com.alex.blog.xo.service;
 
 import com.alex.blog.base.service.SuperService;
-import com.alex.blog.common.entity.Role;
-import com.alex.blog.xo.vo.RoleVo;
+import com.alex.blog.common.entity.admin.Role;
+import com.alex.blog.common.vo.admin.RoleVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
@@ -17,7 +17,7 @@ public interface RoleService extends SuperService<Role> {
      * @param roleVo
      * @description:  获取角色列表
      * @author:       alex
-     * @return:       com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.Role>
+     * @return:       com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.admin.Role>
     */
     IPage<Role> getPageList(RoleVo roleVo);
 

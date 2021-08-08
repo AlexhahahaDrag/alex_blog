@@ -1,8 +1,8 @@
 package com.alex.blog.xo.service;
 
 import com.alex.blog.base.service.SuperService;
-import com.alex.blog.common.entity.WebConfig;
-import com.alex.blog.xo.vo.WebConfigVo;
+import com.alex.blog.common.entity.admin.WebConfig;
+import com.alex.blog.common.vo.admin.WebConfigVo;
 
 /**
  *description:  网站配置服务类
@@ -15,7 +15,7 @@ public interface WebConfigService extends SuperService<WebConfig> {
     /**
      * @description:  获取网站配置
      * @author:       alex
-     * @return:       com.alex.blog.common.entity.WebConfig
+     * @return:       com.alex.blog.common.entity.admin.WebConfig
     */
     WebConfig getWebConfig();
 
@@ -29,7 +29,7 @@ public interface WebConfigService extends SuperService<WebConfig> {
     /**
      * @description:  通过显示列表获取配置
      * @author:       alex
-     * @return:       com.alex.blog.common.entity.WebConfig
+     * @return:       com.alex.blog.common.entity.admin.WebConfig
     */
     WebConfig getWebConfigByShowList();
 

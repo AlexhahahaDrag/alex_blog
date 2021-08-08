@@ -1,4 +1,4 @@
-package com.alex.blog.common.entity;
+package com.alex.blog.common.entity.admin;
 
 import com.alex.blog.base.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;

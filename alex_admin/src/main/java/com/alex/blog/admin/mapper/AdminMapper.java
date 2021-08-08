@@ -1,6 +1,6 @@
 package com.alex.blog.admin.mapper;
 
-import com.alex.blog.common.entity.Admin;
+import com.alex.blog.common.entity.admin.Admin;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

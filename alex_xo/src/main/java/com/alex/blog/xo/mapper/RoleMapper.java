@@ -1,7 +1,7 @@
 package com.alex.blog.xo.mapper;
 
 import com.alex.blog.base.mapper.SuperMapper;
-import com.alex.blog.common.entity.Role;
+import com.alex.blog.common.entity.admin.Role;
 
 /**
  *description:  角色mapper接口

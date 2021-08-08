@@ -14,6 +14,7 @@ public final class SysConf extends BaseSysConf {
     public static final String TITLE = "title";
 
     public static final String ADMIN = "admin";
+    public static final String PICTURE = "picture";
     public static final String ROLE = "role";
     public static final String EMAIL = "email";
     public static final String MOBILE = "mobile";
@@ -22,6 +23,10 @@ public final class SysConf extends BaseSysConf {
     public static final String IS_PUBLISH = "is_publish";
     public static final String IS_ORIGINAL = "is_original";
     public static final String USERNAME = "username";
+    public static final String NAME = "name";
+    public static final String EXPANDED_NAME = "expandedName";
+    public static final String FILE_OLD_NAME = "fileOldName";
+    public static final String SOURCE = "source";
 
 
     public static final String LIMIT_ONE = "limit 1";
@@ -40,7 +45,14 @@ public final class SysConf extends BaseSysConf {
 
     public static final String PIC_URL = "picUrl";
     public static final String QI_NIU_URL = "qiNiuUrl";
+    public static final String MINIO_URL = "minioUrl";
     public static final String MINIO = "minio";
     public static final String ID = "id";
+    public static final String URL = "url";
+
+    public static final String USER_ID = "userId";
+    public static final String ADMIN_ID = "adminId";
+    public static final String PROJECT_NAME = "projectName";
+    public static final String SORT_NAME = "sortName";
 }
 

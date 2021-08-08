@@ -3,7 +3,7 @@ package com.alex.blog.utils.utils;
 import com.alex.blog.common.enums.EStatus;
 import com.alex.blog.base.exception.exceptionType.QueryException;
 import com.alex.blog.base.global.RedisConf;
-import com.alex.blog.common.entity.SystemConfig;
+import com.alex.blog.common.entity.admin.SystemConfig;
 import com.alex.blog.common.enums.EFilePriority;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
@@ -110,7 +110,7 @@ public class WebUtils {
      * @param map
      * @description:  解析pictureList信息
      * @author:       alex
-     * @return:       com.alex.blog.common.entity.SystemConfig
+     * @return:       com.alex.blog.common.entity.admin.SystemConfig
     */
     private SystemConfig parsePictureInfo(String pictureList, Map<String, Object> map) {
         SystemConfig systemConfig;

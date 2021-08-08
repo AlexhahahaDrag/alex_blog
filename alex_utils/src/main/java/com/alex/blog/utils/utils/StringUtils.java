@@ -2,6 +2,8 @@ package com.alex.blog.utils.utils;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -108,7 +110,7 @@ public class StringUtils {
             return inum;
         }
         try {
-            inum = Integer.valueOf(str.trim());
+            inum = Integer.parseInt(str.trim());
         } catch (NumberFormatException e) {
             log.error("{}转化int型错误{}", str, e.getMessage());
         }
@@ -128,7 +130,7 @@ public class StringUtils {
             return dnum;
         }
         try {
-            dnum = Double.valueOf(str.trim());
+            dnum = Double.parseDouble(str.trim());
         } catch (NumberFormatException e) {
             log.error("{}转化double型错误{}", str, e.getMessage());
         }
@@ -148,7 +150,7 @@ public class StringUtils {
             return dnum;
         }
         try {
-            dnum = Float.valueOf(str.trim()).floatValue();
+            dnum = Float.parseFloat(str.trim());
         } catch (NumberFormatException e) {
             log.error("{}转化float型错误{}", str, e.getMessage());
         }
@@ -233,7 +235,7 @@ public class StringUtils {
         if (isEmpty(str)) {
             return false;
         }
-        return str.indexOf(searchChar) >= 0;
+        return str.contains(searchChar);
     }
 
     /**
@@ -283,5 +285,19 @@ public class StringUtils {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         log.info("获取32位的uuid: {}", uuid);
         return uuid;
+    }
+
+    /**
+     * @param str
+     * @param code
+     * @description:  根据给定字符串切割字符串
+     * @author:       alex
+     * @return:       java.util.List<java.lang.String>
+    */
+    public static List<String> splitStringByCode(String str, String code) {
+        if (str == null) {
+            return null;
+        }
+        return Arrays.asList(str.split(code));
     }
 }

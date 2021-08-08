@@ -1,7 +1,7 @@
 package com.alex.blog.xo.mapper;
 
 import com.alex.blog.base.mapper.SuperMapper;
-import com.alex.blog.common.entity.WebConfig;
+import com.alex.blog.common.entity.admin.WebConfig;
 
 /**
  *description:  网站配置mapper

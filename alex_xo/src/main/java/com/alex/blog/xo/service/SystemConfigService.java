@@ -1,8 +1,8 @@
 package com.alex.blog.xo.service;
 
 import com.alex.blog.base.service.SuperService;
-import com.alex.blog.common.entity.SystemConfig;
-import com.alex.blog.xo.vo.SystemConfigVo;
+import com.alex.blog.common.entity.admin.SystemConfig;
+import com.alex.blog.common.vo.admin.SystemConfigVo;
 
 /**
  *description:  系统配置服务类
@@ -15,7 +15,7 @@ public interface SystemConfigService extends SuperService<SystemConfig> {
     /**
      * @description:  获取系统配置
      * @author:       alex
-     * @return:       com.alex.blog.common.entity.SystemConfig
+     * @return:       com.alex.blog.common.entity.admin.SystemConfig
     */
     SystemConfig getConfig();
 

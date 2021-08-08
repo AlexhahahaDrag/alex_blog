@@ -3,7 +3,7 @@ package com.alex.blog.xo.service.impl;
 import com.alex.blog.base.exception.exceptionType.QueryException;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
-import com.alex.blog.common.entity.SystemConfig;
+import com.alex.blog.common.entity.admin.SystemConfig;
 import com.alex.blog.common.enums.EFilePriority;
 import com.alex.blog.common.enums.EOpenStatus;
 import com.alex.blog.common.enums.EStatus;
@@ -16,7 +16,7 @@ import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.global.SQLConf;
 import com.alex.blog.xo.mapper.SystemConfigMapper;
 import com.alex.blog.xo.service.SystemConfigService;
-import com.alex.blog.xo.vo.SystemConfigVo;
+import com.alex.blog.common.vo.admin.SystemConfigVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class SystemConfigServiceImpl extends SuperServiceImpl<SystemConfigMapper
     /**
      * @description:  获取系统配置
      * @author:       alex
-     * @return:       com.alex.blog.common.entity.SystemConfig
+     * @return:       com.alex.blog.common.entity.admin.SystemConfig
      */
     @Override
     public SystemConfig getConfig() {
