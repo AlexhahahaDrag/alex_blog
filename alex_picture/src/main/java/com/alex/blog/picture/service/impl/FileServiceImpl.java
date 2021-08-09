@@ -9,6 +9,7 @@ import com.alex.blog.common.entity.file.FileSort;
 import com.alex.blog.common.enums.EFilePriority;
 import com.alex.blog.common.enums.EOpenStatus;
 import com.alex.blog.common.enums.EStatus;
+import com.alex.blog.common.exception.AlexException;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.file.FileVo;
@@ -160,15 +161,10 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
             projectName = "base";
         }
         // TODO: 2021/8/9 检测上传用户，如果不是网站的用户则不能调用
-        if (StringUtils.isEmpty(adminId) && StringUtils.isEmpty(userId)) {
+        if (checkUser(userId, adminId)) {
             return ResultUtil.result(SysConf.ERROR, "请先注册");
         }
-        // TODO: 2021/8/9 获取文件分类
-        QueryWrapper<FileSort> query = new QueryWrapper<>();
-        query.eq(SysConf.SORT_NAME, sortName);
-        query.eq(SysConf.PROJECT_NAME, projectName);
-        query.eq(SQLConf.STATUS, EStatus.ENABLE.getCode());
-        List<FileSort> fileSortList = fileSortService.list(query);
+        List<FileSort> fileSortList = getFileSortList(sortName, projectName);
         if (fileSortList == null || fileSortList.size() == 0) {
             return ResultUtil.result(SysConf.ERROR, "文件不允许上传");
         }
@@ -224,7 +220,59 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
 
     @Override
     public String uploadPictureByUrl(FileVo fileVo) {
+        //获取配置文件
+        SystemConfig systemConfig;
+        if (fileVo.getSystemConfig() != null) {
+            Map<String, String> map = fileVo.getSystemConfig();
+            systemConfig = feignUtils.getSystemConfigMap(map);
+        } else {
+            //从redis中获取七牛云配置文件
+            systemConfig = feignUtils.getSystemConfig();
+        }
+        String userId = fileVo.getUserId();
+        String adminId = fileVo.getAdminId();
+        String projectName = fileVo.getProjectName();
+        String sortName = fileVo.getSortName();
+        if (StringUtils.isEmpty(projectName)) {
+            projectName = "base";
+        }
+        if (checkUser(userId, adminId)) {
+            throw new AlexException("00200", "请先注册");
+        }
+        List<FileSort> fileSortList = getFileSortList(sortName, projectName);
+        if (fileSortList == null || fileSortList.size() == 0) {
+            throw new AlexException("00200", "文件不允许上传，请填写文件分类信息");
+        }
+        FileSort fileSort = fileSortList.get(0);
+        List<String> urlList = fileVo.getUrlList();
+        if(urlList == null || urlList.size() > 0) {
+            return ResultUtil.result(SysConf.ERROR, "请上传图片");
+        }
         return null;
+    }
+
+    /**
+     * @param sortName
+     * @param projectName
+     * @description:  根据分类名和项目名称获取分类信息
+     * @author:       alex
+     * @return:       java.util.List<com.alex.blog.common.entity.file.FileSort>
+    */
+    private List<FileSort> getFileSortList(String sortName, String projectName) {
+        QueryWrapper<FileSort> query = new QueryWrapper<>();
+        query.eq(SysConf.SORT_NAME, sortName);
+        query.eq(SysConf.PROJECT_NAME, projectName);
+        query.eq(SQLConf.STATUS, EStatus.ENABLE.getCode());
+        return fileSortService.list(query);
+    }
+
+    // TODO: 2021/8/9 检测用户上传，如果不是网站上的用户或者会员就不能调用
+    private boolean checkUser(String userId, String adminid) {
+        if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(adminid)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

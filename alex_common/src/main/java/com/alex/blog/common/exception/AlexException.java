@@ -9,7 +9,7 @@ public class AlexException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     private String msg;
-    private int code = 500;
+    private String code = "500";
 
     public AlexException(String msg) {
         super(msg);
@@ -21,13 +21,13 @@ public class AlexException extends RuntimeException {
         this.msg = msg;
     }
 
-    public AlexException(String msg, int code) {
+    public AlexException(String code, String msg) {
         super(msg);
         this.msg = msg;
         this.code = code;
     }
 
-    public AlexException(String msg, int code, Throwable e) {
+    public AlexException(String code, String msg, Throwable e) {
         super(msg, e);
         this.msg = msg;
         this.code = code;
@@ -41,11 +41,11 @@ public class AlexException extends RuntimeException {
         this.msg = msg;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
