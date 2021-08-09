@@ -14,8 +14,7 @@ import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.file.FileVo;
 import com.alex.blog.picture.mapper.FileMapper;
-import com.alex.blog.picture.service.FileService;
-import com.alex.blog.picture.service.FileSortService;
+import com.alex.blog.picture.service.*;
 import com.alex.blog.utils.utils.FeignUtils;
 import com.alex.blog.utils.utils.JsonUtils;
 import com.alex.blog.utils.utils.ResultUtil;
@@ -51,6 +50,15 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
     @Autowired
     private FileSortService fileSortService;
 
+    @Autowired
+    private LocalService localService;
+
+    @Autowired
+    private QiNiuService qiNiuService;
+
+    @Autowired
+    private MinIoService minIoService;
+
     @Override
     public String cropperPicture(List<MultipartFile> multipartFileList) {
         SystemConfig systemConfig = feignUtils.getSystemConfig();
@@ -83,7 +91,7 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
      * @description:  根据文件id获取图片
      * @author:       alex
      * @return:       java.lang.String
-    */
+     */
     @Override
     public String getPicture(String fileIds, String code) {
         if (StringUtils.isEmpty(code)) {
@@ -98,23 +106,23 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
         query.in(SysConf.ID, fileIdList);
         List<File> fileList = fileService.list(query);
         if (fileList != null && fileList.size() > 0) {
-           fileList.forEach(item -> {
-               Map<String, Object> remap = new HashMap<>();
-               // 获取七牛云地址
-               remap.put(SysConf.QI_NIU_URL, item.getQiNiuUrl());
-               // 获取Minio对象存储地址
-               remap.put(SysConf.MINIO_URL, item.getMinioUrl());
-               // 获取本地地址
-               remap.put(SysConf.URL, item.getPicUrl());
-               // 后缀名，也就是类型
-               remap.put(SysConf.EXPANDED_NAME, item.getPicExpandedName());
-               remap.put(SysConf.FILE_OLD_NAME, item.getFileOldName());
-               //名称
-               remap.put(SysConf.NAME, item.getPicName());
-               remap.put(SysConf.ID, item.getId());
-               remap.put(SQLConf.FILE_OLD_NAME, item.getFileOldName());
-               list.add(remap);
-           });
+            fileList.forEach(item -> {
+                Map<String, Object> remap = new HashMap<>();
+                // 获取七牛云地址
+                remap.put(SysConf.QI_NIU_URL, item.getQiNiuUrl());
+                // 获取MinIo对象存储地址
+                remap.put(SysConf.MINIO_URL, item.getMinioUrl());
+                // 获取本地地址
+                remap.put(SysConf.URL, item.getPicUrl());
+                // 后缀名，也就是类型
+                remap.put(SysConf.EXPANDED_NAME, item.getPicExpandedName());
+                remap.put(SysConf.FILE_OLD_NAME, item.getFileOldName());
+                //名称
+                remap.put(SysConf.NAME, item.getPicName());
+                remap.put(SysConf.ID, item.getId());
+                remap.put(SQLConf.FILE_OLD_NAME, item.getFileOldName());
+                list.add(remap);
+            });
         }
         return ResultUtil.result(SysConf.SUCCESS, list);
     }
@@ -126,7 +134,7 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
      * @description:  批量上传文件
      * @author:       alex
      * @return:       java.lang.String
-    */
+     */
     @Override
     public String batchUploadFile(HttpServletRequest request, List<MultipartFile> multipartFileList, SystemConfig systemConfig) {
         if (multipartFileList == null || multipartFileList.size() > 0) {
@@ -195,7 +203,7 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
                 }
                 if (EOpenStatus.OPEN.getCode().equals(uploadMinio)) {
                     // TODO: 2021/8/9 添加minio上传文件服务
-                    minioUrl = minioService.uploadFile(item);
+                    minioUrl = minIoService.uploadFile(item);
                 }
                 File file = new File();
                 file.setFileSortId(fileSort.getId());
@@ -218,6 +226,12 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
         return ResultUtil.result(SysConf.SUCCESS, list);
     }
 
+    /**
+     * @param fileVo
+     * @description:  通过url上传图片
+     * @author:       alex
+     * @return:       java.lang.String
+    */
     @Override
     public String uploadPictureByUrl(FileVo fileVo) {
         //获取配置文件
@@ -245,10 +259,41 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
         }
         FileSort fileSort = fileSortList.get(0);
         List<String> urlList = fileVo.getUrlList();
-        if(urlList == null || urlList.size() > 0) {
+        if(urlList == null || urlList.size() == 0) {
             return ResultUtil.result(SysConf.ERROR, "请上传图片");
         }
-        return null;
+        List<File> list = urlList.stream().map(item -> {
+            String newFileName = System.currentTimeMillis() + ".jpg";
+            String picUrl = "";
+            String qiNiuUrl = "";
+            String minIoUrl = "";
+            //判断是否是上传本地
+            if (EOpenStatus.OPEN.getCode().equals(systemConfig.getUploadLocal())) {
+                picUrl = localService.uploadPictureByUrl(item, fileSort);
+            }
+            //判断是否上传七牛云
+            if (EOpenStatus.OPEN.getCode().equals(systemConfig.getUploadQiNiu())) {
+                picUrl = qiNiuService.uploadPictureByUrl(item, systemConfig);
+            }
+            //判断是否上传minIo
+            if (EOpenStatus.OPEN.getCode().equals(systemConfig.getUploadMinio())) {
+                picUrl = minIoService.uploadPictureByUrl(item);
+            }
+            File file = new File();
+            file.setStatus(EStatus.ENABLE.getCode());
+            file.setAdminId(adminId);
+            file.setUserId(userId);
+            file.setMinioUrl(minIoUrl);
+            file.setQiNiuUrl(qiNiuUrl);
+            file.setPicUrl(picUrl);
+            file.setPicExpandedName("jpg");
+            file.setPicName(newFileName);
+            file.setFileSortId(fileSort.getId());
+            file.setFileOldName(item);
+            return file;
+        }).collect(Collectors.toList());
+        fileService.saveBatch(list);
+        return ResultUtil.result(SysConf.SUCCESS, list);
     }
 
     /**
@@ -257,7 +302,7 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
      * @description:  根据分类名和项目名称获取分类信息
      * @author:       alex
      * @return:       java.util.List<com.alex.blog.common.entity.file.FileSort>
-    */
+     */
     private List<FileSort> getFileSortList(String sortName, String projectName) {
         QueryWrapper<FileSort> query = new QueryWrapper<>();
         query.eq(SysConf.SORT_NAME, sortName);
@@ -267,16 +312,19 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
     }
 
     // TODO: 2021/8/9 检测用户上传，如果不是网站上的用户或者会员就不能调用
-    private boolean checkUser(String userId, String adminid) {
-        if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(adminid)) {
+    private boolean checkUser(String userId, String adminId) {
+        if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(adminId)) {
             return true;
         } else {
             return false;
         }
     }
 
+    // TODO: 2021/8/10 编写剩下的方法
     @Override
     public Object ckeditorUploadFile(HttpServletRequest request) {
+        String token = request.getParameter(SysConf.TOKEN);
+
         return null;
     }
 
