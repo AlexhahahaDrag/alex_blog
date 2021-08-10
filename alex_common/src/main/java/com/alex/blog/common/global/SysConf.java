@@ -44,7 +44,12 @@ public final class SysConf extends BaseSysConf {
 
 
     public static final String PIC_URL = "picUrl";
+    //七牛相关配置
     public static final String QI_NIU_URL = "qiNiuUrl";
+    public static final String QI_NIU_AREA = "qiNiuArea";
+    public static final String QI_NIU_ACCESS_KEY = "qiNiuAccessKey";
+    public static final String QI_NIU_SECRET_KEY = "qiNiuSecretKey";
+    public static final String QI_NIU_BUCKET = "qiNiuBucket";
     public static final String MINIO_URL = "minioUrl";
     public static final String MINIO = "minio";
     public static final String ID = "id";

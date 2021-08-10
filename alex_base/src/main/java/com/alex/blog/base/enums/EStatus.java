@@ -1,4 +1,4 @@
-package com.alex.blog.common.enums;
+package com.alex.blog.base.enums;
 
 /**
  *description:  状态枚举类

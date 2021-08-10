@@ -14,6 +14,7 @@ import com.alex.blog.xo.global.SQLConf;
 import com.alex.blog.xo.mapper.WebConfigMapper;
 import com.alex.blog.xo.service.WebConfigService;
 import com.alex.blog.common.vo.admin.WebConfigVo;
+import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

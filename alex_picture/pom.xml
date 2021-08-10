@@ -26,5 +26,12 @@
             <artifactId>alex_utils</artifactId>
             <version>${alex_utils.version}</version>
         </dependency>
+
+        <!--用于File转MultipartFile-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-mock</artifactId>
+            <version>${spring_mock.version}</version>
+        </dependency>
     </dependencies>
 </project>

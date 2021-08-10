@@ -43,6 +43,8 @@
         <ip2region.version>1.7.2</ip2region.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <jjwt.version>0.9.1</jjwt.version>
+        <spring_mock.version>2.0.8</spring_mock.version>
+        <qiniu.version>7.8.0</qiniu.version>
     </properties>
     <dependencyManagement>
         <dependencies>

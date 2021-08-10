@@ -6,7 +6,7 @@ import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.SystemConfig;
 import com.alex.blog.common.enums.EFilePriority;
 import com.alex.blog.common.enums.EOpenStatus;
-import com.alex.blog.common.enums.EStatus;
+import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.JsonUtils;

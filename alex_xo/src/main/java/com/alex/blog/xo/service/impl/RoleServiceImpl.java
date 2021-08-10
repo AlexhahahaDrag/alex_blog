@@ -1,6 +1,6 @@
 package com.alex.blog.xo.service.impl;
 
-import com.alex.blog.common.enums.EStatus;
+import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.Admin;
