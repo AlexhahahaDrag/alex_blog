@@ -12,7 +12,7 @@ import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
-import com.alex.blog.xo.global.SQLConf;
+import com.alex.blog.common.global.SQLConf;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;

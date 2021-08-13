@@ -10,7 +10,7 @@ import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
-import com.alex.blog.xo.global.SQLConf;
+import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.xo.mapper.RoleMapper;
 import com.alex.blog.xo.service.AdminService;
 import com.alex.blog.xo.service.RoleService;

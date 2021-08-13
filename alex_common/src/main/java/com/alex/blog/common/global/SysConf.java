@@ -13,7 +13,6 @@ public final class SysConf extends BaseSysConf {
     public static final String ALL = "all";
     public static final String TITLE = "title";
 
-    public static final String ADMIN = "admin";
     public static final String PICTURE = "picture";
     public static final String ROLE = "role";
     public static final String EMAIL = "email";
@@ -59,5 +58,18 @@ public final class SysConf extends BaseSysConf {
     public static final String ADMIN_ID = "adminId";
     public static final String PROJECT_NAME = "projectName";
     public static final String SORT_NAME = "sortName";
+
+    //platform平台相关
+    public static final String WEB = "web";
+    public static final String ADMIN = "admin";
+
+    //systemConfig相关
+    public static final String UPLOAD_QI_NIU = "upload_qi_niu";
+    public static final String UPLOAD_LOCAL = "upload_local";
+    public static final String UPLOAD_MINIO = "upload_minio";
+    public static final String LOCAL_PICTURE_BASE_URL = "localPictureBaseUrl";
+    public static final String QI_NIU_PICTURE_BASE_URL = "qiNiuPictureBaseUrl";
+    public static final String MINIO_PICTURE_BASE_URL = "minioPictureBaseUrl";
+    public static final String PICTURE_PRIORITY = "picturePriority";
 }
 

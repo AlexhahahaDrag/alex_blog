@@ -13,7 +13,7 @@ import com.alex.blog.utils.utils.JsonUtils;
 import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
-import com.alex.blog.xo.global.SQLConf;
+import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.xo.mapper.SystemConfigMapper;
 import com.alex.blog.xo.service.SystemConfigService;
 import com.alex.blog.common.vo.admin.SystemConfigVo;

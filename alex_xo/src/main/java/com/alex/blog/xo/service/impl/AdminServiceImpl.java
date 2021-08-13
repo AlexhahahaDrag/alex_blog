@@ -9,7 +9,7 @@ import com.alex.blog.common.entity.admin.Admin;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
-import com.alex.blog.xo.global.SQLConf;
+import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.xo.mapper.AdminMapper;
 import com.alex.blog.xo.service.AdminService;
 import com.alex.blog.common.vo.admin.AdminVo;

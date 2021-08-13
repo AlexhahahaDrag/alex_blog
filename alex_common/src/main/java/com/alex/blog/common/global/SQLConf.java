@@ -1,4 +1,4 @@
-package com.alex.blog.xo.global;
+package com.alex.blog.common.global;
 
 import com.alex.blog.base.global.BaseSqlConf;
 

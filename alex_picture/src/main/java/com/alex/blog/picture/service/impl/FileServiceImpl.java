@@ -1,5 +1,6 @@
 package com.alex.blog.picture.service.impl;
 
+import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
@@ -8,18 +9,14 @@ import com.alex.blog.common.entity.file.File;
 import com.alex.blog.common.entity.file.FileSort;
 import com.alex.blog.common.enums.EFilePriority;
 import com.alex.blog.common.enums.EOpenStatus;
-import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.common.exception.AlexException;
 import com.alex.blog.common.global.MessageConf;
+import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.file.FileVo;
 import com.alex.blog.picture.mapper.FileMapper;
 import com.alex.blog.picture.service.*;
-import com.alex.blog.utils.utils.FeignUtils;
-import com.alex.blog.utils.utils.JsonUtils;
-import com.alex.blog.utils.utils.ResultUtil;
-import com.alex.blog.utils.utils.StringUtils;
-import com.alex.blog.xo.global.SQLConf;
+import com.alex.blog.utils.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -120,7 +117,6 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
                 //名称
                 remap.put(SysConf.NAME, item.getPicName());
                 remap.put(SysConf.ID, item.getId());
-                remap.put(SQLConf.FILE_OLD_NAME, item.getFileOldName());
                 list.add(remap);
             });
         }
@@ -177,7 +173,6 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
             return ResultUtil.result(SysConf.ERROR, "文件不允许上传");
         }
         FileSort fileSort = fileSortList.get(0);
-        String sortUrl = fileSort.getUrl() == null ? "base/common" : fileSort.getUrl();
         List<File> list = new ArrayList<>();
         //上传文件
         String uploadLocal = systemConfig.getUploadLocal();
@@ -194,11 +189,9 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
             String minioUrl = "";
             try {
                 if (EOpenStatus.OPEN.getCode().equals(uploadLocal)) {
-                    // TODO: 2021/8/9 添加本地上传文件接口
-                    localUrl = localService.uploadFile(item);
+                    localUrl = localService.uploadFile(item, fileSort);
                 }
                 if (EOpenStatus.OPEN.getCode().equals(uploadQiNiu)) {
-                    // TODO: 2021/8/9 添加七牛上传文件服务
                     qiNiuUrl = qiNiuService.uploadFile(item);
                 }
                 if (EOpenStatus.OPEN.getCode().equals(uploadMinio)) {
@@ -238,7 +231,7 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
         SystemConfig systemConfig;
         if (fileVo.getSystemConfig() != null) {
             Map<String, String> map = fileVo.getSystemConfig();
-            systemConfig = feignUtils.getSystemConfigMap(map);
+            systemConfig = feignUtils.getSystemConfigByMap(map);
         } else {
             //从redis中获取七牛云配置文件
             systemConfig = feignUtils.getSystemConfig();

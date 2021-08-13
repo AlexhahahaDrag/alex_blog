@@ -10,7 +10,7 @@ import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.JsonUtils;
 import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.StringUtils;
-import com.alex.blog.xo.global.SQLConf;
+import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.xo.service.SystemConfigService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;

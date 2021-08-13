@@ -10,7 +10,7 @@ import com.alex.blog.common.enums.ELoginType;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.*;
-import com.alex.blog.xo.global.SQLConf;
+import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.xo.mapper.WebConfigMapper;
 import com.alex.blog.xo.service.WebConfigService;
 import com.alex.blog.common.vo.admin.WebConfigVo;

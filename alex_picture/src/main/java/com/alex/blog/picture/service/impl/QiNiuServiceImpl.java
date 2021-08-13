@@ -4,6 +4,7 @@ import com.alex.blog.base.global.Constants;
 import com.alex.blog.common.entity.admin.SystemConfig;
 import com.alex.blog.common.exception.AlexException;
 import com.alex.blog.picture.service.QiNiuService;
+import com.alex.blog.picture.utils.QiNiuUtils;
 import com.alex.blog.utils.utils.FeignUtils;
 import com.alex.blog.utils.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,12 @@ public class QiNiuServiceImpl implements QiNiuService {
             return null;
         }
         return multipartFileList.stream().map(item -> {
-            String url = uploadSingleFile(item);
+            String url = null;
+            try {
+                url = uploadSingleFile(item);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return url;
         }).collect(Collectors.toList());
     }
