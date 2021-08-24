@@ -2,6 +2,7 @@ package com.alex.blog.picture.service.impl;
 
 import com.alex.blog.common.exception.AlexException;
 import com.alex.blog.picture.service.MinIoService;
+import com.alex.blog.picture.utils.MinioUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,11 +32,13 @@ public class MinioServiceImpl  implements MinIoService {
             throw new AlexException("500", "请上传文件");
         }
         return multipartFileList.stream().map(item -> {
+            String url = null;
             try {
-                return uploadFile(item);
+                url = uploadFile(item);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            return url;
         }).collect(Collectors.toList());
     }
 

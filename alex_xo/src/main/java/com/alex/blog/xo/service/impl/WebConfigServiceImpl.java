@@ -38,8 +38,8 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
     @Autowired
     private WebConfigService webConfigService;
 
-    @Autowired
-    private PictureFeignClient pictureFeignClient;
+//    @Autowired
+//    private PictureFeignClient pictureFeignClient;
 
     @Autowired
     private WebUtils webUtils;
@@ -59,20 +59,20 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
         WebConfig webConfig = webConfigService.getOne(query);
         if (webConfig != null) {
             //获取图片
-            if (StringUtils.isNotEmpty(webConfig.getLogo())) {
-                String pictureList = pictureFeignClient.getPicture(webConfig.getLogo(), SysConf.FILE_SEGMENTATION);
-                webConfig.setPhotoList(webUtils.getPicture(pictureList));
-            }
-            //获取支付宝收款二维码
-            if (StringUtils.isNotEmpty(webConfig.getAliPay())) {
-                String pictureList = pictureFeignClient.getPicture(webConfig.getAliPay(), SysConf.FILE_SEGMENTATION);
-                webConfig.setAliPayPhoto(webUtils.getPicture(pictureList).get(0));
-            }
-            //获取微信收款二维码
-            if (StringUtils.isNotEmpty(webConfig.getWeChatPay())) {
-                String pictureList = pictureFeignClient.getPicture(webConfig.getWeChatPay(), SysConf.FILE_SEGMENTATION);
-                webConfig.setWeChatPhoto(webUtils.getPicture(pictureList).get(0));
-            }
+//            if (StringUtils.isNotEmpty(webConfig.getLogo())) {
+//                String pictureList = pictureFeignClient.getPicture(webConfig.getLogo(), SysConf.FILE_SEGMENTATION);
+//                webConfig.setPhotoList(webUtils.getPicture(pictureList));
+//            }
+//            //获取支付宝收款二维码
+//            if (StringUtils.isNotEmpty(webConfig.getAliPay())) {
+//                String pictureList = pictureFeignClient.getPicture(webConfig.getAliPay(), SysConf.FILE_SEGMENTATION);
+//                webConfig.setAliPayPhoto(webUtils.getPicture(pictureList).get(0));
+//            }
+//            //获取微信收款二维码
+//            if (StringUtils.isNotEmpty(webConfig.getWeChatPay())) {
+//                String pictureList = pictureFeignClient.getPicture(webConfig.getWeChatPay(), SysConf.FILE_SEGMENTATION);
+//                webConfig.setWeChatPhoto(webUtils.getPicture(pictureList).get(0));
+//            }
         }
         return webConfig;
     }
@@ -108,7 +108,7 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
         if (webConfig == null) {
             throw new QueryException("00101", MessageConf.SYSTEM_CONFIG_NOT_EXIST);
         }
-        StringBuffer sb = new StringBuffer;
+        StringBuffer sb = new StringBuffer();
         if (StringUtils.isNotEmpty(webConfig.getLogo())) {
             sb.append(webConfig.getLogo()).append(Constants.SYMBOL_COMMA);
         }
@@ -123,7 +123,7 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
         String pictureResult = "";
         if (sb.length() > 0) {
             // TODO: 2021/8/4 添加图片服务模块 
-            pictureResult = pictureFeignClient.getPicture(sb.toString(), Constants.SYMBOL_COMMA);
+            //pictureResult = pictureFeignClient.getPicture(sb.toString(), Constants.SYMBOL_COMMA);
         }
         List<Map<String, Object>> pictureList = webUtils.getPictureMap(pictureResult);
         HashMap<String, String> pictureMap = new HashMap<>();

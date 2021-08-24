@@ -106,7 +106,7 @@ public class QiNiuServiceImpl implements QiNiuService {
                     dest.getName(), String.valueOf(ContentType.APPLICATION_OCTET_STREAM), fileInputStream);
             out = new BufferedOutputStream(new FileOutputStream(dest));
             out.write(fileData.getBytes());
-            fileUrl = qiNiuUtils.uploadQiNiu(dest, systemConfig);
+            fileUrl = qiNiuUtils.uploadQiniu(dest, systemConfig);
         } catch (AlexException | IOException e) {
             throw new AlexException("0200", "获取文件超时，文件上传失败");
         } finally {
@@ -155,7 +155,7 @@ public class QiNiuServiceImpl implements QiNiuService {
             bos = new BufferedOutputStream(new FileOutputStream(dest));
             bos.write(multipartFile.getBytes());
             bos.flush();
-            url = qiNiuUtils.uploadQiNiu(dest, systemConfig);
+            url = qiNiuUtils.uploadQiniu(dest, systemConfig);
         } catch (Exception e) {
             log.error("文件上传七牛云失败， {}", e.getMessage());
         } finally {

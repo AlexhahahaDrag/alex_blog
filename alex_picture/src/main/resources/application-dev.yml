@@ -9,3 +9,12 @@ oss:
     accessKey: LbO-QxxxxxxxxoF4H3p # 公钥
     secretKey: TyJAtXx7xxxx_gxbA5k # 私钥
     bucketName: codeduck  #存储空间名称
+
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/alex_blog?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: mysql

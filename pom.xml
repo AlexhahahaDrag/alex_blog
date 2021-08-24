@@ -45,6 +45,8 @@
         <jjwt.version>0.9.1</jjwt.version>
         <spring_mock.version>2.0.8</spring_mock.version>
         <qiniu.version>7.8.0</qiniu.version>
+        <feign-version>3.0.3</feign-version>
+        <minio.version>8.3.0</minio.version>
     </properties>
     <dependencyManagement>
         <dependencies>

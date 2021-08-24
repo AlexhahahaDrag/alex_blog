@@ -54,6 +54,14 @@ public final class SysConf extends BaseSysConf {
     public static final String ID = "id";
     public static final String URL = "url";
 
+    //minio相关配置
+    public static final String MINIO_END_POINT = "minioEndPoint";
+    public static final String MINIO_ACCESS_KEY = "minioAccessKey";
+    public static final String MINIO_SECRET_KEY = "minioSecretKey";
+    public static final String MINIO_SECURE = "minioSecure";
+    public static final String MINIO_PORT = "minioPort";
+    public static final String MINIO_BUCKET = "minioBucket";
+
     public static final String USER_ID = "userId";
     public static final String ADMIN_ID = "adminId";
     public static final String PROJECT_NAME = "projectName";
@@ -71,5 +79,6 @@ public final class SysConf extends BaseSysConf {
     public static final String QI_NIU_PICTURE_BASE_URL = "qiNiuPictureBaseUrl";
     public static final String MINIO_PICTURE_BASE_URL = "minioPictureBaseUrl";
     public static final String PICTURE_PRIORITY = "picturePriority";
+    public static final String PICTURE_TOKEN = "pictureToken";
 }
 

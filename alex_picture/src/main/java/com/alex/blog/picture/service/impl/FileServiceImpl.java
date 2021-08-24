@@ -313,10 +313,20 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
         }
     }
 
-    // TODO: 2021/8/10 编写剩下的方法
+    /**
+     * @param request
+     * @description:  ck editor上传文件
+     * @author:       alex
+     * @return:       java.lang.Object
+    */
     @Override
     public Object ckeditorUploadFile(HttpServletRequest request) {
         String token = request.getParameter(SysConf.TOKEN);
+        //从redis中获取七牛云配置
+        Map<String, String> qiNiuResultMap = feignUtils.getSystemConfigMap(token);
+        SystemConfig systemConfig = feignUtils.getSystemConfigByMap(qiNiuResultMap);
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> errorMap = new HashMap<>();
 
         return null;
     }

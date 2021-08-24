@@ -59,6 +59,14 @@ public class SystemConfig extends BaseEntity<SystemConfig> {
     @TableField(value = "minio_bucket", updateStrategy = FieldStrategy.IGNORED)
     private String minioBucket;
 
+    @ApiModelProperty(value = "minioPort", name = "minIO端口号", example = "9000")
+    @TableField(value = "minio_port", updateStrategy = FieldStrategy.IGNORED)
+    private Integer minioPort;
+
+    @ApiModelProperty(value = "minioSecure", name = "minIO安全认证", example = "false")
+    @TableField(value = "minio_secure", updateStrategy = FieldStrategy.IGNORED)
+    private Boolean minioSecure;
+
     @ApiModelProperty(value = "uploadQiNiu", name = "图片是否上传七牛（0：否，1：是）", example = "0")
     @TableField(value = "upload_qi_niu")
     private String uploadQiNiu;

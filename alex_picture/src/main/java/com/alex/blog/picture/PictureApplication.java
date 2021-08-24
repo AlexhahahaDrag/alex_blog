@@ -12,14 +12,15 @@ import org.springframework.context.annotation.ComponentScan;
  *createDate:   2021/8/5 7:03
  *version:      1.0.0
  */
-@SpringBootApplication
 @EnableDiscoveryClient
-@MapperScan("com.alex.blog.xo.mapper")
+@MapperScan(basePackages = {"com.alex.blog.xo.mapper", "com.alex.blog.picture.mapper"})
 @ComponentScan(basePackages = {
         "com.alex.blog.xo",
+        "com.alex.blog.picture",
         "com.alex.blog.utils.utils",
         "com.alex.blog.common.config"
 })
+@SpringBootApplication
 public class PictureApplication {
 
     public static void main(String[] args) {
