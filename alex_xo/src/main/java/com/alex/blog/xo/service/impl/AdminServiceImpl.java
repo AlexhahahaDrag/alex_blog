@@ -6,17 +6,19 @@ import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.Admin;
+import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
+import com.alex.blog.common.vo.admin.AdminVo;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
-import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.xo.mapper.AdminMapper;
 import com.alex.blog.xo.service.AdminService;
-import com.alex.blog.common.vo.admin.AdminVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -186,9 +188,41 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         return ResultUtil.resultWithData(SysConf.SUCCESS, pageList);
     }
 
+    /**
+     * @param adminVo
+     * @description:  创建管理员
+     * @author:       alex
+     * @return:       java.lang.String
+    */
     @Override
     public String addAdmin(AdminVo adminVo) {
-        return null;
+        String username = adminVo.getUsername();
+        String mobile = adminVo.getMobile();
+        String email = adminVo.getEmail();
+        if (StringUtils.isEmpty(username)) {
+            return ResultUtil.result(SysConf.ERROR, "用户名必填");
+        }
+        if (StringUtils.isEmpty(email) && StringUtils.isEmpty(mobile)) {
+            return ResultUtil.result(SysConf.ERROR, "邮箱和手机号至少有一项不能为空!");
+        }
+        // TODO: 2021/9/5 默认配置信息 mogu2018
+        String defaultPassword = "1234@com";
+        QueryWrapper<Admin> query = new QueryWrapper<>();
+        query.eq(SysConf.USERNAME, username);
+        Admin one = adminService.getOne(query);
+        if (one != null) {
+            return ResultUtil.result(SysConf.ERROR, "用户名称已经存在！！");
+        }
+        Admin admin = new Admin();
+        BeanUtils.copyProperties(adminVo, admin);
+        admin.setStatus(EStatus.ENABLE.getCode());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String pwd = encoder.encode(defaultPassword);
+        admin.setPassword(encoder.encode(defaultPassword));
+        adminService.save(admin);
+        // TODO: 2021/9/6 通过sms模块发送给邮件
+        // TODO: 2021/9/6 申请网盘储存空间
+        return ResultUtil.result(SysConf.SUCCESS, "创建管理员成功!!");
     }
 
     @Override

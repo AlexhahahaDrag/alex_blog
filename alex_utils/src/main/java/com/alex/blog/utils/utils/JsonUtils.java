@@ -128,6 +128,27 @@ public class JsonUtils {
     }
 
     /**
+     * @param json
+     * @description:  将json转化成map<String, Object>
+     * @author:       alex
+     * @return:       java.util.Map<java.lang.String,java.lang.Object>
+     */
+    public static <T> Map<String, T> jsonToMap(String json, Type typeOfT) {
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .serializeNulls()
+                .create();
+        Map<String, T> map = null;
+        try {
+            map = gson.fromJson(json, typeOfT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
+    /**
      * @param map
      * @param beanType
      * @description:  将map转化成pojo

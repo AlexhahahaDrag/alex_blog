@@ -105,7 +105,7 @@ public class LoginService {
         if (roles == null || roles.size() <= 0) {
             return ResultUtil.result(SysConf.ERROR, MessageConf.NO_ROLE);
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (Role role : roles) {
             sb.append(role.getRoleName()).append(Constants.SYMBOL_COMMA);
         }

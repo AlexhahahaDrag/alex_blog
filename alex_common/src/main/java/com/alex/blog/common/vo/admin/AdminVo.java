@@ -15,7 +15,7 @@ import java.util.Date;
 public class AdminVo extends BaseVo<AdminVo> {
 
     //用户名
-    private String usrname;
+    private String username;
 
     //密码
     private String password;

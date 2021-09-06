@@ -1,6 +1,7 @@
 package com.alex.blog.utils.utils;
 
 import com.alex.blog.base.global.Constants;
+import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.common.entity.admin.SystemConfig;
 import com.alex.blog.common.enums.EOpenStatus;
@@ -8,10 +9,13 @@ import com.alex.blog.common.exception.AlexException;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  *description:  feignUtils工具类
@@ -23,9 +27,38 @@ import java.util.Map;
 @Slf4j
 public class FeignUtils {
 
-    // TODO: 2021/8/13 完善方法
+    @Autowired
+    private RedisUtils redisUtils;
+
+//    @Autowired
+//    private AdminFeignClient adminFeignClient;
+
+    /**
+     * @param token
+     * @description:  通过token获取系统配置文件
+     * @author:       alex
+     * @return:       java.util.Map<java.lang.String,java.lang.String>
+    */
     public Map<String, String> getSystemConfigMap(String token) {
-        return null;
+        //判断该token的有效性
+        String adminJsonResult = redisUtils.get(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + token);
+        if (StringUtils.isEmpty(adminJsonResult)) {
+            throw new AlexException(SysConf.ERROR, MessageConf.INVALID_TOKEN);
+        }
+        Map<String, String> resultMap = new HashMap<>();
+        String systemConfigResult = redisUtils.get(RedisConf.SYSTEM_CONFIG);
+        if (StringUtils.isNotEmpty(systemConfigResult)) {
+            resultMap = JsonUtils.jsonToMap(systemConfigResult, String.class);
+        } else {
+            String systemConfigStr = "";
+//            String systemConfigStr = adminFeignClient.getSystemConfig();
+            resultMap = JsonUtils.jsonToMap(systemConfigStr, String.class);
+            if (SysConf.SUCCESS.equals(resultMap.get(SysConf.CODE))) {
+                //将token存储到redis中，设置30分钟过期时间
+                redisUtils.setEx(RedisConf.SYSTEM_CONFIG, JsonUtils.objectToJson(resultMap), 30, TimeUnit.MINUTES);
+            }
+        }
+        return resultMap;
     }
 
     /**
