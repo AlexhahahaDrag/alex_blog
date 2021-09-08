@@ -16,20 +16,14 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableDiscoveryClient
 @MapperScan("com.alex.blog.xo.mapper")
 @ComponentScan(basePackages = {
-//        "com.moxi.mogublog.commons.config",
-//        "com.moxi.mogublog.commons.fallback",
-//        "com.moxi.mogublog.utils",
-//        "com.moxi.mogublog.admin",
-//        "com.moxi.mogublog.xo.utils",
-//        "com.moxi.mogublog.xo.service"
-                "com.alex.blog.xo",
+        "com.alex.blog.xo",
         "com.alex.blog.admin",
         "com.alex.blog.utils.utils",
         "com.alex.blog.common.config"
 })
-public class UserMain {
+public class AdminMain {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserMain.class, args);
+        SpringApplication.run(AdminMain.class, args);
     }
 }

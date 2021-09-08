@@ -217,7 +217,6 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         BeanUtils.copyProperties(adminVo, admin);
         admin.setStatus(EStatus.ENABLE.getCode());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String pwd = encoder.encode(defaultPassword);
         admin.setPassword(encoder.encode(defaultPassword));
         adminService.save(admin);
         // TODO: 2021/9/6 通过sms模块发送给邮件
