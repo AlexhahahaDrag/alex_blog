@@ -5,7 +5,7 @@ import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.common.entity.admin.SystemConfig;
 import com.alex.blog.common.enums.EOpenStatus;
-import com.alex.blog.common.exception.AlexException;
+import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
 import lombok.extern.slf4j.Slf4j;

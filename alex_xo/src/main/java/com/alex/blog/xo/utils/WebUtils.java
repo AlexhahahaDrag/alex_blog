@@ -1,7 +1,6 @@
 package com.alex.blog.xo.utils;
 
 import com.alex.blog.base.enums.EStatus;
-import com.alex.blog.base.exception.exceptionType.QueryException;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.common.entity.admin.SystemConfig;
 import com.alex.blog.common.enums.EFilePriority;
@@ -140,5 +139,25 @@ public class WebUtils {
         }
         map.putAll((Map<String, Object>) JsonUtils.jsonToObject(pictureList, Map.class));
         return systemConfig;
+    }
+
+    /**
+     * @param result
+     * @description:  获取结果集的消息
+     * @author:       alex
+     * @return:       java.util.Map<java.lang.String,java.lang.String>
+    */
+    public Map<String, String> getMessage(String result) {
+        HashMap<String, String> ret = new HashMap<>();
+        if (StringUtils.isEmpty(result)) {
+            ret.put(SysConf.CODE, SysConf.ERROR);
+            ret.put(SysConf.MESSAGE, MessageConf.PARAM_INCORRECT);
+        } else {
+            Map<String, Object> dataMap = (Map<String, Object>) JsonUtils.jsonToObject(result, Map.class);
+            ret.put(SysConf.CODE, (String) dataMap.get(SysConf.CODE));
+            Object mes = dataMap.get(SysConf.MESSAGE);
+            ret.put(SysConf.MESSAGE, mes != null ? mes.toString() : "");
+        }
+        return ret;
     }
 }

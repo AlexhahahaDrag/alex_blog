@@ -13,21 +13,20 @@ import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.mapper.AdminMapper;
 import com.alex.blog.xo.service.AdminService;
+import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -49,11 +48,20 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
     @Autowired
     private AdminService adminService;
 
+    @Autowired
+    private WebUtils webUtils;
+
     @Override
-    public Admin getAdminByUid(String uid) {
-        return adminMapper.getAdminByUid(uid);
+    public Admin getAdminById(String id) {
+        return adminMapper.getAdminById(id);
     }
 
+    /**
+     * @param adminVo
+     * @description:  获取在线用户列表
+     * @author:       alex
+     * @return:       java.lang.String
+    */
     @Override
     public String getOnLineAdminList(AdminVo adminVo) {
         //获取redis中匹配的所有key
@@ -193,7 +201,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
      * @description:  创建管理员
      * @author:       alex
      * @return:       java.lang.String
-    */
+     */
     @Override
     public String addAdmin(AdminVo adminVo) {
         String username = adminVo.getUsername();
@@ -224,9 +232,32 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         return ResultUtil.result(SysConf.SUCCESS, "创建管理员成功!!");
     }
 
+    /**
+     * @param adminVo
+     * @description:  修改管理员信息
+     * @author:       alex
+     * @return:       java.lang.String
+     */
     @Override
     public String editAdmin(AdminVo adminVo) {
-        return null;
+        QueryWrapper<Admin> query = new QueryWrapper<>();
+        query.eq(SQLConf.USERNAME, adminVo.getUsername());
+        query.eq(SQLConf.STATUS, EStatus.ENABLE.getCode());
+        List<Admin> adminList = adminService.list(query);
+        //判断用户名是否存在
+        if (adminList != null && (adminList.size() > 1 || !adminList.get(0).getId().equals(adminVo.getId()))) {
+            return ResultUtil.result(SysConf.ERROR, "修改失败，用户名已存在！");
+        }
+        Admin admin = adminService.getById(adminVo.getId());
+        if (!adminVo.getRoleId().equals(admin.getRoleId())) {
+            redisUtils.delete(RedisConf.ADMIN_VISIT_MENU + RedisConf.SEGMENTATION + admin.getId());
+        }
+        BeanUtils.copyProperties(adminVo, admin);
+        //不直接修改密码
+        admin.setPassword(null);
+        admin.updateById();
+        // TODO: 2021/9/10 判断是否调整网盘大小
+        return ResultUtil.result(SysConf.SUCCESS, "修改管理员成功!!");
     }
 
     @Override
@@ -234,23 +265,91 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         return null;
     }
 
+    /**
+     * @param oldPwd  旧密码
+     * @param newPwd  新密码
+     * @description:  修改密码
+     * @author:       alex
+     * @return:       java.lang.String
+     */
     @Override
     public String changePwd(String oldPwd, String newPwd) {
-        return null;
+        if (StringUtils.isEmpty(oldPwd) || StringUtils.isEmpty(newPwd)) {
+            return ResultUtil.result(SysConf.ERROR, "密码不能为空！");
+        }
+        String adminId = RequestHolder.getAdminId();
+        Admin admin = adminService.getById(adminId);
+        //判断密码
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        boolean judge = encoder.matches(oldPwd, admin.getPassword());
+        if (judge) {
+            return ResultUtil.result(SysConf.ERROR, "密码输入错误!");
+        }
+        admin.setPassword(encoder.encode(newPwd));
+        admin.updateById();
+        return ResultUtil.result(SysConf.SUCCESS, "修改密码成功!");
     }
 
+    /**
+     * @param adminVo
+     * @description:  重置密码
+     * @author:       alex
+     * @return:       java.lang.String
+     */
     @Override
     public String resetPwd(AdminVo adminVo) {
-        return null;
+        // TODO: 2021/9/13 获取初始密码
+        String defaultPassword = "1234@com";
+        String adminId = RequestHolder.getAdminId();
+        Admin admin = adminService.getById(adminId);
+        // TODO: 2021/9/13 上帝可以修改一切，超级管理员不可以修改上帝的密码
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        admin.setPassword(encoder.encode(defaultPassword));
+        admin.updateById();
+        return ResultUtil.result(SysConf.SUCCESS, "重置密码成功!");
     }
 
+    /**
+     * @param ids
+     * @description:  批量删除管理员
+     * @author:       alex
+     * @return:       java.lang.String
+     */
     @Override
-    public String deleteBatchAdmin(List<String> uids) {
-        return null;
+    public String deleteBatchAdmin(List<String> ids) {
+        boolean res = StringUtils.checkIdList(ids);
+        if (!res) {
+            return ResultUtil.result(SysConf.ERROR, "id为空!");
+        }
+        // TODO: 2021/9/13 上帝管理员不能被删除
+        List<Admin> adminList = ids.stream().map(id -> {
+            Admin admin = new Admin();
+            admin.setId(id);
+            admin.setStatus(EStatus.DISABLED.getCode());
+            return admin;
+        }).collect(Collectors.toList());
+        adminService.updateBatchById(adminList);
+        return ResultUtil.result(SysConf.SUCCESS, "批量删除成功!");
     }
 
+    /**
+     * @param tokenIdList
+     * @description:  强制登出
+     * @author:       alex
+     * @return:       java.lang.String
+    */
     @Override
-    public String forceLogout(List<String> tokenList) {
-        return null;
+    public String forceLogout(List<String> tokenIdList) {
+        if (tokenIdList == null || tokenIdList.size() == 0) {
+            return ResultUtil.result(SysConf.ERROR, "token不能为空！");
+        }
+        // TODO: 2021/9/13 上帝管理员不能被强制登出
+        String keyPrefix = RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION;
+        List<String> keyList = tokenIdList.stream().map(idToken -> {
+            String token = redisUtils.get(RedisConf.LOGIN_ID_KEY + RedisConf.SEGMENTATION + idToken);
+            return keyPrefix + (token == null ? "" : token);
+        }).collect(Collectors.toList());
+        redisUtils.delete(keyList);
+        return ResultUtil.result(SysConf.SUCCESS, "强制登出成功！");
     }
 }

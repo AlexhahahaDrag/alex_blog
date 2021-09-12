@@ -1,6 +1,6 @@
 package com.alex.blog.picture.service.impl;
 
-import com.alex.blog.common.exception.AlexException;
+import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.picture.service.MinIoService;
 import com.alex.blog.picture.utils.MinioUtils;
 import lombok.extern.slf4j.Slf4j;

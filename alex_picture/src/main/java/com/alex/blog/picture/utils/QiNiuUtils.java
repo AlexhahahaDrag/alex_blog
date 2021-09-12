@@ -1,6 +1,5 @@
 package com.alex.blog.picture.utils;
 
-import com.alex.blog.base.exception.exceptionType.QueryException;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.common.entity.admin.SystemConfig;

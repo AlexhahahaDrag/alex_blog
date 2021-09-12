@@ -9,7 +9,7 @@ import com.alex.blog.common.entity.file.File;
 import com.alex.blog.common.entity.file.FileSort;
 import com.alex.blog.common.enums.EFilePriority;
 import com.alex.blog.common.enums.EOpenStatus;
-import com.alex.blog.common.exception.AlexException;
+import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;

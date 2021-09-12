@@ -1,7 +1,10 @@
 package com.alex.blog.common.vo.admin;
 
 import com.alex.blog.base.vo.BaseVo;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -11,7 +14,10 @@ import java.util.Date;
  *createDate:   2021/7/11 19:50
  *version:      1.0.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminVo extends BaseVo<AdminVo> {
 
     //用户名
@@ -60,7 +66,7 @@ public class AdminVo extends BaseVo<AdminVo> {
     private String gitee;
 
     //角色id
-    private String roleUid;
+    private Integer roleId;
 
     //最大网盘容量
     private Long maxStorageSize;

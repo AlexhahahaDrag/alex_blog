@@ -16,12 +16,12 @@ import java.util.List;
 public interface AdminService extends SuperService<Admin> {
 
     /**
-     * @param uid
-     * @description:  通过uid获取admin信息
+     * @param id
+     * @description:  通过id获取admin信息
      * @author:       alex
      * @return:       com.alex.blog.common.entity.admin.Admin
      */
-    Admin getAdminByUid(String uid);
+    Admin getAdminById(String id);
 
     /**
      * @param adminVo
@@ -105,18 +105,18 @@ public interface AdminService extends SuperService<Admin> {
     String resetPwd(AdminVo adminVo);
 
     /**
-     * @param uids
+     * @param ids
      * @description:  批量删除管理员
      * @author:       alex
      * @return:       java.lang.String
      */
-    String deleteBatchAdmin(List<String> uids);
+    String deleteBatchAdmin(List<String> ids);
 
     /**
-     * @param tokenList
+     * @param tokenIdList
      * @description:  强制登出
      * @author:       alex
      * @return:       java.lang.String
     */
-    String forceLogout(List<String> tokenList);
+    String forceLogout(List<String> tokenIdList);
 }

@@ -1,6 +1,5 @@
 package com.alex.blog.xo.service.impl;
 
-import com.alex.blog.base.exception.exceptionType.QueryException;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.SystemConfig;

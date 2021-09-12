@@ -3,6 +3,7 @@ package com.alex.blog.utils.utils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -299,5 +300,15 @@ public class StringUtils {
             return null;
         }
         return Arrays.asList(str.split(code));
+    }
+
+    /**
+     * @param collection
+     * @description:  校验ids列表不为空
+     * @author:       alex
+     * @return:       boolean
+    */
+    public static boolean checkIdList(Collection<String> collection) {
+        return collection != null && collection.size() > 0;
     }
 }

@@ -13,10 +13,10 @@ import org.apache.ibatis.annotations.Param;
 public interface AdminMapper extends SuperMapper<Admin> {
 
     /**
-     * @param uid
+     * @param id
      * @description:  通过uid获取管理员信息
      * @author:       alex
      * @return:       com.alex.blog.common.entity.admin.Admin
     */
-    Admin getAdminByUid(@Param("uid") String uid);
+    Admin getAdminById(@Param("id") String id);
 }

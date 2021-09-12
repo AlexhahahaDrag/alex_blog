@@ -1,6 +1,6 @@
 package com.alex.blog.xo.service.impl;
 
-import com.alex.blog.base.exception.exceptionType.QueryException;
+import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
@@ -106,7 +106,8 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
         query.orderByDesc(SQLConf.UPDATE_TIME);
         WebConfig webConfig = webConfigService.getOne(query);
         if (webConfig == null) {
-            throw new QueryException("00101", MessageConf.SYSTEM_CONFIG_NOT_EXIST);
+            // TODO: 2021/9/13 添加错误码
+            throw new AlexException("00101", MessageConf.SYSTEM_CONFIG_NOT_EXIST);
         }
         StringBuffer sb = new StringBuffer();
         if (StringUtils.isNotEmpty(webConfig.getLogo())) {
@@ -219,7 +220,8 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
         query.orderByDesc(SysConf.UPDATE_TIME);
         WebConfig webConfig = webConfigService.getOne(query);
         if (webConfig == null) {
-            throw new QueryException("00101", MessageConf.SYSTEM_CONFIG_NOT_EXIST);
+            // TODO: 2021/9/13 添加错误码
+            throw new AlexException("00101", MessageConf.SYSTEM_CONFIG_NOT_EXIST);
         }
         String loginTypeListJson = webConfig.getLoginTypeList();
         //

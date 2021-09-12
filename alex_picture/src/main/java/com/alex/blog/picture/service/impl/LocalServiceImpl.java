@@ -2,7 +2,7 @@ package com.alex.blog.picture.service.impl;
 
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.common.entity.file.FileSort;
-import com.alex.blog.common.exception.AlexException;
+import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.picture.service.FileSortService;
 import com.alex.blog.picture.service.LocalService;
 import com.alex.blog.utils.utils.DateUtils;

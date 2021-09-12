@@ -26,6 +26,7 @@ public final class SysConf extends BaseSysConf {
     public static final String EXPANDED_NAME = "expandedName";
     public static final String FILE_OLD_NAME = "fileOldName";
     public static final String SOURCE = "source";
+    public static final String MESSAGE = "message";
 
 
     public static final String LIMIT_ONE = "limit 1";

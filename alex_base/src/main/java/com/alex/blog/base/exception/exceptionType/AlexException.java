@@ -1,4 +1,4 @@
-package com.alex.blog.common.exception;
+package com.alex.blog.base.exception.exceptionType;
 
 /**
  * 自定义异常

@@ -1,5 +1,7 @@
 package com.alex.blog.base.holder;
 
+import com.alex.blog.base.exception.exceptionType.AlexException;
+import com.alex.blog.base.global.BaseMessageConf;
 import com.alex.blog.base.global.BaseSysConf;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -145,8 +147,8 @@ public class RequestHolder {
         String adminId = getAdminId();
         if (StringUtils.isEmpty(adminId)) {
             log.error("用户未登录");
-            // TODO: 2021/7/25 添加query异常
-//            throw new QueryException(ErrorCode.INVALID_TOKEN, BaseMessageConf.INVALID_TOKEN);
+            // TODO: 2021/9/13 添加错误码
+            throw new AlexException("00008", BaseMessageConf.INVALID_TOKEN);
         }
         return adminId;
     }

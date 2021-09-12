@@ -2,7 +2,7 @@ package com.alex.blog.picture.service.impl;
 
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.common.entity.admin.SystemConfig;
-import com.alex.blog.common.exception.AlexException;
+import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.picture.service.QiNiuService;
 import com.alex.blog.picture.utils.QiNiuUtils;
 import com.alex.blog.utils.utils.FeignUtils;

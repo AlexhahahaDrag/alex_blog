@@ -1,6 +1,7 @@
 package com.alex.blog.common.exception;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.base.global.Constants;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;

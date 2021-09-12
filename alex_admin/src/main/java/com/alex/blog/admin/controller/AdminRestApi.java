@@ -2,6 +2,7 @@ package com.alex.blog.admin.controller;
 
 import com.alex.blog.admin.annotion.OperationLogger;
 import com.alex.blog.base.validator.group.Insert;
+import com.alex.blog.common.exception.ThrowableUtils;
 import com.alex.blog.common.vo.admin.AdminVo;
 import com.alex.blog.xo.service.AdminService;
 import io.swagger.annotations.Api;
@@ -35,9 +36,8 @@ public class AdminRestApi {
     @ApiOperation(value = "新增管理员", notes = "新增管理员")
     @PostMapping("/add")
     public String add(@Validated({Insert.class}) @RequestBody AdminVo adminVo, BindingResult result) {
-//        public String add(@RequestBody AdminVo adminVo) {
         //参数校验
-//        ThrowableUtils.checkParamArgument(result);
+        ThrowableUtils.checkParamArgument(result);
         return adminService.addAdmin(adminVo);
     }
 

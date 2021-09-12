@@ -27,8 +27,8 @@
         lastLoginIp, status, createTime, updateTime
     </sql>
 
-    <select id="getAdminByUid" resultType="com.alex.blog.common.entity.admin.Admin">
-        select * from t_admin where uid = #{uid}
+    <select id="getAdminById" resultType="com.alex.blog.common.entity.admin.Admin">
+        select * from t_admin where id = #{id}
     </select>
 
 </mapper>
