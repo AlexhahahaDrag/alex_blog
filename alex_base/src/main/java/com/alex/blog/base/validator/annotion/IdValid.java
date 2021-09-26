@@ -24,7 +24,7 @@ public @interface IdValid {
 
     boolean required() default true;
 
-    String message() default Message.ID_LENGTH_THIRTY_TWO;
+    String message() default Message.CK_NOT_BLACK_DEFAULT;
 
     String vlaue() default "";
 

@@ -19,7 +19,8 @@ import org.springframework.context.annotation.ComponentScan;
         "com.alex.blog.xo",
         "com.alex.blog.admin",
         "com.alex.blog.utils.utils",
-        "com.alex.blog.common.config"
+        "com.alex.blog.common.config",
+        "com.alex.blog.base.config"
 })
 public class AdminMain {
 

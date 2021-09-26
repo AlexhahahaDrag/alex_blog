@@ -81,5 +81,9 @@ public final class SysConf extends BaseSysConf {
     public static final String MINIO_PICTURE_BASE_URL = "minioPictureBaseUrl";
     public static final String PICTURE_PRIORITY = "picturePriority";
     public static final String PICTURE_TOKEN = "pictureToken";
+
+    //日志相关
+    public static final String OPERATION = "operation";
+    public static final String SPEND_TIME = "spendTime";
 }
 

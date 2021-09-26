@@ -100,7 +100,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         role.updateById();
         //删除角色信息成功后，需要删除redis中所有的admin访问路径
         deleteAdminVisitUrl();
-        return null;
+        return ResultUtil.result(SysConf.SUCCESS, "删除角色成功！");
     }
 
     private void deleteAdminVisitUrl() {

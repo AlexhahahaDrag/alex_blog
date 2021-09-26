@@ -4,6 +4,7 @@ import com.alex.blog.base.validator.annotion.IdValid;
 import com.alex.blog.base.validator.group.Delete;
 import com.alex.blog.base.validator.group.Update;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *description:  vo父类
@@ -11,6 +12,7 @@ import lombok.Data;
  *createDate:   2021/7/11 20:24
  *version:      1.0.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class BaseVo<T> extends PageInfo<T> {
 

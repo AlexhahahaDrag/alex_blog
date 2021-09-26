@@ -6,6 +6,8 @@ import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.Admin;
+import com.alex.blog.common.entity.admin.Role;
+import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.admin.AdminVo;
@@ -13,6 +15,7 @@ import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.mapper.AdminMapper;
 import com.alex.blog.xo.service.AdminService;
+import com.alex.blog.xo.service.RoleService;
 import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -51,6 +54,9 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
     @Autowired
     private WebUtils webUtils;
 
+    @Autowired
+    private RoleService roleService;
+
     @Override
     public Admin getAdminById(String id) {
         return adminMapper.getAdminById(id);
@@ -61,9 +67,9 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
      * @description:  获取在线用户列表
      * @author:       alex
      * @return:       java.lang.String
-    */
+     */
     @Override
-    public String getOnLineAdminList(AdminVo adminVo) {
+    public String getOnlineAdminList(AdminVo adminVo) {
         //获取redis中匹配的所有key
         Set<String> keys = redisUtils.keys(RedisConf.LOGIN_TOKEN_KEY + "*");
         List<String> onlineAdminJsonList = redisUtils.muliGet(keys);
@@ -190,6 +196,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         Map<String, String> pictureMap = new HashMap<>(Constants.NUM_TEN);
         //获取图片信息
         String pictureResult = null;
+        // TODO: 2021/9/17  
 //        if (fileIds.length() > 0) {
 //            pictureResult = pictureFeignClient.getPicture(fileIds.toString());
 //        }
@@ -213,7 +220,8 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         if (StringUtils.isEmpty(email) && StringUtils.isEmpty(mobile)) {
             return ResultUtil.result(SysConf.ERROR, "邮箱和手机号至少有一项不能为空!");
         }
-        // TODO: 2021/9/5 默认配置信息 mogu2018
+        // TODO: 2021/9/17 添加手机号和邮箱验证
+        // TODO: 2021/9/5 默认配置信息
         String defaultPassword = "1234@com";
         QueryWrapper<Admin> query = new QueryWrapper<>();
         query.eq(SysConf.USERNAME, username);
@@ -249,7 +257,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
             return ResultUtil.result(SysConf.ERROR, "修改失败，用户名已存在！");
         }
         Admin admin = adminService.getById(adminVo.getId());
-        if (!adminVo.getRoleId().equals(admin.getRoleId())) {
+        if (adminVo.getRoleId() != null && !adminVo.getRoleId().equals(admin.getRoleId())) {
             redisUtils.delete(RedisConf.ADMIN_VISIT_MENU + RedisConf.SEGMENTATION + admin.getId());
         }
         BeanUtils.copyProperties(adminVo, admin);
@@ -260,9 +268,23 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         return ResultUtil.result(SysConf.SUCCESS, "修改管理员成功!!");
     }
 
+    /**
+     * @param adminVo
+     * @description:  修改自己
+     * @author:       alex
+     * @return:       java.lang.String
+     */
     @Override
     public String editMe(AdminVo adminVo) {
-        return null;
+        String adminId = RequestHolder.getAdminId();
+        if (StringUtils.isEmpty(adminId)) {
+            return ResultUtil.result(SysConf.ERROR, MessageConf.INVALID_TOKEN);
+        }
+        Admin admin = new Admin();
+        BeanUtils.copyProperties(adminVo, admin, SysConf.STATUS);
+        admin.setPassword(null);
+        admin.updateById();
+        return ResultUtil.result(SysConf.SUCCESS, "修改自己成功!");
     }
 
     /**
@@ -282,7 +304,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         //判断密码
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         boolean judge = encoder.matches(oldPwd, admin.getPassword());
-        if (judge) {
+        if (!judge) {
             return ResultUtil.result(SysConf.ERROR, "密码输入错误!");
         }
         admin.setPassword(encoder.encode(newPwd));
@@ -337,7 +359,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
      * @description:  强制登出
      * @author:       alex
      * @return:       java.lang.String
-    */
+     */
     @Override
     public String forceLogout(List<String> tokenIdList) {
         if (tokenIdList == null || tokenIdList.size() == 0) {
@@ -351,5 +373,50 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         }).collect(Collectors.toList());
         redisUtils.delete(keyList);
         return ResultUtil.result(SysConf.SUCCESS, "强制登出成功！");
+    }
+
+    /**
+     * @param token
+     * @description:  根据token获取信息
+     * @author:       alex
+     * @return:       java.lang.String
+     */
+    @Override
+    public String info(String token) {
+        String adminId = RequestHolder.getAdminId();
+        if (StringUtils.isEmpty(adminId)) {
+            // TODO: 2021/9/22 修改提示信息 
+            return ResultUtil.result(SysConf.ERROR, "token用户过期!");
+        }
+        Map<String, Object> map = new HashMap<>(Constants.NUM_THREE);
+        map.put(SysConf.TOKEN, token);
+        Admin admin = adminService.getById(adminId);
+        //获取头像
+        // TODO: 2021/9/22 获取头像图片数据
+        if(StringUtils.isNotEmpty(admin.getAvatar())) {
+
+        }
+        Role role = roleService.getById(admin.getRoleId());
+        map.put(SysConf.ROLES, new ArrayList<>().add(role));
+        return ResultUtil.result(SysConf.SUCCESS, map);
+    }
+
+    @Override
+    public String getMenu() {
+        String adminId = RequestHolder.getAdminId();
+        if(StringUtils.isEmpty(adminId)) {
+            return ResultUtil.result(SysConf.ERROR, "用户已过期!");
+        }
+        Admin admin = adminService.getById(adminId);
+        List<String> roleIdList = new ArrayList<>();
+        roleIdList.add(admin.getRoleId());
+        List<Role> roleList = roleService.listByIds(roleIdList);
+        // TODO: 2021/9/25 添加菜单
+        List<String> menuIdList = new ArrayList<>();
+        roleList.forEach(role -> {
+            String[] menuIds = role.getCategoryMenuIds().split(",");
+            menuIdList.addAll(Arrays.asList(menuIds));
+        });
+        return null;
     }
 }

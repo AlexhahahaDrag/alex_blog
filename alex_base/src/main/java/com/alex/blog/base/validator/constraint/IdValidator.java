@@ -20,10 +20,7 @@ public class IdValidator implements ConstraintValidator<IdValid, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        if (value == null || StrUtil.isBlank(value) || StrUtil.isEmptyIfStr(value)) {
-            return false;
-        }
-        return false;
+        return value != null && !StrUtil.isBlank(value) && !StrUtil.isEmptyIfStr(value);
     }
 
     @Override

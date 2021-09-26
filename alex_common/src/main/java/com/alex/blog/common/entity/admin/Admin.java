@@ -3,11 +3,9 @@ package com.alex.blog.common.entity.admin;
 import com.alex.blog.base.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,8 +47,6 @@ public class Admin extends BaseEntity {
 
     @ApiModelProperty(value = "birthday", name="出生年月日")
     @TableField(value = "birthday")
-    @DateTimeFormat(pattern = "yyyymmdd hh24:mi:ss")
-    @JsonFormat(pattern = "yyyymmdd hh24:mi:ss")
     private LocalDateTime birthday;
 
     @ApiModelProperty(value = "mobile", name="手机")
@@ -68,8 +64,6 @@ public class Admin extends BaseEntity {
 
     @ApiModelProperty(value = "lastLoginTime", name="最后登录时间")
     @TableField(value = "last_login_time")
-    @DateTimeFormat(pattern = "yyyymmdd hh24:mi:ss")
-    @JsonFormat(pattern = "yyyymmdd hh24:mi:ss")
     private LocalDateTime lastLoginTime;
 
     @ApiModelProperty(value = "lastLoginIp", name="最后登录IP")

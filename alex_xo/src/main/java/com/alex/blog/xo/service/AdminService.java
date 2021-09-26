@@ -29,7 +29,7 @@ public interface AdminService extends SuperService<Admin> {
      * @author:       alex
      * @return:       java.lang.String
      */
-    String getOnLineAdminList(AdminVo adminVo);
+    String getOnlineAdminList(AdminVo adminVo);
 
     /*
      * @param username 用户名
@@ -119,4 +119,19 @@ public interface AdminService extends SuperService<Admin> {
      * @return:       java.lang.String
     */
     String forceLogout(List<String> tokenIdList);
+
+    /**
+     * @param token
+     * @description:  根据token获取用户信息
+     * @author:       alex
+     * @return:       java.util.Map<java.lang.String,java.lang.Object>
+    */
+    String info(String token);
+
+    /**
+     * @description:  获取菜单
+     * @author:       alex
+     * @return:       java.lang.String
+    */
+    String getMenu();
 }

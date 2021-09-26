@@ -126,14 +126,14 @@ public class RequestHolder {
     public  static String  getAdminId() {
         HttpServletRequest request = getRequest();
         return (String) request.getAttribute(BaseSysConf.ADMIN_ID);
-    }
+}
 
     /*
      * @description:  获取token
      * @author:       alex
      * @return:       java.lang.String
     */
-    public static String getAdmindToken() {
+    public static String getAdminToken() {
         HttpServletRequest request = getRequest();
         return (String) request.getAttribute(BaseSysConf.TOKEN);
     }

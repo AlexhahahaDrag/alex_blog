@@ -1,5 +1,6 @@
 package com.alex.blog.xo.service.impl;
 
+import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.SystemConfig;
@@ -54,13 +55,13 @@ public class SystemConfigServiceImpl extends SuperServiceImpl<SystemConfigMapper
             query.last(SysConf.LIMIT_ONE);
             systemConfig = systemConfigService.getOne(query);
             if (systemConfig == null) {
-                throw new QueryException(MessageConf.SYSTEM_CONFIG_NOT_EXIST);
+                throw new AlexException(MessageConf.SYSTEM_CONFIG_NOT_EXIST);
             }
             redisUtils.setEx(RedisConf.SYSTEM_CONFIG, JsonUtils.objectToJson(systemConfig), 24, TimeUnit.HOURS);;
         } else {
             systemConfig = JsonUtils.jsonToPojo(systemConfigJson, SystemConfig.class);
             if (systemConfig == null) {
-                throw new QueryException("00100", "系统配置转换错误，请检查系统配置，或者清空Redis后重试！");
+                throw new AlexException("00100", "系统配置转换错误，请检查系统配置，或者清空Redis后重试！");
             }
         }
         return systemConfig;

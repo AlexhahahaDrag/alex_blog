@@ -66,7 +66,7 @@ public class AdminVo extends BaseVo<AdminVo> {
     private String gitee;
 
     //角色id
-    private Integer roleId;
+    private String roleId;
 
     //最大网盘容量
     private Long maxStorageSize;

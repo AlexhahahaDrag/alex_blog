@@ -1,19 +1,14 @@
 package com.alex.blog.common.handler;
 
 import org.apache.shiro.authz.UnauthorizedException;
-import org.omg.CORBA.SystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.List;
 
 
 /**
@@ -85,7 +80,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = UnauthorizedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public void handleUnauthorizedException(Exception e) {
-        log.error("权限不足，{}", e.getMessage());
+        log.error("权限不足test GlobalExceptionHandler，{}", e.getMessage());
     }
 
 }

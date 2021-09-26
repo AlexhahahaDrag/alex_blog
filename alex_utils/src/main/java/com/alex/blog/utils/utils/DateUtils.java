@@ -324,6 +324,18 @@ public class DateUtils {
     }
 
     /**
+     * @param date1  小时间
+     * @param date2  大时间
+     * @description:  获取两个时间相差的秒数
+     * @author:       alex
+     * @return:       long
+     */
+    public static long diffSecondByTwoDays(LocalDateTime date1, LocalDateTime date2) {
+        Duration diffTime = Duration.between(date1, date2);
+        return diffTime.toMillis() / 1000;
+    }
+
+    /**
      * @param oneDay  时间字符串
      * @param pattern 时间格式
      * @description:  获取某一时间是周几

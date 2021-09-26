@@ -9,10 +9,10 @@ import com.alex.blog.common.config.jwt.JwtTokenUtil;
 import com.alex.blog.common.entity.admin.Admin;
 import com.alex.blog.common.entity.admin.Role;
 import com.alex.blog.common.global.MessageConf;
+import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
-import com.alex.blog.common.global.SQLConf;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;
@@ -70,7 +70,7 @@ public class LoginService {
             return ResultUtil.resultWithMessage(SysConf.ERROR, "账号或密码为空");
         }
         String ip = IpUtils.getIpAddr(request);
-        String limitCount = RedisUtils.get(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip);
+        String limitCount = RedisUtils.get(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip + RedisConf.SEGMENTATION + username);
         if(StringUtils.isNotEmpty(limitCount) && Integer.parseInt(limitCount) >= Constants.NUM_FIVE) {
             return ResultUtil.result(SysConf.ERROR, "密码输错次数过多，已被锁定30分钟");
         }
@@ -89,14 +89,14 @@ public class LoginService {
         Admin admin = adminService.getOne(query);
         if (admin == null) {
             //设置错误登录次数
-            return ResultUtil.result(SysConf.ERROR, String.format(MessageConf.LOGIN_ERROR, setLoginCommit(request)));
+            return ResultUtil.result(SysConf.ERROR, String.format(MessageConf.LOGIN_ERROR, setLoginCommit(request, username)));
         }
         //对密码进行加盐加密验证，采用SHA-256 + 随机盐【动态加盐】 + 密钥对密码进行加密
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         boolean isPassword = encoder.matches(password, admin.getPassword());
         if (!isPassword) {
             //密码错误，返回提示信息
-            return ResultUtil.result(SysConf.ERROR, String.format(MessageConf.LOGIN_ERROR, setLoginCommit(request)));
+            return ResultUtil.result(SysConf.ERROR, String.format(MessageConf.LOGIN_ERROR, setLoginCommit(request, username)));
         }
         //设置角色信息
         List<String> roleIds = new ArrayList<>();
@@ -158,7 +158,7 @@ public class LoginService {
     @ApiOperation(value = "退出登录", notes = "退出登录", response = String.class)
     @PostMapping(value = "logout")
     public String logout() {
-        String adminToken = RequestHolder.getAdmindToken();
+        String adminToken = RequestHolder.getAdminToken();
         if (StringUtils.isEmpty(adminToken)) {
             return ResultUtil.result(SysConf.ERROR, MessageConf.OPERATION_FAIL);
         } else {
@@ -178,22 +178,23 @@ public class LoginService {
 
     /**
      * @param request
+     * @param username 登录名称
      * @description:  设置登录限制，返回剩余次数
      * @author:       alex
      * @return:       java.lang.Integer
     */
-    private Integer setLoginCommit(HttpServletRequest request) {
+    private Integer setLoginCommit(HttpServletRequest request, String username) {
         String ip = IpUtils.getIpAddr(request);
-        String count = RedisUtils.get(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip);
+        String loginCountKey = RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip + RedisConf.SEGMENTATION + username;
+        String count = RedisUtils.get(loginCountKey);
         int surplusCount = Constants.NUM_FIVE;
         if (StringUtils.isNotEmpty(count)) {
             int curCount = Integer.parseInt(count) + 1;
             surplusCount -= curCount;
-            RedisUtils.setEx(RedisConf.LOGIN_LIMIT +
-                    RedisConf.SEGMENTATION + ip, String.valueOf(curCount), 10, TimeUnit.MINUTES);
+            RedisUtils.setEx(loginCountKey, String.valueOf(curCount), 10, TimeUnit.MINUTES);
         } else {
             surplusCount -= 1;
-            RedisUtils.setEx(RedisConf.LOGIN_LIMIT + RedisConf.SEGMENTATION + ip, Constants.STR_ONE, 30, TimeUnit.MINUTES);
+            RedisUtils.setEx(loginCountKey, Constants.STR_ONE, 30, TimeUnit.MINUTES);
         }
         return surplusCount;
     }

@@ -26,6 +26,4 @@ public interface Message {
     String PAGE_NOT_NULL = "page can not be null";
 
     String SIEZ_NOT_NULL = "size can not be null";
-
-    String ID_LENGTH_THIRTY_TWO = "length must be 32";
 }

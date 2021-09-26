@@ -3,13 +3,11 @@ package com.alex.blog.base.entity;
 import com.alex.blog.base.enums.EStatus;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -34,8 +32,6 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      private Long creator;
 
      @ApiModelProperty(value = "create_time", name = "创建时间")
-     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
      @TableField(value = "create_time", fill = FieldFill.INSERT)
      private LocalDateTime createTime;
 
@@ -44,8 +40,6 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      private Long updater;
 
      @ApiModelProperty(value = "update_time", name = "更新时间")
-     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
      @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
      private LocalDateTime updateTime;
 
@@ -54,8 +48,6 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      private Long deleter;
 
      @ApiModelProperty(value = "delete_time", name = "删除时间")
-     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
      @TableField(value = "delete_time", fill = FieldFill.INSERT)
      private LocalDateTime deleteTime;
 

@@ -12,6 +12,6 @@ spring:
         - id: alex_user
           uri: lb://alex_user
           predicates:
-            - Path=/admin/auth/**
+            - Path=/adminInfo/auth/**
           filters:
-            - RewritePath=/admin/(?<segment>.*),/$\{segment}
+            - RewritePath=/adminInfo/(?<segment>.*),/$\{segment}

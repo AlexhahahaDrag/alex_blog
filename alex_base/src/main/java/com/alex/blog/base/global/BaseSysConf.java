@@ -34,7 +34,7 @@ public class BaseSysConf {
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
     public final static String CREATE_TIME = "createTime";
-    public final static String UPDATE_TIME = "updateTime";
+    public final static String UPDATE_TIME = "update_time";
     public final static String TOKEN = "token";
     public final static String PLATFORM = "platform";
     public final static String ACCESS_TOKEN = "accessToken";
@@ -43,4 +43,5 @@ public class BaseSysConf {
 
     //文件分割符
     public static final String FILE_SEGMENTATION = ",";
+    public static final String STATUS = "status";
 }

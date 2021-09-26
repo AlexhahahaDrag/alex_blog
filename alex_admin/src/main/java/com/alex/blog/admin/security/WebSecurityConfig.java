@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -26,21 +28,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    @Autowired
-//    private JwtAuthenticationEntryPoint unauthorizedHandler;
-//
-//    @Autowired
-//    private UserDetailsService userDetailsService;
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-//        authenticationManagerBuilder
-//                // 设置UserDetailsService
-//                .userDetailsService(this.userDetailsService)
-//                // 使用BCrypt进行密码的hash
-//                .passwordEncoder(passwordEncoder());
-//        //remember me
-//        authenticationManagerBuilder.eraseCredentials(false);
+        authenticationManagerBuilder
+                // 设置UserDetailsService
+                .userDetailsService(this.userDetailsService)
+                // 使用BCrypt进行密码的hash
+                .passwordEncoder(passwordEncoder());
+        //remember me
+        authenticationManagerBuilder.eraseCredentials(false);
     }
 
     /**
@@ -67,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(userDetailsService);
     }
 
     @Bean
@@ -92,9 +94,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
 //                .and()
                 // 基于token，所以不需要session
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                //.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 允许对于网站静态资源的无授权访问
                 .antMatchers(
                         "/swagger-ui.html",
@@ -108,7 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 ).permitAll()
                 // 对于获取token的RestApi要允许匿名访问
                 .antMatchers("/auth/**",
-                        "/admin/**",
+                        "/admin/add",
                         "/creatCode/**",
                         "/file/**"
                 ).permitAll()

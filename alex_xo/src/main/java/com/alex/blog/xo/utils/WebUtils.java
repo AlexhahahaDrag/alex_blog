@@ -1,6 +1,7 @@
 package com.alex.blog.xo.utils;
 
 import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.common.entity.admin.SystemConfig;
 import com.alex.blog.common.enums.EFilePriority;
@@ -124,7 +125,7 @@ public class WebUtils {
             systemConfig = systemConfigService.getOne(query);
             if (systemConfig == null) {
                 // TODO: 2021/8/2 添加queryException
-                throw new QueryException(MessageConf.SYSTEM_CONFIG_IS_NOT_EXIST);
+                throw new AlexException(MessageConf.SYSTEM_CONFIG_IS_NOT_EXIST);
             } else {
                 //将系统配置存入redis中，有效期24小时
                 redisUtils.setEx(RedisConf.SYSTEM_CONFIG, JsonUtils.objectToJson(systemConfig), 24, TimeUnit.HOURS);
@@ -134,7 +135,7 @@ public class WebUtils {
             systemConfig = JsonUtils.jsonToPojo(systemConfigJson, SystemConfig.class);
             if (systemConfig == null) {
                 // TODO: 2021/8/2 添加错误编码
-                throw new QueryException("系统配置转化错误");
+                throw new AlexException("系统配置转化错误");
             }
         }
         map.putAll((Map<String, Object>) JsonUtils.jsonToObject(pictureList, Map.class));

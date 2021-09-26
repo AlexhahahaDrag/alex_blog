@@ -2,10 +2,7 @@ package com.alex.blog.common.config.jwt;
 
 import com.alex.blog.common.config.security.SecurityUser;
 import com.alex.blog.common.global.SysConf;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -120,6 +117,17 @@ public class JwtTokenUtil {
     */
     public String getUsername(String token, String base64Security) {
         return parseJwt(token, base64Security).getSubject();
+    }
+
+    /**
+     * 从token中获取过期时间
+     *
+     * @param token
+     * @param base64Security
+     * @return
+     */
+    public Date getExpiration(String token, String base64Security) {
+        return parseJwt(token, base64Security).getExpiration();
     }
 
     /**
