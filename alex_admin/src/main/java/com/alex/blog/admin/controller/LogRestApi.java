@@ -4,8 +4,10 @@ import com.alex.blog.admin.annotion.AuthorityVerify;
 import com.alex.blog.admin.global.SysConf;
 import com.alex.blog.base.validator.group.GetList;
 import com.alex.blog.common.exception.ThrowableUtils;
+import com.alex.blog.common.vo.log.ExceptionLogVo;
 import com.alex.blog.common.vo.log.SysLogVo;
 import com.alex.blog.utils.utils.ResultUtil;
+import com.alex.blog.xo.service.ExceptionLogService;
 import com.alex.blog.xo.service.SysLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,13 +35,22 @@ public class LogRestApi {
     @Autowired
     private SysLogService sysLogService;
 
+    @Autowired
+    private ExceptionLogService exceptionLogService;
+
     @AuthorityVerify
     @ApiOperation(value = "获取操作日志列表", notes = "获取操作日志列表", response = String.class)
     @PostMapping(value = "/getLogList")
-    public String getLogList(@Validated({GetList.class}) @RequestBody SysLogVo sysLogVo, BindingResult resut) {
-        ThrowableUtils.checkParamArgument(resut);
+    public String getLogList(@Validated({GetList.class}) @RequestBody SysLogVo sysLogVo, BindingResult result) {
+        ThrowableUtils.checkParamArgument(result);
         return ResultUtil.result(SysConf.SUCCESS, sysLogService.getPageList(sysLogVo));
     }
 
-
+    @AuthorityVerify
+    @ApiOperation(value = "获取系统异常列表", notes = "获取系统异常列表", response = String.class)
+    @PostMapping(value = "getExceptionLogList")
+    public String getExceptionLogList(@Validated({GetList.class}) @RequestBody ExceptionLogVo exceptionLogVo, BindingResult result) {
+        ThrowableUtils.checkParamArgument(result);
+        return ResultUtil.result(SysConf.SUCCESS, exceptionLogService.getPageList(exceptionLogVo));
+    }
 }

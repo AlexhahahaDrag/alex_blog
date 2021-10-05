@@ -85,5 +85,6 @@ public final class SysConf extends BaseSysConf {
     //日志相关
     public static final String OPERATION = "operation";
     public static final String SPEND_TIME = "spendTime";
+    public static final String CONTENT = "content";
 }
 
