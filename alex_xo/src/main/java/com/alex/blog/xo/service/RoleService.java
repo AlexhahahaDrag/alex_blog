@@ -38,10 +38,10 @@ public interface RoleService extends SuperService<Role> {
     String editRole(RoleVo roleVo);
 
     /**
-     * @param roleVo
+     * @param id
      * @description:  删除角色
      * @author:       alex
      * @return:       java.lang.String
     */
-    String deleteRole(RoleVo roleVo);
+    String deleteRole(Integer id);
 }

@@ -60,14 +60,16 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         String roleName = roleVo.getRoleName();
         QueryWrapper<Role> query = new QueryWrapper<>();
         query.eq(SQLConf.ROLENAME, roleName);
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode());
+        query.eq("is_delete", 0);
         Role one = roleService.getOne(query);
         if (one == null) {
             Role role = new Role();
-            BeanUtils.copyProperties(role, roleVo);
+            BeanUtils.copyProperties(roleVo, role);
             role.insert();
             return ResultUtil.result(SysConf.SUCCESS, MessageConf.INSERT_SUCCESS);
         }
-        return ResultUtil.result(SysConf.ERROR, MessageConf.ENTITY_EXIST);
+        return ResultUtil.result(SysConf.ERROR, "角色名称已存在！");
     }
 
     @Override
@@ -75,6 +77,19 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         Role one = roleService.getById(roleVo.getId());
         if (one == null) {
             return ResultUtil.result(SysConf.ERROR, MessageConf.PARAM_INCORRECT);
+        }
+        //判断角色名称是否存在
+        if (StringUtils.isNotBlank(roleVo.getRoleName())) {
+            String roleName = roleVo.getRoleName();
+            QueryWrapper<Role> query = new QueryWrapper<>();
+            query.eq(SQLConf.ROLENAME, roleName);
+            query.eq(SysConf.STATUS, EStatus.ENABLE.getCode());
+            query.eq("is_delete", 0);
+            Role roleInfo = roleService.getOne(query);
+            if (roleInfo != null && !roleInfo.getId().equals(roleVo.getId())) {
+                return ResultUtil.result(SysConf.ERROR, "角色名称已存在！");
+            }
+
         }
         one.setRoleName(roleVo.getRoleName());
         one.setCategoryMenuIds(roleVo.getCategoryMenuIds());
@@ -86,16 +101,16 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     }
 
     @Override
-    public String deleteRole(RoleVo roleVo) {
+    public String deleteRole(Integer id) {
         //判断该角色下是否绑定管理员
         QueryWrapper<Admin> query = new QueryWrapper<>();
         query.eq(SQLConf.STATUS, EStatus.ENABLE.getCode());
-        query.in(SQLConf.ROLEID, roleVo.getId());
+        query.in(SQLConf.ROLEID, id);
         int count = adminService.count(query);
         if (count > 0) {
             return ResultUtil.result(SysConf.ERROR, MessageConf.ADMIN_UNDER_THIS_ROLE);
         }
-        Role role = roleService.getById(roleVo.getId());
+        Role role = roleService.getById(id);
         role.setStatus(EStatus.DISABLED.getCode());
         role.updateById();
         //删除角色信息成功后，需要删除redis中所有的admin访问路径

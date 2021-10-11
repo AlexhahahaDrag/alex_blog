@@ -44,20 +44,20 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      private LocalDateTime updateTime;
 
      @ApiModelProperty(value = "deleter", name = "删除人")
-     @TableField(value = "deleter", fill = FieldFill.INSERT_UPDATE)
+     @TableField(value = "deleter")
      private Long deleter;
 
      @ApiModelProperty(value = "delete_time", name = "删除时间")
-     @TableField(value = "delete_time", fill = FieldFill.INSERT)
+     @TableField(value = "delete_time")
      private LocalDateTime deleteTime;
 
      @TableLogic
      @ApiModelProperty(value = "is_delete", name = "是否删除(0:否1：是)")
-     @TableField(value = "is_delete", fill = FieldFill.INSERT_UPDATE)
+     @TableField(value = "is_delete", fill = FieldFill.INSERT)
      private Integer isDelete;
 
      @ApiModelProperty(value = "status", name="状态", example = "0：失效  1：生效")
-     @TableField(value = "status")
+     @TableField(value = "status", fill = FieldFill.INSERT)
      private Integer status;
 
      public BaseEntity() {

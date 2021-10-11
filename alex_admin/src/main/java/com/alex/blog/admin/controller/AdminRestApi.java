@@ -1,6 +1,7 @@
 package com.alex.blog.admin.controller;
 
 import com.alex.blog.admin.annotion.AuthorityVerify;
+import com.alex.blog.admin.annotion.AvoidRepeatableCommit;
 import com.alex.blog.admin.annotion.OperationLogger;
 import com.alex.blog.base.validator.group.GetList;
 import com.alex.blog.base.validator.group.Insert;
@@ -36,6 +37,7 @@ public class AdminRestApi {
     @Autowired
     private AdminService adminService;
 
+    @AvoidRepeatableCommit
     @AuthorityVerify
     @OperationLogger(value = "新增管理员")
     @ApiOperation(value = "新增管理员", notes = "新增管理员")

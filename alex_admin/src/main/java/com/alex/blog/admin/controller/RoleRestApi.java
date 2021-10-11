@@ -4,7 +4,6 @@ import com.alex.blog.admin.annotion.AuthorityVerify;
 import com.alex.blog.admin.annotion.AvoidRepeatableCommit;
 import com.alex.blog.admin.annotion.OperationLogger;
 import com.alex.blog.admin.global.SysConf;
-import com.alex.blog.base.validator.group.Delete;
 import com.alex.blog.base.validator.group.GetList;
 import com.alex.blog.base.validator.group.Insert;
 import com.alex.blog.base.validator.group.Update;
@@ -69,10 +68,8 @@ public class RoleRestApi {
     @AuthorityVerify
     @ApiOperation(value = "删除角色信息", notes = "删除角色信息")
     @OperationLogger(value = "删除角色信息")
-    @PostMapping(value = "/delete")
-    public String delete(@Validated({Delete.class}) @RequestBody RoleVo roleVo, BindingResult result) {
-        //参数校验
-        ThrowableUtils.checkParamArgument(result);
-        return roleService.deleteRole(roleVo);
+    @DeleteMapping(value = "/delete")
+    public String delete(@RequestParam(value = "id") Integer id) {
+        return roleService.deleteRole(id);
     }
 }

@@ -1,5 +1,6 @@
 package com.alex.blog.admin.config;
 
+import com.alex.blog.base.enums.EStatus;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -20,15 +21,16 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         log.info("start insert fill ....");
-        this.strictInsertFill(metaObject, "createDate", LocalDateTime.class, LocalDateTime.now());
-        this.strictInsertFill(metaObject, "updateDate", LocalDateTime.class, LocalDateTime.now());
-        this.strictInsertFill(metaObject, "isDelete", Integer.class, 0);
+        this.fillStrategy(metaObject, "status", EStatus.ENABLE.getCode());
+        this.fillStrategy(metaObject, "isDelete", 0);
+        this.fillStrategy(metaObject, "createDate", LocalDateTime.now());
+        this.fillStrategy(metaObject, "updateDate",  LocalDateTime.now());
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         log.info("start update fill ....");
-        this.strictInsertFill(metaObject, "updateDate", LocalDateTime.class, LocalDateTime.now());
-        this.strictInsertFill(metaObject, "isDelete", Integer.class, 0);
+        this.fillStrategy(metaObject, "updateDate",  LocalDateTime.now());
+        this.fillStrategy(metaObject, "isDelete",  0);
     }
 }
