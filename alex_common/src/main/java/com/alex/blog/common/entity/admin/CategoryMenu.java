@@ -32,6 +32,7 @@ public class CategoryMenu extends BaseEntity<CategoryMenu> implements Comparable
     @TableField(value = "name")
     private String name;
 
+    //目前只有一级和二级菜单
     @ApiModelProperty(value = "menuLevel", example = "一级分类", name = "菜单级别")
     @TableField(value = "menu_level")
     private Integer menuLevel;
@@ -50,7 +51,7 @@ public class CategoryMenu extends BaseEntity<CategoryMenu> implements Comparable
 
     @ApiModelProperty(value = "pid", example = "3", name = "父级id")
     @TableField(value = "pid")
-    private Integer pid;
+    private Long pid;
 
     @ApiModelProperty(value = "url", example = "ww.baidu.com", name = "地址")
     @TableField(value = "url")

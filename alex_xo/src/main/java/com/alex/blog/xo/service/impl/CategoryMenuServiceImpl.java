@@ -1,14 +1,24 @@
 package com.alex.blog.xo.service.impl;
 
+import com.alex.blog.base.entity.BaseEntity;
+import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.CategoryMenu;
+import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.admin.CategoryMenuVo;
+import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.mapper.CategoryMenuMapper;
 import com.alex.blog.xo.service.CategoryMenuService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *description:  菜单服务实现类
@@ -19,6 +29,8 @@ import java.util.Map;
 @Service
 public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper, CategoryMenu> implements CategoryMenuService {
 
+    @Autowired
+    private CategoryMenuService categoryMenuService;
     /**
      * @param categoryMenuVo
      * @description:    
@@ -27,7 +39,37 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
     */
     @Override
     public Map<String, Object> getPageList(CategoryMenuVo categoryMenuVo) {
-        return null;
+        Map<String, Object> resultMap = new HashMap<>();
+        QueryWrapper<CategoryMenu> query = new QueryWrapper<>();
+        if (StringUtils.isNotEmpty(categoryMenuVo.getKeyword()) && StringUtils.isNotEmpty(categoryMenuVo.getKeyword().trim())) {
+            query.like(SysConf.NAME, categoryMenuVo.getKeyword().trim());
+        }
+        if (categoryMenuVo.getMenuLevel() != 0) {
+            query.eq(SysConf.MENU_LEVEL, categoryMenuVo.getMenuLevel());
+        }
+        Page<CategoryMenu> page = new Page<>();
+        page.setSize(categoryMenuVo.getPageSize() == null ? Constants.NUM_TEN : categoryMenuVo.getPageSize());
+        page.setCurrent(categoryMenuVo.getCurrentPage() == null ? 0 : categoryMenuVo.getCurrentPage());
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getValue());
+        query.orderByDesc(SysConf.SORT);
+        Page<CategoryMenu> pageList = categoryMenuService.page(page, query);
+        List<CategoryMenu> records = pageList.getRecords();
+        //获取父级id
+        List<Long> pIds = records.stream().filter(item -> item.getPid() != null).map(CategoryMenu::getPid).collect(Collectors.toList());
+        //如果父级id不为空，这查询父级id,并设置父级
+        if (pIds.size() > 0) {
+            List<CategoryMenu> pList = categoryMenuService.listByIds(pIds);
+            resultMap.put(SysConf.OTHER_DATA, pList);
+            Map<Long, CategoryMenu> map = pList.stream().collect(Collectors.toMap(BaseEntity::getId, CategoryMenu -> CategoryMenu));
+            records.forEach(item -> {
+                if (item.getPid() != 0) {
+                    item.setParentCategoryMenu(map.get(item.getPid()));
+                }
+            });
+            pageList.setRecords(records);
+        }
+        resultMap.put(SysConf.DATA, pageList);
+        return resultMap;
     }
 
     @Override

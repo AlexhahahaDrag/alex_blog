@@ -86,5 +86,11 @@ public final class SysConf extends BaseSysConf {
     public static final String OPERATION = "operation";
     public static final String SPEND_TIME = "spendTime";
     public static final String CONTENT = "content";
+
+    //t_category_menu
+    public static final String MENU_LEVEL = "menu_level";
+    public static final String MENU_TYPE = "menu_type";
+    public static final String P_ID = "p_id";
+    public static final String OTHER_DATA = "otherData";
 }
 

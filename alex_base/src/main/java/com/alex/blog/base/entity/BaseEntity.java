@@ -26,7 +26,7 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
 
      @ApiModelProperty(value = "id", name="id")
      @TableId(type = IdType.AUTO)
-     private String id;
+     private Long id;
 
      @ApiModelProperty(value = "creator", name = "创建人")
      @TableField(value = "creator", fill = FieldFill.INSERT)
