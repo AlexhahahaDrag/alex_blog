@@ -116,8 +116,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     String tokenUid = StringUtils.getUUID();
                     newOnlineAdmin.setTokenId(tokenUid);
                     newOnlineAdmin.setToken(newToken);
-                    newOnlineAdmin.setExpireTime(DateUtils.getTimeStr(DateUtils.addTime(LocalDateTime.now(), expiresSecond, ChronoUnit.SECONDS)));
-                    newOnlineAdmin.setLoginTime(DateUtils.getNowTimeStr());
+                    newOnlineAdmin.setExpireTime(DateUtils.addTime(LocalDateTime.now(), expiresSecond, ChronoUnit.SECONDS));
+                    newOnlineAdmin.setLoginTime(DateUtils.getNowDate());
                     // 移除原来的旧Token和TokenUid
                     redisUtils.delete(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + authHeader);
                     redisUtils.delete(RedisConf.LOGIN_ID_KEY + RedisConf.SEGMENTATION + oldTokenUid);

@@ -3,6 +3,7 @@ package com.alex.blog.base.entity;
 import com.alex.blog.base.enums.EStatus;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,8 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      private Long creator;
 
      @ApiModelProperty(value = "create_time", name = "创建时间")
-     @TableField(value = "create_time", fill = FieldFill.INSERT)
+     @TableField(value = "create_time", fill = FieldFill.INSERT, keepGlobalFormat=true)
+     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
      private LocalDateTime createTime;
 
      @ApiModelProperty(value = "updater", name = "修改人")
@@ -53,7 +55,9 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
 
      @TableLogic
      @ApiModelProperty(value = "is_delete", name = "是否删除(0:否1：是)")
-     @TableField(value = "is_delete", fill = FieldFill.INSERT)
+     // TODO: 2021/10/14 添加自动查询 
+//     @TableField(value = "is_delete", fill = FieldFill.INSERT, keepGlobalFormat=true, whereStrategy = new FieldStrategy())
+     @TableField(value = "is_delete", fill = FieldFill.INSERT, keepGlobalFormat=true)
      private Integer isDelete;
 
      @ApiModelProperty(value = "status", name="状态", example = "0：失效  1：生效")

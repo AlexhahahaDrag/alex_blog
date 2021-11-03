@@ -85,7 +85,7 @@ public class DateUtils {
      * @author:       alex
      * @return:       java.time.LocalDateTime
      */
-    public static LocalDateTime findNowDate() {
+    public static LocalDateTime getNowDate() {
         return LocalDateTime.now();
     }
 

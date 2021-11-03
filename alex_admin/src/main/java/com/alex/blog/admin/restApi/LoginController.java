@@ -1,4 +1,4 @@
-package com.alex.blog.admin.controller;
+package com.alex.blog.admin.restApi;
 
 import com.alex.blog.admin.global.SysConf;
 import com.alex.blog.base.global.RedisConf;

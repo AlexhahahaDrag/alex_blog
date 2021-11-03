@@ -2,6 +2,8 @@ package com.alex.blog.xo.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  *description:  当前在线管理员
  *author:       alex
@@ -39,8 +41,8 @@ public class OnlineAdmin {
     private String roleName;
 
     //登陆时间
-    private String loginTime;
+    private LocalDateTime loginTime;
 
     //过期时间
-    private String expireTime;
+    private LocalDateTime expireTime;
 }

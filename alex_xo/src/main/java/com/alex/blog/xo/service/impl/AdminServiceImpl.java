@@ -150,10 +150,10 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
             onlineAdmin.setOs(os);
             onlineAdmin.setBrowser(browser);
             onlineAdmin.setIpAddr(ip);
-            onlineAdmin.setLoginTime(DateUtils.getNowTimeStr());
+            onlineAdmin.setLoginTime(DateUtils.getNowDate());
             //onlineAdmin.setRoleName(admin.getRole().getRoleName());
             onlineAdmin.setUsername(admin.getUsername());
-            onlineAdmin.setExpireTime(DateUtils.getTimeStr(DateUtils.addTime(LocalDateTime.now(), expirationSecond, ChronoUnit.MILLIS)));
+            onlineAdmin.setExpireTime(DateUtils.addTime(LocalDateTime.now(), expirationSecond, ChronoUnit.MILLIS));
             //从redis中获取ip来源
             String jsonResult = redisUtils.get(RedisConf.IP_SOURCE + RedisConf.SEGMENTATION + ip);
             if (StringUtils.isEmpty(jsonResult)) {
