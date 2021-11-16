@@ -305,7 +305,7 @@ public class StringUtils {
      * @author:       alex
      * @return:       boolean
     */
-    public static boolean checkIdList(Collection<String> collection) {
+    public static boolean checkIdList(Collection<Long> collection) {
         return collection != null && collection.size() > 0;
     }
 }
