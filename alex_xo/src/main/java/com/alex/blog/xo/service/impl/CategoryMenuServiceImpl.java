@@ -72,8 +72,20 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
         return resultMap;
     }
 
+    /**
+     * @param id
+     * @description:  获取该菜单下所有菜单
+     * @author:       alex
+     * @return:       java.util.List<com.alex.blog.common.entity.admin.CategoryMenu>
+    */
     @Override
-    public List<CategoryMenu> getAllList(String keyword) {
+    public List<CategoryMenu> getAllList(Integer id) {
+        QueryWrapper<CategoryMenu> query = new QueryWrapper<>();
+        query.eq(SysConf.MENU_LEVEL, Constants.NUM_ONE);
+        if (id != null) {
+            query.eq(SysConf.ID, id);
+        }
+
         return null;
     }
 

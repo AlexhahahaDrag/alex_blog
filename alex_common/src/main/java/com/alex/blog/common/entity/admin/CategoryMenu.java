@@ -62,11 +62,11 @@ public class CategoryMenu extends BaseEntity<CategoryMenu> implements Comparable
     private Integer sort;
 
     @ApiModelProperty(value = "isShow", example = "1：是，0：否", name = "是否显示")
-    @TableField(value = "isShow")
+    @TableField(value = "is_show")
     private Integer isShow;
 
     @ApiModelProperty(value = "isJumpExternalUrl", example = "1：是，0：否", name = "是否跳转外部url")
-    @TableField(value = "isJumpExternalUrl")
+    @TableField(value = "is_jump_external_url")
     private Integer isJumpExternalUrl;
 
     @ApiModelProperty(value = "parentCategoryMenu", example = "", name = "父菜单")

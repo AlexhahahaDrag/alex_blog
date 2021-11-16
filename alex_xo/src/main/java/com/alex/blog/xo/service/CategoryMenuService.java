@@ -24,12 +24,12 @@ public interface CategoryMenuService extends SuperService<CategoryMenu> {
     Map<String, Object> getPageList(CategoryMenuVo categoryMenuVo);
 
     /**
-     * @param keyword
+     * @param id
      * @description:  根据关键字获取全部列表
      * @author:       alex
      * @return:       java.util.List<com.alex.blog.common.entity.admin.CategoryMenu>
     */
-    List<CategoryMenu> getAllList(String keyword);
+    List<CategoryMenu> getAllList(Integer id);
 
     /**
      * @param keyword

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alex.blog.xo.mapper.CategoryMenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.alex.blog.xo.generate.entity.CategoryMenu">
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleter" property="deleter" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="is_delete" property="isDelete" />
+        <result column="name" property="name" />
+        <result column="menu_level" property="menuLevel" />
+        <result column="summary" property="summary" />
+        <result column="pid" property="pid" />
+        <result column="url" property="url" />
+        <result column="icon" property="icon" />
+        <result column="sort" property="sort" />
+        <result column="status" property="status" />
+        <result column="creater" property="creater" />
+        <result column="is_show" property="isShow" />
+        <result column="menu_type" property="menuType" />
+        <result column="is_jump_external_url" property="isJumpExternalUrl" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        updater,
+        update_time,
+        deleter,
+        delete_time,
+        is_delete,
+        `name`, menu_level, summary, pid, url, icon, sort, `status`, creater, is_show, menu_type, is_jump_external_url
+    </sql>
+
+    <select id="findAllList" resultMap="BaseResultMap">
+        select <include refid="Base_Colun_List"></include> from alex_blog.t_category_menu where id = ${id}
+    </select>>
+</mapper>

@@ -27,7 +27,7 @@
     <properties>
         <alibaba.version>2.2.3.RELEASE</alibaba.version>
         <swagger.version>2.10.5</swagger.version>
-        <mybatisplus.version>3.4.0</mybatisplus.version>
+        <mybatisplus.version>3.4.3</mybatisplus.version>
         <druid.version>1.2.2</druid.version>
         <lombok.version>1.18.16</lombok.version>
         <alex_base.version>1.0-SNAPSHOT</alex_base.version>
