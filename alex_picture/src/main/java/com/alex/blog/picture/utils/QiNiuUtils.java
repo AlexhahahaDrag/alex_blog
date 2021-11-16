@@ -1,5 +1,6 @@
 package com.alex.blog.picture.utils;
 
+import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.common.entity.admin.SystemConfig;
@@ -238,7 +239,7 @@ public class QiNiuUtils {
 
         if (qiNiuResultMap == null) {
             log.error(MessageConf.PLEASE_SET_QI_NIU);
-            throw new QueryException("00107", MessageConf.PLEASE_SET_QI_NIU);
+            throw new AlexException("00107", MessageConf.PLEASE_SET_QI_NIU);
         }
 
         String uploadQiNiu = qiNiuResultMap.get(SysConf.UPLOAD_QI_NIU);
@@ -253,12 +254,12 @@ public class QiNiuUtils {
         if (EOpenStatus.OPEN.equals(uploadQiNiu) && (StringUtils.isEmpty(qiNiuPictureBaseUrl) || StringUtils.isEmpty(qiNiuAccessKey)
                 || StringUtils.isEmpty(qiNiuSecretKey) || StringUtils.isEmpty(qiNiuBucket) || StringUtils.isEmpty(qiNiuArea))) {
             log.error(MessageConf.PLEASE_SET_QI_NIU);
-            throw new QueryException("00107", MessageConf.PLEASE_SET_QI_NIU);
+            throw new AlexException("00107", MessageConf.PLEASE_SET_QI_NIU);
         }
 
         if (EOpenStatus.OPEN.equals(uploadLocal) && StringUtils.isEmpty(localPictureBaseUrl)) {
             log.error(MessageConf.PLEASE_SET_QI_NIU);
-            throw new QueryException("00107", MessageConf.PLEASE_SET_LOCAL);
+            throw new AlexException("00107", MessageConf.PLEASE_SET_LOCAL);
         }
         // 七牛云配置
         Map<String, String> qiNiuConfig = new HashMap<>();
