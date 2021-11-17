@@ -18,12 +18,11 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "t_admin", description = "管理员表")
 @TableName(value = "t_admin")
-public class Admin extends BaseEntity {
+public class Admin extends BaseEntity<Admin> {
 
     @ApiModelProperty(value = "userName", name="用户名")
     @TableField(value = "username")

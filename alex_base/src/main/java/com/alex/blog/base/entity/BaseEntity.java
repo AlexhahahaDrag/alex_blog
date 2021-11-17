@@ -56,8 +56,8 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      @TableLogic
      @ApiModelProperty(value = "is_delete", name = "是否删除(0:否1：是)")
      // TODO: 2021/10/14 添加自动查询
-//     @TableField(value = "is_delete", fill = FieldFill.INSERT, keepGlobalFormat=true, whereStrategy = new FieldStrategy()
-     @TableField(value = "is_delete", fill = FieldFill.INSERT, keepGlobalFormat=true)
+     @TableField(value = "is_delete", fill = FieldFill.INSERT, keepGlobalFormat = true, condition = "0")
+//     @TableField(value = "is_delete", fill = FieldFill.INSERT, keepGlobalFormat=true)
      private Integer isDelete;
 
      @ApiModelProperty(value = "status", name="状态", example = "0：失效  1：生效")

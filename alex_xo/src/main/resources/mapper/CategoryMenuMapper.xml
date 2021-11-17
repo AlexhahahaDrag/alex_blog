@@ -3,7 +3,7 @@
 <mapper namespace="com.alex.blog.xo.mapper.CategoryMenuMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.alex.blog.xo.generate.entity.CategoryMenu">
+    <resultMap id="CategoryResultMap" type="com.alex.blog.common.entity.admin.CategoryMenu">
         <result column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="updater" property="updater" />
@@ -19,14 +19,14 @@
         <result column="icon" property="icon" />
         <result column="sort" property="sort" />
         <result column="status" property="status" />
-        <result column="creater" property="creater" />
+        <result column="creator" property="creator" />
         <result column="is_show" property="isShow" />
         <result column="menu_type" property="menuType" />
         <result column="is_jump_external_url" property="isJumpExternalUrl" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
+    <sql id="category_Column_List">
         id,
         create_time,
         updater,
@@ -34,10 +34,10 @@
         deleter,
         delete_time,
         is_delete,
-        `name`, menu_level, summary, pid, url, icon, sort, `status`, creater, is_show, menu_type, is_jump_external_url
+        `name`, menu_level, summary, pid, url, icon, sort, `status`, creator, is_show, menu_type, is_jump_external_url
     </sql>
 
-    <select id="findAllList" resultMap="BaseResultMap">
-        select <include refid="Base_Colun_List"></include> from alex_blog.t_category_menu where id = ${id}
-    </select>>
+    <select id="findAllList" resultMap="CategoryResultMap">
+        select <include refid="category_Column_List"></include> from t_category_menu where id = ${id}
+    </select>
 </mapper>

@@ -21,7 +21,7 @@ public interface AdminService extends SuperService<Admin> {
      * @author:       alex
      * @return:       com.alex.blog.common.entity.admin.Admin
      */
-    Admin getAdminById(String id);
+    Admin getAdminById(Integer id);
 
     /**
      * @param adminVo

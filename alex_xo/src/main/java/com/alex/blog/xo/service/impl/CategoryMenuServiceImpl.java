@@ -5,8 +5,10 @@ import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.CategoryMenu;
+import com.alex.blog.common.enums.EMenuType;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.admin.CategoryMenuVo;
+import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.mapper.CategoryMenuMapper;
 import com.alex.blog.xo.service.CategoryMenuService;
@@ -106,11 +108,32 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
 
     @Override
     public String deleteCategoryMenu(CategoryMenuVo categoryMenuVo) {
+
         return null;
     }
 
+    /**
+     * @param categoryMenuVo
+     * @description:  置顶菜单
+     * @author:       alex
+     * @return:       java.lang.String
+    */
     @Override
     public String stickCategoryMenu(CategoryMenuVo categoryMenuVo) {
-        return null;
+        CategoryMenu categoryMenu = categoryMenuService.getById(categoryMenuVo.getId());
+        //查找出最大的那个菜单
+        QueryWrapper<CategoryMenu> query = new QueryWrapper<>();
+        //如果是二级菜单或者按钮，就在当前的兄弟中查找最大的一个
+        if (categoryMenu.getMenuLevel() == Constants.NUM_TWO || categoryMenu.getMenuType().equals(EMenuType.BUTTON.getCode())) {
+            query.eq(SysConf.PID, categoryMenu.getPid());
+        }
+        query.eq(SysConf.MENU_LEVEL, categoryMenu.getMenuLevel()).orderByDesc(SysConf.SORT).last(SysConf.LIMIT_ONE);
+        CategoryMenu maxMenu = categoryMenuService.getOne(query);
+        if (maxMenu.getId() == null) {
+            return ResultUtil.result(SysConf.ERROR, "操作失败!");
+        }
+        categoryMenu.setSort(maxMenu.getSort() + 1);
+        categoryMenu.updateById();
+        return ResultUtil.result(SysConf.SUCCESS, "操作成功！");
     }
 }

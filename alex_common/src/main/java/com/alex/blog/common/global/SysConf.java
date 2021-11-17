@@ -90,7 +90,7 @@ public final class SysConf extends BaseSysConf {
     //t_category_menu
     public static final String MENU_LEVEL = "menu_level";
     public static final String MENU_TYPE = "menu_type";
-    public static final String P_ID = "p_id";
+    public static final String PID = "pid";
     public static final String OTHER_DATA = "otherData";
 }
 
