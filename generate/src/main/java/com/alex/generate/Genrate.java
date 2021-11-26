@@ -35,7 +35,7 @@ public class Genrate {
         FastAutoGenerator.create(dataSourceConfig)
                 .globalConfig(builder -> {
                     builder.fileOverride()
-                            .outputDir("D:\\project\\alex_blog\\alex_xo\\src\\main\\java")
+                            .outputDir("F:\\alex\\alex_blog\\alex_xo\\src\\main\\java")
                             .author("alex")
 //                            .enableKotlin()
                             .enableSwagger()
@@ -52,11 +52,11 @@ public class Genrate {
                             .mapper("mapper")
                             .controller("controller")
                             .other("other")
-                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "D:\\project\\alex_blog\\alex_xo\\src\\main\\java\\com\\alex\\blog\\xo\\generate\\mapper\\mapper")
+                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "F:\\alex\\alex_blog\\alex_xo\\src\\main\\java\\com\\alex\\blog\\xo\\generate\\mapper\\mapper")
                             ); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_category_menu")
+                    builder.addInclude("t_tag")
                             .addTablePrefix("t_")
                             .entityBuilder()
                             .superClass(BaseEntity.class)

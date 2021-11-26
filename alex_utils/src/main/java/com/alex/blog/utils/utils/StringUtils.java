@@ -2,12 +2,10 @@ package com.alex.blog.utils.utils;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  *description:  对字符串的转换的一些操作
@@ -297,6 +295,21 @@ public class StringUtils {
             return null;
         }
         return Arrays.asList(str.split(code));
+    }
+
+    /**
+     * @param str
+     * @param code
+     * @description:  根据给定字符串切割字符串
+     * @author:       alex
+     * @return:       java.util.List<java.lang.String>
+     */
+    public static List<Long> splitLongByCode(String str, String code) {
+        if (str == null) {
+            return null;
+        }
+        List<String> res = splitStringByCode(str, code);
+        return res.stream().map(item -> Long.parseLong(item)).collect(Collectors.toList());
     }
 
     /**

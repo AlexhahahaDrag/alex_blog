@@ -10,7 +10,7 @@ import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.admin.CategoryMenuVo;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
-import com.alex.blog.xo.mapper.CategoryMenuMapper;
+import com.alex.blog.xo.mapper.admin.CategoryMenuMapper;
 import com.alex.blog.xo.service.CategoryMenuService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

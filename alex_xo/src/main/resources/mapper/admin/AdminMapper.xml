@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.alex.blog.xo.mapper.AdminMapper">
+<mapper namespace="com.alex.blog.xo.mapper.admin.AdminMapper">
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.alex.blog.common.entity.admin.Admin">
         <id column="id" property="id"/>
-        <result column="user_name" property="userName"/>
+        <result column="username" property="username"/>
         <result column="password" property="password"/>
         <result column="gender" property="gender"/>
         <result column="avatar" property="avatar"/>
@@ -23,7 +23,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_name, gender, avatar, email, birthday, mobile, valid_code, summary, login_count, last_login_time,
+        id, username, gender, avatar, email, birthday, mobile, valid_code, summary, login_count, last_login_time,
         last_login_ip, status, create_time, update_time
     </sql>
 

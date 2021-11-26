@@ -1,4 +1,4 @@
-package com.alex.blog.xo.service.impl;
+package com.alex.blog.xo.service.admin.impl;
 
 import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.RedisConf;
@@ -11,9 +11,9 @@ import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.common.global.SQLConf;
-import com.alex.blog.xo.mapper.RoleMapper;
-import com.alex.blog.xo.service.AdminService;
-import com.alex.blog.xo.service.RoleService;
+import com.alex.blog.xo.mapper.admin.RoleMapper;
+import com.alex.blog.xo.service.admin.AdminService;
+import com.alex.blog.xo.service.admin.RoleService;
 import com.alex.blog.common.vo.admin.RoleVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
