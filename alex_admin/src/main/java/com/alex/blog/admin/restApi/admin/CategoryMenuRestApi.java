@@ -1,4 +1,4 @@
-package com.alex.blog.admin.restApi;
+package com.alex.blog.admin.restApi.admin;
 
 import com.alex.blog.admin.annotion.AuthorityVerify;
 import com.alex.blog.admin.annotion.OperationLogger;

@@ -1,4 +1,4 @@
-package com.alex.blog.xo.service.impl;
+package com.alex.blog.xo.service.admin.impl;
 
 import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.Constants;
@@ -13,9 +13,9 @@ import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.admin.AdminVo;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
-import com.alex.blog.xo.mapper.AdminMapper;
-import com.alex.blog.xo.service.AdminService;
-import com.alex.blog.xo.service.RoleService;
+import com.alex.blog.xo.mapper.admin.AdminMapper;
+import com.alex.blog.xo.service.admin.AdminService;
+import com.alex.blog.xo.service.admin.RoleService;
 import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

@@ -1,4 +1,4 @@
-package com.alex.blog.admin.restApi;
+package com.alex.blog.admin.restApi.admin;
 
 import com.alex.blog.admin.annotion.AuthorityVerify;
 import com.alex.blog.admin.annotion.AvoidRepeatableCommit;
@@ -10,7 +10,7 @@ import com.alex.blog.common.exception.ThrowableUtils;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.admin.AdminVo;
 import com.alex.blog.utils.utils.ResultUtil;
-import com.alex.blog.xo.service.AdminService;
+import com.alex.blog.xo.service.admin.AdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

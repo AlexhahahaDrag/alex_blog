@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alex.blog.xo.mapper.blog.BlogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.alex.blog.common.entity.blog.Blog">
+        <id column="oid" property="oid" />
+        <result column="id" property="id" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleter" property="deleter" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="is_delete" property="isDelete" />
+        <result column="title" property="title" />
+        <result column="summary" property="summary" />
+        <result column="content" property="content" />
+        <result column="tag_id" property="tagId" />
+        <result column="click_count" property="clickCount" />
+        <result column="collect_count" property="collectCount" />
+        <result column="file_id" property="fileId" />
+        <result column="status" property="status" />
+        <result column="admin_id" property="adminId" />
+        <result column="is_original" property="isOriginal" />
+        <result column="author" property="author" />
+        <result column="articles_part" property="articlesPart" />
+        <result column="blog_sort_id" property="blogSortId" />
+        <result column="level" property="level" />
+        <result column="is_publish" property="isPublish" />
+        <result column="sort" property="sort" />
+        <result column="open_comment" property="openComment" />
+        <result column="type" property="type" />
+        <result column="outside_link" property="outsideLink" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        creator,
+        create_time,
+        updater,
+        update_time,
+        deleter,
+        delete_time,
+        is_delete,
+        title, summary, content, tag_id, click_count, collect_count, file_id, `status`, admin_id, is_original, author, articles_part, blog_sort_id, `level`, is_publish, sort, open_comment, `type`, outside_link, oid
+    </sql>
+
+</mapper>

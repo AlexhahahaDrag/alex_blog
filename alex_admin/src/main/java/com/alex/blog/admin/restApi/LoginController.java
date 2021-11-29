@@ -8,7 +8,7 @@ import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.entity.OnlineAdmin;
-import com.alex.blog.xo.service.AdminService;
+import com.alex.blog.xo.service.admin.AdminService;
 import com.alex.blog.xo.service.LoginService;
 import com.alex.blog.xo.service.WebConfigService;
 import io.swagger.annotations.Api;

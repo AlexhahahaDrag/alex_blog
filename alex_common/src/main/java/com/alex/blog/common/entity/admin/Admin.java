@@ -24,7 +24,7 @@ import java.util.List;
 @TableName(value = "t_admin")
 public class Admin extends BaseEntity<Admin> {
 
-    @ApiModelProperty(value = "userName", name="用户名")
+    @ApiModelProperty(value = "username", name="用户名")
     @TableField(value = "username")
     private String username;
 

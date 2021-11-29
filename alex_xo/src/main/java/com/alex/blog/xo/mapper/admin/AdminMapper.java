@@ -1,4 +1,4 @@
-package com.alex.blog.xo.mapper;
+package com.alex.blog.xo.mapper.admin;
 
 import com.alex.blog.base.mapper.SuperMapper;
 import com.alex.blog.common.entity.admin.Admin;
