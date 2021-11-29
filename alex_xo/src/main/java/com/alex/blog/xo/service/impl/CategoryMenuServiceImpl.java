@@ -3,23 +3,27 @@ package com.alex.blog.xo.service.impl;
 import com.alex.blog.base.entity.BaseEntity;
 import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.Constants;
+import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.CategoryMenu;
 import com.alex.blog.common.enums.EMenuType;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.admin.CategoryMenuVo;
+import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.mapper.CategoryMenuMapper;
 import com.alex.blog.xo.service.CategoryMenuService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +37,10 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
 
     @Autowired
     private CategoryMenuService categoryMenuService;
+
+    @Autowired
+    private RedisUtils redisUtils;
+
     /**
      * @param categoryMenuVo
      * @description:    
@@ -93,23 +101,57 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
 
     @Override
     public List<CategoryMenu> getButtonAllList(String keyword) {
+        QueryWrapper<CategoryMenu> query = new QueryWrapper<>();
+        query.eq(SysConf.MENU_LEVEL, Constants.NUM_TWO).orderByDesc(SysConf.SORT);
+        if (StringUtils.isNotEmpty(keyword)) {
+
+        }
         return null;
     }
 
     @Override
     public String addCategoryMenu(CategoryMenuVo categoryMenuVo) {
-        return null;
+        //如果菜单是一级菜单则将父级id清空
+        if (categoryMenuVo.getMenuLevel() == Constants.NUM_ONE) {
+            categoryMenuVo.setPid(null);
+        }
+        CategoryMenu categoryMenu = new CategoryMenu();
+        BeanUtils.copyProperties(categoryMenuVo, categoryMenu);
+        categoryMenu.insert();
+        return ResultUtil.result(SysConf.SUCCESS, "新增菜单成功！");
     }
 
     @Override
     public String editCategoryMenu(CategoryMenuVo categoryMenuVo) {
-        return null;
+        CategoryMenu categoryMenu = categoryMenuService.getById(categoryMenuVo.getId());
+        BeanUtils.copyProperties(categoryMenuVo, categoryMenu);
+        categoryMenu.updateById();
+        //修改成功后删除redis中admin的访问路径
+        deleteAdminVisitUrl();
+        return ResultUtil.result(SysConf.SUCCESS, "修改菜单成功！");
     }
 
+    /**
+     * @param id
+     * @description:  删除菜单，如果该菜单有子菜单则不可以删除
+     * @author:       alex
+     * @return:       java.lang.String
+    */
     @Override
-    public String deleteCategoryMenu(CategoryMenuVo categoryMenuVo) {
-
-        return null;
+    public String deleteCategoryMenu(Integer id) {
+        QueryWrapper<CategoryMenu> query = new QueryWrapper<>();
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode());
+        query.eq(SysConf.PID, id);
+        int count = this.count(query);
+        if (count > 0) {
+            return ResultUtil.result(SysConf.ERROR, "该菜单下还有菜单不能删除！");
+        }
+        CategoryMenu categoryMenu = categoryMenuService.getById(id);
+        categoryMenu.setStatus(EStatus.DISABLED.getCode());
+        categoryMenu.updateById();
+        //删除成功后，需要删除redis中的所有admin访问路径
+        deleteAdminVisitUrl();
+        return ResultUtil.result(SysConf.SUCCESS, "删除成功！");
     }
 
     /**
@@ -135,5 +177,15 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
         categoryMenu.setSort(maxMenu.getSort() + 1);
         categoryMenu.updateById();
         return ResultUtil.result(SysConf.SUCCESS, "操作成功！");
+    }
+
+    /**
+     * @description:  删除redis中管理员的所有访问路径
+     * @author:       alex
+     * @return:       void
+    */
+    private void deleteAdminVisitUrl(){
+        Set<String> keys = redisUtils.keys(RedisConf.ADMIN_VISIT_MENU + "*");
+        redisUtils.delete(keys);
     }
 }

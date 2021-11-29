@@ -56,12 +56,12 @@ public interface CategoryMenuService extends SuperService<CategoryMenu> {
     String editCategoryMenu(CategoryMenuVo categoryMenuVo);
 
     /**
-     * @param categoryMenuVo
+     * @param id
      * @description:  删除菜单
      * @author:       alex
      * @return:       java.lang.String
     */
-    String deleteCategoryMenu(CategoryMenuVo categoryMenuVo);
+    String deleteCategoryMenu(Integer id);
 
     /**
      * @param categoryMenuVo
