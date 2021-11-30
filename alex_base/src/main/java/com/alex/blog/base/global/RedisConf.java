@@ -97,6 +97,7 @@ public class RedisConf {
      */
     public final static String TAG_CLICK = "TAG_CLICK";
 
+    public static final String SORT_CLICK = "SORT_CLICK";
     /**
      * 系统参数配置
      */

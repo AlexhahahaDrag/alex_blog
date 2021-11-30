@@ -28,7 +28,6 @@ public final class SysConf extends BaseSysConf {
     public static final String SOURCE = "source";
     public static final String MESSAGE = "message";
 
-
     public static final String LIMIT_ONE = "limit 1";
 
     //IP相关
@@ -92,5 +91,14 @@ public final class SysConf extends BaseSysConf {
     public static final String MENU_TYPE = "menu_type";
     public static final String PID = "pid";
     public static final String OTHER_DATA = "otherData";
+
+    //t_blog
+    public static final String BLOG_SORT_BY_MONTH = "blog_sort_by_month";
+    //月份集合
+    public static final String MONTH_SET = "month_set";
+    public static final String AUTHOR = "author";
+
+    public static final String BLOG_SORT_ID = "blog_sort_id";
+    public static final String TAG_ID = "tag_id";
 }
 

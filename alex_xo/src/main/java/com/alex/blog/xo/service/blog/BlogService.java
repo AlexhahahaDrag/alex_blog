@@ -332,5 +332,5 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.lang.String
     */
-    String getArticleByMonth();
+    String getArticleByMonth(String monthDate);
  }

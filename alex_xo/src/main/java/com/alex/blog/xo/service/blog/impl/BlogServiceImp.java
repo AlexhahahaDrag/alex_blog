@@ -1,15 +1,18 @@
 package com.alex.blog.xo.service.blog.impl;
 
 import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.base.global.RedisConf;
+import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.entity.blog.BlogSort;
 import com.alex.blog.common.entity.blog.Tag;
 import com.alex.blog.common.enums.EPublish;
+import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.blog.BlogVo;
-import com.alex.blog.utils.utils.StringUtils;
+import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.mapper.blog.BlogMapper;
 import com.alex.blog.xo.service.blog.BlogService;
 import com.alex.blog.xo.service.blog.BlogSortService;
@@ -22,8 +25,10 @@ import org.springframework.data.convert.EntityWriter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,6 +48,15 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Autowired
     private BlogSortService blogSortService;
+
+    @Autowired
+    private RedisUtils redisUtils;
+
+    @Autowired
+    private BlogService blogService;
+
+    private static final String TAG = "tag";
+    private static final String BLOG_SORT = "blogSort";
 
     @Override
     public List<Blog> setTagByBlogList(List<Blog> list) {
@@ -303,12 +317,12 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public IPage<Blog> getSameBlogByTagId(Integer tagId) {
-        return null;
+        return searchBlogByType(tagId, (long)1, (long)10, TAG);
     }
 
     @Override
     public IPage<Blog> getBlogListBySortId(Integer blogSortId, Long currentPage, Long currentPageSize) {
-        return null;
+        return searchBlogByType(blogSortId, currentPage, currentPageSize, BLOG_SORT);
     }
 
     @Override
@@ -318,26 +332,142 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public IPage<Blog> searchBlogByTag(Integer blogTagId, Long currentPage, Long currentPageSize) {
-        return null;
+        Tag tag = tagService.getById(blogTagId);
+        if (tag != null) {
+            HttpServletRequest request = RequestHolder.getRequest();
+            String ip = IpUtils.getIpAddr(request);
+            // TODO: 2021/11/30 添加当前登录人 
+            //从redis中取数据判断该用户24小时内是否点击过该分类
+            String jsonResult = redisUtils.get(RedisConf.TAG_CLICK + RedisConf.SEGMENTATION + ip + RedisConf.WELL_NUMBER + blogTagId);
+            if (StringUtils.isEmpty(jsonResult)) {
+                //给标签点击数增加
+                int clickCount = tag.getClickCount() + 1;
+                tag.setClickCount(clickCount);
+                tag.updateById();
+                //将该用户点击记录存储到redis中，24小时后过期
+                redisUtils.setEx(RedisConf.TAG_CLICK + RedisConf.SEGMENTATION + ip + RedisConf.WELL_NUMBER + blogTagId,
+                        clickCount + "", 24, TimeUnit.HOURS);
+            }
+        }
+       return searchBlogByType(blogTagId, currentPage, currentPageSize, TAG);
+    }
+
+    /**
+     * @param blogTagId
+     * @param currentPage
+     * @param currentPageSize
+     * @param type  类型tag、blogSort
+     * @description: 根据类型分类查询
+     * @author:      alex
+     * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
+    */
+    private IPage<Blog> searchBlogByType(Integer blogTagId, Long currentPage, Long currentPageSize, String type) {
+        //设置分页
+        Page<Blog> page = new Page<>();
+        page.setCurrent(currentPage == null ? 1 : currentPage);
+        page.setSize(currentPageSize == null ? 10 : currentPageSize);
+        //设置查询条件
+        QueryWrapper<Blog> query = new QueryWrapper<>();
+        String idType = "";
+        if ("tag".equals(type)) {
+            idType = SysConf.TAG_ID;
+        } else if ("blogSort".equals(type)) {
+            idType = SysConf.BLOG_SORT_ID;
+        }
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
+                .eq(idType, blogTagId).orderByDesc(SysConf.CREATE_TIME).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
+        IPage<Blog> pageList = blogService.page(page, query);
+        List<Blog> blogList = pageList.getRecords();
+        //设置分类、标签和图片
+        blogList = setTagPictureAndSortByBlogList(blogList);
+        pageList.setRecords(blogList);
+        return pageList;
     }
 
     @Override
     public IPage<Blog> searchBlogByBlogSort(Integer blogSortId, Long currentPage, Long currentPageSize) {
-        return null;
+        BlogSort blogSort = blogSortService.getById(blogSortId);
+        if (blogSort != null) {
+            HttpServletRequest request = RequestHolder.getRequest();
+            String ip = IpUtils.getIpAddr(request);
+            // TODO: 2021/11/30 添加当前登录人 
+            //从redis中取数据判断该用户24小时内是否点击过该分类
+            String jsonResult = redisUtils.get(RedisConf.SORT_CLICK + RedisConf.SEGMENTATION + ip + RedisConf.WELL_NUMBER + blogSortId);
+            if (StringUtils.isEmpty(jsonResult)) {
+                //给标签点击数增加
+                int clickCount = blogSort.getClickCount() + 1;
+                blogSort.setClickCount(clickCount);
+                blogSort.updateById();
+                //将该用户点击记录存储到redis中，24小时后过期
+                redisUtils.setEx(RedisConf.SORT_CLICK + RedisConf.SEGMENTATION + ip + RedisConf.WELL_NUMBER + blogSortId,
+                        clickCount + "", 24, TimeUnit.HOURS);
+            }
+        }
+        return searchBlogByType(blogSortId, currentPage, currentPageSize, BLOG_SORT);
     }
 
     @Override
     public IPage<Blog> searchBlogByAuthor(String author, Long currentPage, Long currentPageSize) {
-        return null;
+        QueryWrapper<Blog> query = new QueryWrapper<>();
+        Page<Blog> page = new Page<>();
+        page.setCurrent(currentPage);
+        page.setSize(currentPageSize);
+        // TODO: 2021/11/30 以后修改成按照操作时间排序
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
+                .eq(SysConf.AUTHOR, author).orderByDesc(SysConf.CREATE_TIME).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
+        IPage<Blog> pageList = blogService.page(page, query);
+        List<Blog> blogList = pageList.getRecords();
+        blogList = setTagPictureAndSortByBlogList(blogList);
+        pageList.setRecords(blogList);
+        return pageList;
     }
 
     @Override
     public String getBlogTimeSortList() {
-        return null;
+        //从redis中获取月份集合
+        String monthResult = redisUtils.get(SysConf.MONTH_SET);
+        //判断redis中是否包含归档内容
+        if (StringUtils.isNotEmpty(monthResult)) {
+            return ResultUtil.resultSuccessWithData(JsonUtils.jsonToArrayList(monthResult));
+        }
+        Map<String, Blog> map = getFile();
+        return ResultUtil.resultSuccessWithData(JsonUtils.objectToJson(map.keySet()));
     }
 
     @Override
-    public String getArticleByMonth() {
-        return null;
+    public String getArticleByMonth(String monthDate) {
+        if (StringUtils.isEmpty(monthDate)) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
+        }
+        //从redis中获取内容
+        // TODO: 2021/11/30 添加不同管理员区分 
+        String contentResult = redisUtils.get(SysConf.BLOG_SORT_BY_MONTH + RedisConf.SEGMENTATION + monthDate);
+        //如果redis中存在则直接返回值
+        if (StringUtils.isNotEmpty(contentResult)){
+            return ResultUtil.resultSuccessWithData(JsonUtils.jsonToArrayList(contentResult));
+        }
+        Map<String, Blog> map = getFile();
+        return ResultUtil.resultSuccessWithData(map.get(monthDate));
+    }
+
+    //获取归档博客信息
+    private Map<String, Blog> getFile() {
+        QueryWrapper<Blog> qeury = new QueryWrapper<>();
+        //列表中不需要博客内容
+        // TODO: 2021/11/30 按照操作时间排序
+        qeury.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
+                .orderByDesc(SysConf.CREATE_TIME).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
+        List<Blog> list = blogService.list(qeury);
+        //将分类、标签和图片添加到博客中去
+        list = blogService.setTagPictureAndSortByBlogList(list);
+        // TODO: 2021/11/30 修改为按照操作时间排序
+        Map<String, Blog> map = list.stream().collect(Collectors.toMap(item -> DateUtils.getTimeStr(item.getCreateTime(), "YYYY-MM-DD"), item -> item));
+        //将数据缓存到redis中
+        map.forEach((key, value) -> {
+            redisUtils.set(SysConf.BLOG_SORT_BY_MONTH + RedisConf.SEGMENTATION + key, JsonUtils.objectToJson(value));
+        });
+        //将月份缓存到redis中
+        redisUtils.set(SysConf.MONTH_SET, JsonUtils.objectToJson(map.keySet()));
+        return map;
     }
 }
