@@ -54,10 +54,6 @@ public class BlogVo extends BaseVo<BlogVo> {
     @TableField("file_id")
     private String fileId;
 
-    @ApiModelProperty("状态")
-    @TableField("`status`")
-    private Integer status;
-
     @ApiModelProperty("管理员id")
     @TableField("admin_id")
     private Integer adminId;

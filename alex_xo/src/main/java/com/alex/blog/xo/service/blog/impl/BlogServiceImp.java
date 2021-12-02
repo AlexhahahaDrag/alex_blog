@@ -7,24 +7,29 @@ import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.entity.blog.BlogSort;
 import com.alex.blog.common.entity.blog.Tag;
+import com.alex.blog.common.enums.ECommentType;
 import com.alex.blog.common.enums.EPublish;
+import com.alex.blog.common.feign.PictureFeignClient;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.blog.BlogVo;
+import com.alex.blog.common.vo.blog.Comment;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.mapper.blog.BlogMapper;
 import com.alex.blog.xo.service.blog.BlogService;
 import com.alex.blog.xo.service.blog.BlogSortService;
+import com.alex.blog.xo.service.blog.CommentService;
 import com.alex.blog.xo.service.blog.TagService;
+import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.convert.EntityWriter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
@@ -54,6 +59,15 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Autowired
     private BlogService blogService;
+
+    @Resource
+    private PictureFeignClient pictureFeignClient;
+
+    @Autowired
+    private WebUtils webUtils;
+
+    @Autowired
+    private CommentService commentService;
 
     private static final String TAG = "tag";
     private static final String BLOG_SORT = "blogSort";
@@ -152,8 +166,14 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             }
             //设置图片信息
             if (StringUtils.isNotEmpty(item.getFileId())) {
-                item.setBlogSortList(StringUtils.splitLongByCode(item.getFileId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(blogSortId -> blogSortMap.get(blogSortId)).collect(Collectors.toList()));
+                List<String> fileIdList = StringUtils.splitStringByCode(item.getFileId(), SysConf.FILE_SEGMENTATION);
+                for(String fileId : fileIdList) {
+                    //只设置一张标题图
+                    if (picMap.get(fileId) != null) {
+                        item.setPhotoUrl(picMap.get(fileId));
+                        break;
+                    }
+                }
             }
         });
         return list;
@@ -312,6 +332,31 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public String praiseBlogById(Integer id) {
+        if (id == null) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
+        }
+        HttpServletRequest request = RequestHolder.getRequest();
+        //如果用户登录
+        if (request.getAttribute(SysConf.USER_ID) == null) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PLEASE_LOGIN_TO_PRISE);
+        } else {
+            String userId = request.getAttribute(SysConf.USER_ID).toString();
+            QueryWrapper<Comment> query = new QueryWrapper<>();
+            query.eq(SysConf.USER_ID, userId).eq(SysConf.BLOG_ID, id).eq(SysConf.TYPE, ECommentType.PRAISE.getCode())
+                    .last(SysConf.LIMIT_ONE);
+            Comment praise = commentService.getOne(query);
+            if (praise != null) {
+                return ResultUtil.resultErrorWithMessage(MessageConf.YOU_HAVE_BEEN_PRISE);
+            }
+        }
+        String praiseJsonResult = redisUtils.get(RedisConf.BLOG_PRAISE + RedisConf.SEGMENTATION + id);
+        Blog blog = blogService.getBlogById(id);
+        int praiseCount = 1;
+        if (StringUtils.isNotEmpty(praiseJsonResult)) {
+
+        }
+        blog.setPraiseCount(praiseCount);
+        blog.updateById();
         return null;
     }
 
@@ -327,7 +372,75 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public Map<String, Object> getBlogByKeyword(String keyword, Long currentPage, Long currentPageSize) {
-        return null;
+        currentPage = currentPage == null ? 1 : currentPage;
+        currentPageSize = currentPageSize == null ? 10 : currentPageSize;
+        String keywords = keyword.trim();
+        QueryWrapper<Blog> query = new QueryWrapper<>();
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
+                .and(wrapper -> wrapper.like(SysConf.TITLE, keywords).or().like(SysConf.SUMMARY, keywords))
+                .select(item -> !item.getProperty().equals(SysConf.CONTENT))
+                .orderByDesc(SysConf.CLICK_COUNT);
+        Page<Blog> page = new Page<>();
+        page.setCurrent(currentPage).setSize(currentPageSize);
+        Page<Blog> resPage = blogService.page(page, query);
+        List<Blog> blogList = resPage.getRecords();
+        List<String> blogSortIdList = new ArrayList<>();
+        StringBuffer sb = new StringBuffer();
+        blogList.forEach(item -> {
+            blogSortIdList.add(item.getBlogSortId());
+            if (StringUtils.isNotEmpty(item.getFileId())) {
+                sb.append(item.getFileId() + SysConf.FILE_SEGMENTATION);
+            }
+            //给标题和简介设置高亮
+            item.setTitle(getHitCode(item.getTitle(), keywords));
+            item.setSummary(getHitCode(item.getSummary(), keywords));
+        });
+        Map<Long, String> blogSortMap = null;
+        if (blogSortIdList.size() > 0) {
+            List<BlogSort> blogSortList = blogSortService.listByIds(blogSortIdList);
+            blogSortMap = blogSortList.stream().collect(Collectors.toMap(BlogSort::getId, BlogSort::getSortName));
+        }
+        String pictureList = null;
+        if (sb.length() > 0) {
+            pictureList = pictureFeignClient.getPicture(sb.toString(), SysConf.FILE_SEGMENTATION);
+        }
+        List<Map<String, Object>> picList = webUtils.getPictureMap(pictureList);
+        Map<String, String> pictureMap = picList.stream().collect(Collectors.toMap(item -> item.get(SysConf.ID).toString(), item -> item.get(SysConf.URL).toString()));
+        //设置博客分类和图片
+        if (blogSortMap != null || pictureMap != null) {
+            Map<Long, String> finalBlogSortMap = blogSortMap;
+            blogList.forEach(item -> {
+                //设置分类信息
+                if (StringUtils.isNotEmpty(item.getBlogSortId())) {
+                    String collect = StringUtils.splitLongByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
+                            stream().map(blogSortId -> finalBlogSortMap.get(blogSortId)).collect(Collectors.joining(","));
+                    item.setBlogSortName(collect);
+                }
+                //设置图片信息
+                if (StringUtils.isNotEmpty(item.getFileId())) {
+                    List<String> fileIdList = StringUtils.splitStringByCode(item.getFileId(), SysConf.FILE_SEGMENTATION);
+                    for(String fileId : fileIdList) {
+                        //只设置一张标题图
+                        if (pictureMap.get(fileId) != null) {
+                            item.setPhotoUrl(pictureMap.get(fileId));
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+        HashMap<String, Object> map = new HashMap<>();
+        //总记录数
+        map.put(SysConf.TOTAL, resPage.getTotal());
+        //返回总页数
+        map.put(SysConf.TOTAL_PAGE, resPage.getPages());
+        //当前页大小
+        map.put(SysConf.PAGE_SIZE, currentPageSize);
+        //当前页
+        map.put(SysConf.CURRENT_PAGE, currentPage);
+        //当前页数据
+        map.put(SysConf.BLOG_LIST, blogList);
+        return map;
     }
 
     @Override
@@ -349,7 +462,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
                         clickCount + "", 24, TimeUnit.HOURS);
             }
         }
-       return searchBlogByType(blogTagId, currentPage, currentPageSize, TAG);
+        return searchBlogByType(blogTagId, currentPage, currentPageSize, TAG);
     }
 
     /**
@@ -360,7 +473,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
      * @description: 根据类型分类查询
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
-    */
+     */
     private IPage<Blog> searchBlogByType(Integer blogTagId, Long currentPage, Long currentPageSize, String type) {
         //设置分页
         Page<Blog> page = new Page<>();
@@ -469,5 +582,38 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         //将月份缓存到redis中
         redisUtils.set(SysConf.MONTH_SET, JsonUtils.objectToJson(map.keySet()));
         return map;
+    }
+
+    // TODO: 2021/12/2 测试getHitCode
+    private static String getHitCode(String str, String keyword) {
+        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(keyword)) {
+            return str;
+        }
+        StringBuffer sb = new StringBuffer();
+        String start = "<span style = 'color:red'>";
+        String end = "</span>";
+        if (str.equals(keyword)) {
+            sb.append(start);
+            sb.append(str);
+            sb.append(end);
+        } else {
+            String lowerCaseStr = str.toLowerCase();
+            String lowerKeyword = keyword.toLowerCase();
+            String[] lowerCaseArray = lowerCaseStr.split(lowerKeyword);
+            for (int i = 0; i < lowerCaseArray.length; i++) {
+                sb.append(lowerCaseArray[i]);
+                if (i < lowerCaseArray.length - 1) {
+                    sb.append(start);
+                    sb.append(keyword);
+                    sb.append(end);
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getHitCode("abdbbb", "b"));
     }
 }

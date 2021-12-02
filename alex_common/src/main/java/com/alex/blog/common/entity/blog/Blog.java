@@ -55,13 +55,13 @@ public class Blog extends BaseEntity {
     @TableField("collect_count")
     private Integer collectCount;
 
+    @ApiModelProperty("博客点赞数")
+    @TableField("praise_count")
+    private Integer praiseCount;
+
     @ApiModelProperty("标题图片id")
     @TableField("file_id")
     private String fileId;
-
-    @ApiModelProperty("状态")
-    @TableField("`status`")
-    private Integer status;
 
     @ApiModelProperty("管理员id")
     @TableField("admin_id")
@@ -119,4 +119,12 @@ public class Blog extends BaseEntity {
     @ApiModelProperty("博客分类列表")
     @TableField(exist = false)
     private List<BlogSort> blogSortList;
+
+    @ApiModelProperty("博客分类名")
+    @TableField(exist = false)
+    private String blogSortName;
+
+    @ApiModelProperty("博客标题图")
+    @TableField(exist = false)
+    private String photoUrl;
 }
