@@ -186,7 +186,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         IPage<Admin> pageList = adminService.page(page, query);
         StringBuffer fileIds = new StringBuffer();
         List<Admin> list = pageList.getRecords();
-        List<Long> adminIdList = list.stream()
+        List<String> adminIdList = list.stream()
                 .map(admin -> {
                     if (StringUtils.isNotEmpty(admin.getAvatar())) {
                         fileIds.append(admin.getAvatar()).append(SysConf.FILE_SEGMENTATION);
@@ -338,7 +338,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
      * @return:       java.lang.String
      */
     @Override
-    public String deleteBatchAdmin(List<Long> ids) {
+    public String deleteBatchAdmin(List<String> ids) {
         boolean res = StringUtils.checkIdList(ids);
         if (!res) {
             return ResultUtil.result(SysConf.ERROR, "id为空!");

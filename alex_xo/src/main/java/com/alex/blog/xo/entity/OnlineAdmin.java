@@ -20,7 +20,7 @@ public class OnlineAdmin {
     private String token;
 
     //管理员id
-    private Long adminId;
+    private String adminId;
 
     //用户名
     private String username;

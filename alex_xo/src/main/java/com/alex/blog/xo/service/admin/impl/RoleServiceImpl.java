@@ -22,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -84,9 +85,8 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
             QueryWrapper<Role> query = new QueryWrapper<>();
             query.eq(SQLConf.ROLENAME, roleName);
             query.eq(SysConf.STATUS, EStatus.ENABLE.getCode());
-            query.eq("is_delete", 0);
-            Role roleInfo = roleService.getOne(query);
-            if (roleInfo != null && !roleInfo.getId().equals(roleVo.getId())) {
+            List<Role> list = roleService.list(query);
+            if (list != null && (list.size() > 1 || !list.get(0).getId().equals(roleVo.getId()))) {
                 return ResultUtil.result(SysConf.ERROR, "角色名称已存在！");
             }
 

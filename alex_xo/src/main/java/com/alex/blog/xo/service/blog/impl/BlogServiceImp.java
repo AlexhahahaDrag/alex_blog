@@ -102,9 +102,9 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         }
         //将标签信息按id做成map
         assert tags != null;
-        Map<Long, Tag> tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
+        Map<String, Tag> tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
         //将分类信息按id做成map
-        Map<Long, BlogSort> blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
+        Map<String, BlogSort> blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
         list.forEach(item -> {
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
@@ -152,11 +152,11 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         List<Map<String, Object>> picList = new ArrayList<>();
         // TODO: 2021/11/26 查询图片数据
         //将标签信息按id做成map
-        Map<Long, Tag> tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
+        Map<String, Tag> tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
         //将分类信息按id做成map
-        Map<Long, BlogSort> blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
+        Map<String, BlogSort> blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
         //将图片信息按id做成map
-        Map<Long, String> picMap = picList.stream().collect(Collectors.toMap(item -> (long)item.get(SysConf.ID), item -> item.get(SysConf.URL).toString()));
+        Map<String, String> picMap = picList.stream().collect(Collectors.toMap(item -> (String)item.get(SysConf.ID), item -> item.get(SysConf.URL).toString()));
         list.forEach(item -> {
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
@@ -317,7 +317,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     @Override
     public IPage<Blog> getNewBlog(Long currentPage, Long pageSize) {
         // TODO: 2021/12/3 添加后台配置参数sysParamsService
-        IPage<Blog> blogPage = searchBlogByType(null, currentPage, currentSize, null);
+        IPage<Blog> blogPage = searchBlogByType(null, currentPage, pageSize, null);
         return null;
     }
 
@@ -427,7 +427,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             item.setTitle(getHitCode(item.getTitle(), keywords));
             item.setSummary(getHitCode(item.getSummary(), keywords));
         });
-        Map<Long, String> blogSortMap = null;
+        Map<String, String> blogSortMap = null;
         if (blogSortIdList.size() > 0) {
             List<BlogSort> blogSortList = blogSortService.listByIds(blogSortIdList);
             blogSortMap = blogSortList.stream().collect(Collectors.toMap(BlogSort::getId, BlogSort::getSortName));
@@ -440,7 +440,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         Map<String, String> pictureMap = picList.stream().collect(Collectors.toMap(item -> item.get(SysConf.ID).toString(), item -> item.get(SysConf.URL).toString()));
         //设置博客分类和图片
         if (blogSortMap != null || pictureMap != null) {
-            Map<Long, String> finalBlogSortMap = blogSortMap;
+            Map<String, String> finalBlogSortMap = blogSortMap;
             blogList.forEach(item -> {
                 //设置分类信息
                 if (StringUtils.isNotEmpty(item.getBlogSortId())) {
