@@ -222,11 +222,13 @@ public interface BlogService extends SuperService<Blog> {
     IPage<Blog> getHotBlog();
 
     /**
+     * @param currentPage
+     * @param currentSize
      * @description: 获取最新的博客
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
     */
-    IPage<Blog> getNewBlog();
+    IPage<Blog> getNewBlog(Long currentPage, Long pageSize);
 
     /**
      * @param currentPage
@@ -252,7 +254,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.lang.Integer
     */
-    Integer getBlogPraiseCountById(Integer id);
+    Integer getBlogPraiseCountById(String id);
 
     /**
      * @param id

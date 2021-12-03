@@ -53,7 +53,7 @@ public class Comment extends BaseEntity {
 
     @ApiModelProperty("评论类型 1:点赞 0:评论")
     @TableField("TYPE")
-    private Boolean type;
+    private String type;
 
     @ApiModelProperty("一级评论ID")
     @TableField("first_comment_id")

@@ -7,6 +7,7 @@ import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.entity.blog.BlogSort;
 import com.alex.blog.common.entity.blog.Tag;
+import com.alex.blog.common.enums.ECommentSource;
 import com.alex.blog.common.enums.ECommentType;
 import com.alex.blog.common.enums.EPublish;
 import com.alex.blog.common.feign.PictureFeignClient;
@@ -35,7 +36,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <p>
@@ -74,7 +74,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public List<Blog> setTagByBlogList(List<Blog> list) {
-        list.forEach(item -> setTagByBlog(item));
+        list.forEach(this::setTagByBlog);
         return list;
     }
 
@@ -97,10 +97,11 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         }
         //查询博客分类信息
         List<BlogSort> blogSorts = null;
-        if (tagIds.size() > 0) {
-            blogSorts = blogSortService.listByIds(tagIds);
+        if (sortIds.size() > 0) {
+            blogSorts = blogSortService.listByIds(sortIds);
         }
         //将标签信息按id做成map
+        assert tags != null;
         Map<Long, Tag> tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
         //将分类信息按id做成map
         Map<Long, BlogSort> blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
@@ -108,12 +109,12 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
                 item.setTagList(StringUtils.splitLongByCode(item.getTagId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(tagId -> tagMap.get(tagId)).collect(Collectors.toList()));
+                        stream().map(tagMap::get).collect(Collectors.toList()));
             }
             //设置分类信息
             if (StringUtils.isNotEmpty(item.getBlogSortId())) {
                 item.setBlogSortList(StringUtils.splitLongByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(blogSortId -> blogSortMap.get(blogSortId)).collect(Collectors.toList()));
+                        stream().map(blogSortMap::get).collect(Collectors.toList()));
             }
         });
         return list;
@@ -121,6 +122,9 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public List<Blog> setTagPictureAndSortByBlogList(List<Blog> list) {
+        if (list == null || list.isEmpty()) {
+            return list;
+        }
         List<Long> sortIds = new ArrayList<>();
         List<Long> tagIds = new ArrayList<>();
         Set<Long> fileIdSet = new HashSet<>();
@@ -311,23 +315,44 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     }
 
     @Override
-    public IPage<Blog> getNewBlog() {
+    public IPage<Blog> getNewBlog(Long currentPage, Long pageSize) {
+        // TODO: 2021/12/3 添加后台配置参数sysParamsService
+        IPage<Blog> blogPage = searchBlogByType(null, currentPage, currentSize, null);
         return null;
     }
 
     @Override
     public IPage<Blog> getBlogBySearch(Long currentPage, Long currentSize) {
-        return null;
+        // TODO: 2021/12/3 添加后台配置参数sysParamsService
+        IPage<Blog> blogPage = searchBlogByType(null, currentPage, currentSize, null);
+        List<Blog> records = blogPage.getRecords();
+        records = setTagPictureAndSortByBlogList(records);
+        blogPage.setRecords(records);
+        return blogPage;
     }
 
     @Override
     public IPage<Blog> getBlogByTime(Long currentPage, Long currentSize) {
-        return null;
+        IPage<Blog> blogPage = searchBlogByType(null, currentPage, currentSize, null);
+        List<Blog> records = blogPage.getRecords();
+        records = setTagPictureAndSortByBlogList(records);
+        blogPage.setRecords(records);
+        return blogPage;
     }
 
     @Override
-    public Integer getBlogPraiseCountById(Integer id) {
-        return null;
+    public Integer getBlogPraiseCountById(String id) {
+        int praiseCount = 0;
+        if (StringUtils.isEmpty(id)) {
+            log.error("传入id为空!");
+            return praiseCount;
+        }
+        //从redis中取点赞数
+        String praiseJson = redisUtils.get(RedisConf.BLOG_PRAISE + RedisConf.SEGMENTATION + id);
+        if (StringUtils.isNotEmpty(praiseJson)) {
+            praiseCount = Integer.parseInt(praiseJson);
+        }
+        return praiseCount;
     }
 
     @Override
@@ -335,12 +360,13 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         if (id == null) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
+        String userId;
         HttpServletRequest request = RequestHolder.getRequest();
         //如果用户登录
         if (request.getAttribute(SysConf.USER_ID) == null) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PLEASE_LOGIN_TO_PRISE);
         } else {
-            String userId = request.getAttribute(SysConf.USER_ID).toString();
+            userId = request.getAttribute(SysConf.USER_ID).toString();
             QueryWrapper<Comment> query = new QueryWrapper<>();
             query.eq(SysConf.USER_ID, userId).eq(SysConf.BLOG_ID, id).eq(SysConf.TYPE, ECommentType.PRAISE.getCode())
                     .last(SysConf.LIMIT_ONE);
@@ -349,15 +375,21 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
                 return ResultUtil.resultErrorWithMessage(MessageConf.YOU_HAVE_BEEN_PRISE);
             }
         }
-        String praiseJsonResult = redisUtils.get(RedisConf.BLOG_PRAISE + RedisConf.SEGMENTATION + id);
+        //更新博客点赞数
         Blog blog = blogService.getBlogById(id);
-        int praiseCount = 1;
-        if (StringUtils.isNotEmpty(praiseJsonResult)) {
-
-        }
+        int praiseCount = (blog.getPraiseCount() == null ? 0 : blog.getPraiseCount()) + 1;
+        redisUtils.set(RedisConf.BLOG_PRAISE + RedisConf.SEGMENTATION + id, praiseCount + "");
         blog.setPraiseCount(praiseCount);
         blog.updateById();
-        return null;
+        //插入评论数
+        Comment comment = new Comment();
+        comment.setUserId(userId);
+        // TODO: 2021/12/3 将来修改id为string去掉“”
+        comment.setBlogId(id + "");
+        comment.setSource(ECommentSource.BLOG_INFO.getCode());
+        comment.setType(ECommentType.PRAISE.getCode());
+        comment.insert();
+        return ResultUtil.resultSuccessWithData(blog.getCollectCount());
     }
 
     @Override
@@ -413,7 +445,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
                 //设置分类信息
                 if (StringUtils.isNotEmpty(item.getBlogSortId())) {
                     String collect = StringUtils.splitLongByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
-                            stream().map(blogSortId -> finalBlogSortMap.get(blogSortId)).collect(Collectors.joining(","));
+                            stream().map(finalBlogSortMap::get).collect(Collectors.joining(","));
                     item.setBlogSortName(collect);
                 }
                 //设置图片信息
@@ -488,7 +520,10 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             idType = SysConf.BLOG_SORT_ID;
         }
         query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
-                .eq(idType, blogTagId).orderByDesc(SysConf.CREATE_TIME).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
+                .orderByDesc(SysConf.CREATE_TIME).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
+        if (StringUtils.isNotEmpty(idType)) {
+            query.eq(idType, blogTagId);
+        }
         IPage<Blog> pageList = blogService.page(page, query);
         List<Blog> blogList = pageList.getRecords();
         //设置分类、标签和图片
