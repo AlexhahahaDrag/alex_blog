@@ -4,13 +4,10 @@ import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
-import com.alex.blog.base.global.Constants;
-import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.entity.blog.BlogSort;
 import com.alex.blog.common.entity.blog.Tag;
-import com.alex.blog.common.entity.sysParams.SysParams;
 import com.alex.blog.common.enums.ECommentSource;
 import com.alex.blog.common.enums.ECommentType;
 import com.alex.blog.common.enums.ELevel;
@@ -20,8 +17,6 @@ import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.blog.BlogVo;
-import com.alex.blog.utils.utils.RedisUtils;
-import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.common.vo.blog.Comment;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.mapper.blog.BlogMapper;
@@ -34,7 +29,6 @@ import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,9 +78,12 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     @Autowired
     private SysParamsService sysParamsService;
 
+    @Autowired
+    private BlogMapper blogMapper;
+
     @Override
     public List<Blog> setTagByBlogList(List<Blog> list) {
-        list.forEach(item -> setTagByBlog(item));
+        list.forEach(this::setTagByBlog);
         return list;
     }
 
@@ -120,12 +117,12 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         list.forEach(item -> {
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
-                item.setTagList(StringUtils.splitLongByCode(item.getTagId(), SysConf.FILE_SEGMENTATION).
+                item.setTagList(StringUtils.splitStringByCode(item.getTagId(), SysConf.FILE_SEGMENTATION).
                         stream().map(tagMap::get).collect(Collectors.toList()));
             }
             //设置分类信息
             if (StringUtils.isNotEmpty(item.getBlogSortId())) {
-                item.setBlogSortList(StringUtils.splitLongByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
+                item.setBlogSortList(StringUtils.splitStringByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
                         stream().map(blogSortMap::get).collect(Collectors.toList()));
             }
         });
@@ -164,29 +161,41 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         List<Map<String, Object>> picList = new ArrayList<>();
 
         //将标签信息按id做成map
-        Map<String, Tag> tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
+        Map<String, Tag> tagMap = new HashMap<>();
+        if (tags != null && !tags.isEmpty()) {
+            tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
+        }
         //将分类信息按id做成map
-        Map<String, BlogSort> blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
+        Map<String, BlogSort> blogSortMap = new HashMap<>();
+        if (blogSorts != null && !blogSorts.isEmpty()) {
+            blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
+        }
         //将图片信息按id做成map
-        Map<String, String> picMap = picList.stream().collect(Collectors.toMap(item -> (String)item.get(SysConf.ID), item -> item.get(SysConf.URL).toString()));
+        Map<String, String> picMap = new HashMap<>();
+        if (picList != null && !picList.isEmpty()) {
+            picMap = picList.stream().collect(Collectors.toMap(item -> (String)item.get(SysConf.ID), item -> item.get(SysConf.URL).toString()));
+        }
+        Map<String, Tag> finalTagMap = tagMap;
+        Map<String, BlogSort> finalBlogSortMap = blogSortMap;
+        Map<String, String> finalPicMap = picMap;
         list.forEach(item -> {
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
-                item.setTagList(StringUtils.splitLongByCode(item.getTagId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(tagMap::get).collect(Collectors.toList()));
+                item.setTagList(StringUtils.splitStringByCode(item.getTagId(), SysConf.FILE_SEGMENTATION).
+                        stream().map(finalTagMap::get).collect(Collectors.toList()));
             }
             //设置分类信息
             if (StringUtils.isNotEmpty(item.getBlogSortId())) {
-                item.setBlogSortList(StringUtils.splitLongByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(blogSortMap::get).collect(Collectors.toList()));
+                item.setBlogSortList(StringUtils.splitStringByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
+                        stream().map(finalBlogSortMap::get).collect(Collectors.toList()));
             }
             //设置图片信息
             if (StringUtils.isNotEmpty(item.getFileId())) {
                 List<String> fileIdList = StringUtils.splitStringByCode(item.getFileId(), SysConf.FILE_SEGMENTATION);
                 for(String fileId : fileIdList) {
                     //只设置一张标题图
-                    if (picMap.get(fileId) != null) {
-                        item.setPhotoUrl(picMap.get(fileId));
+                    if (finalPicMap.get(fileId) != null) {
+                        item.setPhotoUrl(finalPicMap.get(fileId));
                         break;
                     }
                 }
@@ -201,7 +210,6 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         //如果博客对应标签不为空，则查询对应标签信息
         if (StringUtils.isNotEmpty(tagIds)) {
             String[] ids = tagIds.split(SysConf.FILE_SEGMENTATION);
-            // TODO: 2021/11/26 标签id为int 这里是string 看看运行时是否报错
             List<Tag> tags = tagService.listByIds(Arrays.asList(ids));
             blog.setTagList(tags);
         }
@@ -214,7 +222,6 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         //如果博客对应博客分类不为空，则查询对应分类信息
         if (StringUtils.isNotEmpty(blogSortIds)) {
             String[] ids = blogSortIds.split(SysConf.FILE_SEGMENTATION);
-            // TODO: 2021/11/26 标签id为int 这里是string 看看运行时是否报错
             List<BlogSort> blogSorts = blogSortService.listByIds(Arrays.asList(ids));
             blog.setBlogSortList(blogSorts);
         }
@@ -256,14 +263,88 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     @Override
     public List<Map<String, Object>> getBlogCountByTag() {
         //从redis中获取标签下含有的博客数量
-        redisUtils.get(RedisConf.DASHBOARD + RedisConf.SEGMENTATION + );
-
-        return null;
+        String blogCountTagList = redisUtils.get(RedisConf.DASHBOARD + RedisConf.SEGMENTATION + RedisConf.SEGMENTATION + SysConf.BLOG_COUNT_BY_TAG);
+        if (StringUtils.isNotEmpty(blogCountTagList)) {
+            return JsonUtils.jsonToArrayList(blogCountTagList);
+        }
+        List<Map<String, Object>> blogTagCountList = blogMapper.getBlogCountByTag();
+        Map<String, Long> tagCountMap = new HashMap<>();
+        String tagId;
+        for (Map<String, Object> map : blogTagCountList) {
+             tagId = map.get(SysConf.TAG_ID).toString();
+             //如果长度是32所名师一个标签
+            if (tagId.length() == Constants.NUM_32) {
+                tagCountMap.put(tagId, tagCountMap.getOrDefault(tagId, 0L) + Long.parseLong(map.get(SysConf.COUNT).toString()));
+            } else {
+                //多标签情况
+                String[] tagIds = tagId.split(",");
+                for (String tId : tagIds) {
+                    tagCountMap.put(tId, tagCountMap.getOrDefault(tId, 0L) + Long.parseLong(map.get(SysConf.COUNT).toString()));
+                }
+            }
+        }
+        //查询标签信息
+        List<Tag> tagList = tagService.listByIds(tagCountMap.keySet());
+        Map<String, String> tagMap = tagList.parallelStream().collect(Collectors.toMap(Tag::getId, Tag::getContent));
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        Map<String, Object> map;
+        for (Map.Entry<String, Long> entry: tagCountMap.entrySet()) {
+            map = new HashMap<>();
+            map.put(SysConf.TAG_ID, entry.getKey());
+            map.put(SysConf.COUNT, entry.getValue());
+            map.put(SysConf.NAME, tagMap.get(entry.getKey()));
+            resultList.add(map);
+        }
+        //保存到redis中,有效时间两小时
+        if (resultList.size() > 0) {
+            redisUtils.setEx(RedisConf.DASHBOARD + RedisConf.SEGMENTATION + RedisConf.BLOG_COUNT_BY_TAG, JsonUtils.objectToJson(resultList), 2, TimeUnit.HOURS);
+        }
+        return resultList;
     }
 
     @Override
     public List<Map<String, Object>> getBlogCountBySort() {
-        return null;
+        //从redis中获取标签下含有的博客数量
+        String blogCountSortList = redisUtils.get(RedisConf.DASHBOARD + RedisConf.SEGMENTATION + RedisConf.SEGMENTATION + SysConf.BLOG_COUNT_BY_SORT);
+        if (StringUtils.isNotEmpty(blogCountSortList)) {
+            return JsonUtils.jsonToArrayList(blogCountSortList);
+        }
+        List<Map<String, Object>> blogTagCountList = blogMapper.getBlogCountBySort();
+        Map<String, Long> blogSortCountMap = new HashMap<>();
+        String blogSortId;
+        for (Map<String, Object> map : blogTagCountList) {
+            blogSortId = map.get(SysConf.BLOG_SORT_ID).toString();
+            //如果长度是32所名师一个标签
+            if (blogSortId.length() == Constants.NUM_32) {
+                blogSortCountMap.put(blogSortId, blogSortCountMap.getOrDefault(blogSortId, 0L) + Long.parseLong(map.get(SysConf.COUNT).toString()));
+            } else {
+                //多标签情况
+                String[] blogSortIds = blogSortId.split(",");
+                for (String tId : blogSortIds) {
+                    blogSortCountMap.put(tId, blogSortCountMap.getOrDefault(tId, 0L) + Long.parseLong(map.get(SysConf.COUNT).toString()));
+                }
+            }
+        }
+        //查询标签信息
+        List<BlogSort> blogSortList = blogSortService.listByIds(blogSortCountMap.keySet());
+        Map<String, String> blogSortMap = new HashMap<>();
+        if (blogSortList != null && !blogSortList.isEmpty()) {
+            blogSortMap = blogSortList.parallelStream().collect(Collectors.toMap(BlogSort::getId, BlogSort::getSortName));
+        }
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        Map<String, Object> map;
+        for (Map.Entry<String, Long> entry: blogSortCountMap.entrySet()) {
+            map = new HashMap<>();
+            map.put(SysConf.BLOG_SORT_ID, entry.getKey());
+            map.put(SysConf.COUNT, entry.getValue());
+            map.put(SysConf.NAME, blogSortMap.get(entry.getKey()));
+            resultList.add(map);
+        }
+        //保存到redis中,有效时间两小时
+        if (resultList.size() > 0) {
+            redisUtils.setEx(RedisConf.DASHBOARD + RedisConf.SEGMENTATION + RedisConf.BLOG_COUNT_BY_SORT, JsonUtils.objectToJson(resultList), 2, TimeUnit.HOURS);
+        }
+        return resultList;
     }
 
     @Override
@@ -272,12 +353,12 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     }
 
     @Override
-    public Blog getBlogById(Integer id) {
+    public Blog getBlogById(String id) {
         return null;
     }
 
     @Override
-    public List<Blog> getSameBlogById(Integer id) {
+    public List<Blog> getSameBlogById(String id) {
         return null;
     }
 
@@ -292,7 +373,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     }
 
     @Override
-    public String addBolg(BlogVo blogVo) {
+    public String addBlog(BlogVo blogVo) {
         return null;
     }
 

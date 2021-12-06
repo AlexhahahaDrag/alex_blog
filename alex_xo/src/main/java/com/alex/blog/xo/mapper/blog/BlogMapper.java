@@ -4,6 +4,9 @@ import com.alex.blog.base.mapper.SuperMapper;
 import com.alex.blog.common.entity.blog.Blog;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 博客表 Mapper 接口
@@ -15,4 +18,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface BlogMapper extends SuperMapper<Blog> {
 
+    List<Map<String, Object>> getBlogCountByTag();
+
+    List<Map<String, Object>> getBlogCountBySort();
 }

@@ -30,6 +30,7 @@ public final class SysConf extends BaseSysConf {
     public static final String MESSAGE = "message";
 
     public static final String LIMIT_ONE = "limit 1";
+    public static final String COUNT = "count";
 
     //IP相关
     public static final String OS = "OS";
@@ -120,5 +121,7 @@ public final class SysConf extends BaseSysConf {
     public static final String BLOG_SECOND_COUNT = "BLOG_SECOND_COUNT";
     public static final String BLOG_THIRD_COUNT = "BLOG_THIRD_COUNT";
     public static final String BLOG_FOURTH_COUNT = "BLOG_FOURTH_COUNT";
+    public static final String BLOG_COUNT_BY_TAG = "BLOG_COUNT_BY_TAG";
+    public static final String BLOG_COUNT_BY_SORT = "BLOG_COUNT_BY_SORT";
 }
 

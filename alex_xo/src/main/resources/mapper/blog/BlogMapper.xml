@@ -47,4 +47,11 @@
         title, summary, content, tag_id, click_count, collect_count, file_id, `status`, admin_id, is_original, author, articles_part, blog_sort_id, `level`, is_publish, sort, open_comment, `type`, outside_link, oid
     </sql>
 
+    <select id="getBlogCountByTag">
+        select tag_id, count(tag_id) as count from t_blog where status = 1 and is_delete = 0 group by tag_id
+    </select>
+
+    <select id="getBlogCountBySort">
+        select blog_sort_id, count(blog_sort_id) as count from t_blog where status = 1 and is_delete = 0 group by blog_sort_id
+    </select>
 </mapper>

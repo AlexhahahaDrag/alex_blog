@@ -5,7 +5,6 @@ import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.vo.blog.BlogVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.models.auth.In;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -123,7 +122,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.util.List<com.alex.blog.common.entity.blog.Blog>
     */
-    List<Blog> getSameBlogById(Integer id);
+    List<Blog> getSameBlogById(String id);
 
     /**
      * @param top
@@ -147,7 +146,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.lang.String
     */
-    String addBolg(BlogVo blogVo);
+    String addBlog(BlogVo blogVo);
 
     /**
      * @param blogVo
