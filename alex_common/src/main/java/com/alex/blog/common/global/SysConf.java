@@ -112,5 +112,13 @@ public final class SysConf extends BaseSysConf {
 
     //t_comment
     public static final String TYPE = "type";
+
+    //t_sys_params
+    public static final String BLOG_HOT_COUNT = "BLOG_HOT_COUNT";
+    public static final String BLOG_NEW_COUNT = "BLOG_NEW_COUNT";
+    public static final String BLOG_FIRST_COUNT = "BLOG_FIRST_COUNT";
+    public static final String BLOG_SECOND_COUNT = "BLOG_SECOND_COUNT";
+    public static final String BLOG_THIRD_COUNT = "BLOG_THIRD_COUNT";
+    public static final String BLOG_FOURTH_COUNT = "BLOG_FOURTH_COUNT";
 }
 

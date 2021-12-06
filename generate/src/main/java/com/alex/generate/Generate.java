@@ -56,7 +56,7 @@ public class Generate {
                             ); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_comment")
+                    builder.addInclude("t_sys_params")
                             .addTablePrefix("t_")
                             .entityBuilder()
                             .superClass(BaseEntity.class)

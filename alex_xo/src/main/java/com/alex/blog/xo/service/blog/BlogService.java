@@ -115,7 +115,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      com.alex.blog.common.entity.blog.Blog
     */
-    Blog getBlogById(Integer id);
+    Blog getBlogById(String id);
 
     /**
      * @param id
@@ -204,6 +204,13 @@ public interface BlogService extends SuperService<Blog> {
     void deleteRedisByBlogTag();
 
     /**
+     * @description: 删除redis中博客缓存
+     * @author:      alex
+     * @return:      void
+    */
+    void deleteRedisByBlog();
+
+    /**
      * @param level
      * @param currentPage
      * @param currentPageSize
@@ -212,7 +219,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
     */
-    IPage<Blog> getBlogPageByLevel(Integer level, Long currentPage, Long currentPageSize, Long useSort);
+    IPage<Blog> getBlogPageByLevel(Integer level, Long currentPage, Long currentPageSize, Integer useSort);
 
     /**
      * @description: 获取首页排行博客
@@ -262,7 +269,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.lang.String
     */
-    String praiseBlogById(Integer id);
+    String praiseBlogById(String id);
 
     /**
      * @param tagId

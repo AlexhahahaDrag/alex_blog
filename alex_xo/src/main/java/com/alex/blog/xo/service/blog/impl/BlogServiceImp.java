@@ -1,14 +1,17 @@
 package com.alex.blog.xo.service.blog.impl;
 
 import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.entity.blog.BlogSort;
 import com.alex.blog.common.entity.blog.Tag;
+import com.alex.blog.common.entity.sysParams.SysParams;
 import com.alex.blog.common.enums.ECommentSource;
 import com.alex.blog.common.enums.ECommentType;
+import com.alex.blog.common.enums.ELevel;
 import com.alex.blog.common.enums.EPublish;
 import com.alex.blog.common.feign.PictureFeignClient;
 import com.alex.blog.common.global.MessageConf;
@@ -22,6 +25,7 @@ import com.alex.blog.xo.service.blog.BlogService;
 import com.alex.blog.xo.service.blog.BlogSortService;
 import com.alex.blog.xo.service.blog.CommentService;
 import com.alex.blog.xo.service.blog.TagService;
+import com.alex.blog.xo.service.sys.SysParamsService;
 import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -71,6 +75,9 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     private static final String TAG = "tag";
     private static final String BLOG_SORT = "blogSort";
+
+    @Autowired
+    private SysParamsService sysParamsService;
 
     @Override
     public List<Blog> setTagByBlogList(List<Blog> list) {
@@ -296,47 +303,116 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public void deleteRedisByBlogSort() {
-
+        //删除redis中博客分类下的博客数量
+        redisUtils.delete(RedisConf.DASHBOARD + RedisConf.SEGMENTATION + RedisConf.BLOG_COUNT_BY_SORT);
+        //删除博客相关缓存
+        deleteRedisByBlog();
     }
 
     @Override
     public void deleteRedisByBlogTag() {
-
+        //删除redis中博客标签下的博客数量
+        redisUtils.delete(RedisConf.DASHBOARD + RedisConf.SEGMENTATION + RedisConf.BLOG_COUNT_BY_TAG);
+        //删除博客相关缓存
+        deleteRedisByBlog();
     }
 
     @Override
-    public IPage<Blog> getBlogPageByLevel(Integer level, Long currentPage, Long currentPageSize, Long useSort) {
-        return null;
+    public void deleteRedisByBlog() {
+        redisUtils.delete(RedisConf.HOT_BLOG);
+        redisUtils.delete(RedisConf.NEW_BLOG);
+        redisUtils.delete(RedisConf.BLOG_LEVEL + RedisConf.SEGMENTATION + ELevel.FIRST.getCode());
+        redisUtils.delete(RedisConf.BLOG_LEVEL + RedisConf.SEGMENTATION + ELevel.SECOND.getCode());
+        redisUtils.delete(RedisConf.BLOG_LEVEL + RedisConf.SEGMENTATION + ELevel.THIRD.getCode());
+        redisUtils.delete(RedisConf.BLOG_LEVEL + RedisConf.SEGMENTATION + ELevel.FOURTH.getCode());
     }
 
     @Override
-    public IPage<Blog> getHotBlog() {
-        return null;
-    }
-
-    @Override
-    public IPage<Blog> getNewBlog(Long currentPage, Long pageSize) {
-        // TODO: 2021/12/3 添加后台配置参数sysParamsService
-        IPage<Blog> blogPage = searchBlogByType(null, currentPage, pageSize, null);
-        return null;
-    }
-
-    @Override
-    public IPage<Blog> getBlogBySearch(Long currentPage, Long currentSize) {
-        // TODO: 2021/12/3 添加后台配置参数sysParamsService
-        IPage<Blog> blogPage = searchBlogByType(null, currentPage, currentSize, null);
-        List<Blog> records = blogPage.getRecords();
-        records = setTagPictureAndSortByBlogList(records);
-        blogPage.setRecords(records);
+    public IPage<Blog> getBlogPageByLevel(Integer level, Long currentPage, Long currentPageSize, Integer useSort) {
+        //从redis中获取内容
+        String jsonResult = redisUtils.get(RedisConf.BLOG_LEVEL + RedisConf.SEGMENTATION + level);
+        if (StringUtils.isNotEmpty(jsonResult)) {
+            List<Blog> levelBlogList = JsonUtils.jsonToArrayList(jsonResult, Blog.class);
+            IPage<Blog> page = new Page<>();
+            page.setRecords(levelBlogList);
+            return page;
+        }
+        String blogCount = sysParamsService.getSysParamsValueByKey(ELevel.values()[level].getValue());
+        Page<Blog> page = new Page<>();
+        page.setCurrent(currentPage);
+        if (StringUtils.isEmpty(blogCount)) {
+            log.error(MessageConf.PLEASE_CONFIGURE_SYSTEM_PARAMS);
+        } else {
+            page.setSize(Long.parseLong(blogCount));
+        }
+        IPage<Blog> blogPage = blogService.getBlogPageByLevel(page, level, useSort);
+        List<Blog> blogList = blogPage.getRecords();
+        //如果查询的是一二级推荐的时候，如果没有值，自动将top5的数据放入
+        if ((Constants.NUM_ONE == level || Constants.NUM_ONE == level) && blogList.isEmpty()) {
+            String blogHotCountStr = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_HOT_COUNT);
+            String blogFirstCountStr = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FIRST_COUNT);
+            Long blogHotCount;
+            if (StringUtils.isEmpty(blogHotCountStr) || StringUtils.isEmpty(blogFirstCountStr)) {
+                log.error(MessageConf.PLEASE_CONFIGURE_SYSTEM_PARAMS);
+                blogHotCount = null;
+            } else {
+                blogHotCount = Long.parseLong(blogHotCountStr);
+            }
+// TODO: 2021/12/6 111111111111111111111111111111111111111111111111111111111111111111111111 
+        }
+        blogList = setTagPictureAndSortByBlogList(blogList);
+        blogPage.setRecords(blogList);
         return blogPage;
     }
 
     @Override
+    public IPage<Blog> getHotBlog() {
+        //从redis中获取内容
+        String hotBlogJson = redisUtils.get(RedisConf.HOT_BLOG);
+        if (StringUtils.isNotEmpty(hotBlogJson)) {
+            List<Blog> hotBlogList = JsonUtils.jsonToArrayList(hotBlogJson);
+            IPage<Blog> hotPage = new Page<>();
+            hotPage.setRecords(hotBlogList);
+            return hotPage;
+        }
+        String blogHotCountStr = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_HOT_COUNT);
+        IPage<Blog> blogIPage = null;
+        if (StringUtils.isEmpty(blogHotCountStr)) {
+            log.error(MessageConf.PLEASE_CONFIGURE_SYSTEM_PARAMS);
+        } else {
+            blogIPage = searchBlogByType(null, 0l, Long.parseLong(blogHotCountStr), null, SysConf.CLICK_COUNT);
+            //保存热门博客列表到redis,有效时间为1小时
+            if (blogIPage.getRecords() != null && !blogIPage.getRecords().isEmpty()) {
+                redisUtils.setEx(RedisConf.HOT_BLOG, JsonUtils.objectToJson(blogIPage.getRecords()), 1, TimeUnit.HOURS);
+            }
+        }
+        return blogIPage;
+    }
+
+    @Override
+    public IPage<Blog> getNewBlog(Long currentPage, Long pageSize) {
+        String blogNewCountStr = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_NEW_COUNT);
+        IPage<Blog> blogPage = null;
+        if (StringUtils.isEmpty(blogNewCountStr)) {
+            log.error(MessageConf.PLEASE_CONFIGURE_SYSTEM_PARAMS);
+        } else {
+            blogPage = searchBlogByType(null, currentPage, Long.parseLong(blogNewCountStr), null, SysConf.CLICK_COUNT);
+            //保存热门博客列表到redis,有效时间为1小时
+            if (blogPage.getRecords() != null && !blogPage.getRecords().isEmpty()) {
+                redisUtils.setEx(RedisConf.HOT_BLOG, JsonUtils.objectToJson(blogPage.getRecords()), 1, TimeUnit.HOURS);
+            }
+        }
+        return blogPage;
+    }
+
+    @Override
+    public IPage<Blog> getBlogBySearch(Long currentPage, Long currentSize) {
+        return getNewBlog(currentPage, currentSize);
+    }
+
+    @Override
     public IPage<Blog> getBlogByTime(Long currentPage, Long currentSize) {
-        IPage<Blog> blogPage = searchBlogByType(null, currentPage, currentSize, null);
-        List<Blog> records = blogPage.getRecords();
-        records = setTagPictureAndSortByBlogList(records);
-        blogPage.setRecords(records);
+        IPage<Blog> blogPage = searchBlogByType(null, currentPage, currentSize, null, null);
         return blogPage;
     }
 
@@ -356,7 +432,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     }
 
     @Override
-    public String praiseBlogById(Integer id) {
+    public String praiseBlogById(String id) {
         if (id == null) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
@@ -384,8 +460,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         //插入评论数
         Comment comment = new Comment();
         comment.setUserId(userId);
-        // TODO: 2021/12/3 将来修改id为string去掉“”
-        comment.setBlogId(id + "");
+        comment.setBlogId(id);
         comment.setSource(ECommentSource.BLOG_INFO.getCode());
         comment.setType(ECommentType.PRAISE.getCode());
         comment.insert();
@@ -394,12 +469,12 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public IPage<Blog> getSameBlogByTagId(Integer tagId) {
-        return searchBlogByType(tagId, (long)1, (long)10, TAG);
+        return searchBlogByType(tagId, 0l, 10l, TAG, null);
     }
 
     @Override
     public IPage<Blog> getBlogListBySortId(Integer blogSortId, Long currentPage, Long currentPageSize) {
-        return searchBlogByType(blogSortId, currentPage, currentPageSize, BLOG_SORT);
+        return searchBlogByType(blogSortId, currentPage, currentPageSize, BLOG_SORT, null);
     }
 
     @Override
@@ -494,7 +569,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
                         clickCount + "", 24, TimeUnit.HOURS);
             }
         }
-        return searchBlogByType(blogTagId, currentPage, currentPageSize, TAG);
+        return searchBlogByType(blogTagId, currentPage, currentPageSize, TAG, null);
     }
 
     /**
@@ -506,7 +581,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
      */
-    private IPage<Blog> searchBlogByType(Integer blogTagId, Long currentPage, Long currentPageSize, String type) {
+    private IPage<Blog> searchBlogByType(Integer blogTagId, Long currentPage, Long currentPageSize, String type, String orderBy) {
         //设置分页
         Page<Blog> page = new Page<>();
         page.setCurrent(currentPage == null ? 1 : currentPage);
@@ -520,7 +595,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             idType = SysConf.BLOG_SORT_ID;
         }
         query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
-                .orderByDesc(SysConf.CREATE_TIME).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
+                .orderByDesc(StringUtils.isEmpty(orderBy) ? SysConf.OPERATE_TIME : orderBy).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
         if (StringUtils.isNotEmpty(idType)) {
             query.eq(idType, blogTagId);
         }
@@ -551,7 +626,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
                         clickCount + "", 24, TimeUnit.HOURS);
             }
         }
-        return searchBlogByType(blogSortId, currentPage, currentPageSize, BLOG_SORT);
+        return searchBlogByType(blogSortId, currentPage, currentPageSize, BLOG_SORT, null);
     }
 
     @Override
