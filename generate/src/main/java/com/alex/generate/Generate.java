@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Genrate {
+public class Generate {
 
     public static void main(String[] args) {
 
@@ -56,7 +56,7 @@ public class Genrate {
                             ); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_tag")
+                    builder.addInclude("t_sys_params")
                             .addTablePrefix("t_")
                             .entityBuilder()
                             .superClass(BaseEntity.class)
@@ -72,7 +72,7 @@ public class Genrate {
                             .logicDeletePropertyName("isDelete")
 //                            .naming(NamingStrategy.no_change)
                             .columnNaming(NamingStrategy.underline_to_camel)
-                            .addSuperEntityColumns("id", "creator", "created_time", "updater", "updated_time", "deleter", "delete_time", "status")
+                            .addSuperEntityColumns("id", "creator", "create_time", "updater", "update_time", "deleter", "delete_time", "status")
 ////                            .addIgnoreColumns("age")
                             .addTableFills(list)
 ////                            .idType(IdType.AUTO)

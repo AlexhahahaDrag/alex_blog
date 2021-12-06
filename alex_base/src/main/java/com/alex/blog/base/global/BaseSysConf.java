@@ -35,6 +35,7 @@ public class BaseSysConf {
     public static final String ERROR = "error";
     public final static String CREATE_TIME = "create_time";
     public final static String UPDATE_TIME = "update_time";
+    public final static String OPERATE_TIME = "operate_time";
     public final static String TOKEN = "token";
     public final static String PLATFORM = "platform";
     public final static String ACCESS_TOKEN = "accessToken";

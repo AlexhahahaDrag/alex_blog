@@ -1,6 +1,7 @@
 package com.alex.blog.admin.config;
 
 import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.common.utils.UserUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -23,14 +24,21 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         log.info("start insert fill ....");
         this.fillStrategy(metaObject, "status", EStatus.ENABLE.getCode());
         this.fillStrategy(metaObject, "isDelete", 0);
-        this.fillStrategy(metaObject, "createDate", LocalDateTime.now());
-        this.fillStrategy(metaObject, "updateDate",  LocalDateTime.now());
+        this.fillStrategy(metaObject, "createTime", LocalDateTime.now());
+        this.fillStrategy(metaObject, "updateTime",  LocalDateTime.now());
+        this.fillStrategy(metaObject, "operateTime",  LocalDateTime.now());
+        // TODO: 2021/12/2 测试是否可以通过
+        this.fillStrategy(metaObject, "creator",  UserUtil.getLoginUser().getId());
+        this.fillStrategy(metaObject, "operator",  UserUtil.getLoginUser().getId());
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         log.info("start update fill ....");
-        this.fillStrategy(metaObject, "updateDate",  LocalDateTime.now());
-        this.fillStrategy(metaObject, "isDelete",  0);
+        this.fillStrategy(metaObject, "updateTime",  LocalDateTime.now());
+        this.fillStrategy(metaObject, "operateTime",  LocalDateTime.now());
+        // TODO: 2021/12/2 测试是否可以通过
+        this.fillStrategy(metaObject, "updater",  UserUtil.getLoginUser().getId());
+        this.fillStrategy(metaObject, "operator",  UserUtil.getLoginUser().getId());
     }
 }

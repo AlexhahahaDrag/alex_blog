@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alex.blog.xo.mapper.blog.CommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.alex.blog.common.vo.blog.Comment">
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="creator" property="creator" />
+        <result column="update_time" property="updateTime" />
+        <result column="updater" property="updater" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="deleter" property="deleter" />
+        <result column="is_delete" property="isDelete" />
+        <result column="user_id" property="userId" />
+        <result column="to_id" property="toId" />
+        <result column="to_user_id" property="toUserId" />
+        <result column="content" property="content" />
+        <result column="blog_id" property="blogId" />
+        <result column="status" property="status" />
+        <result column="source" property="source" />
+        <result column="TYPE" property="type" />
+        <result column="first_comment_id" property="firstCommentId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        creator,
+        update_time,
+        updater,
+        delete_time,
+        deleter,
+        is_delete,
+        user_id, to_id, to_user_id, content, blog_id, `status`, `source`, `TYPE`, first_comment_id
+    </sql>
+
+</mapper>

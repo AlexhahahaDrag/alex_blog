@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class StringUtils {
 
-    private static final int NUM_32 = 32;
-
     //集群号
     private static int machineId = 1;
 
@@ -318,7 +316,7 @@ public class StringUtils {
      * @author:       alex
      * @return:       boolean
     */
-    public static boolean checkIdList(Collection<Long> collection) {
+    public static boolean checkIdList(Collection<String> collection) {
         return collection != null && collection.size() > 0;
     }
 }

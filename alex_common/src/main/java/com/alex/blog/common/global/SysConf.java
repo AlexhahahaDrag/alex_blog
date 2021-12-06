@@ -12,6 +12,7 @@ public final class SysConf extends BaseSysConf {
 
     public static final String ALL = "all";
     public static final String TITLE = "title";
+    public static final String SUMMARY = "summary";
 
     public static final String PICTURE = "picture";
     public static final String ROLE = "role";
@@ -27,7 +28,6 @@ public final class SysConf extends BaseSysConf {
     public static final String FILE_OLD_NAME = "fileOldName";
     public static final String SOURCE = "source";
     public static final String MESSAGE = "message";
-
 
     public static final String LIMIT_ONE = "limit 1";
 
@@ -92,5 +92,33 @@ public final class SysConf extends BaseSysConf {
     public static final String MENU_TYPE = "menu_type";
     public static final String PID = "pid";
     public static final String OTHER_DATA = "otherData";
+
+    //t_blog
+    public static final String BLOG_SORT_BY_MONTH = "blog_sort_by_month";
+    public static final String BLOG_ID = "blog_id";
+    //月份集合
+    public static final String MONTH_SET = "month_set";
+    public static final String AUTHOR = "author";
+
+    public static final String BLOG_SORT_ID = "blog_sort_id";
+    public static final String TAG_ID = "tag_id";
+
+    //分页相关
+    public static final String TOTAL = "total";
+    public static final String TOTAL_PAGE = "totalPage";
+    public static final String CURRENT_PAGE = "currentPage";
+    public static final String BLOG_LIST = "blogList";
+    public static final String PAGE_SIZE = "pageSize";
+
+    //t_comment
+    public static final String TYPE = "type";
+
+    //t_sys_params
+    public static final String BLOG_HOT_COUNT = "BLOG_HOT_COUNT";
+    public static final String BLOG_NEW_COUNT = "BLOG_NEW_COUNT";
+    public static final String BLOG_FIRST_COUNT = "BLOG_FIRST_COUNT";
+    public static final String BLOG_SECOND_COUNT = "BLOG_SECOND_COUNT";
+    public static final String BLOG_THIRD_COUNT = "BLOG_THIRD_COUNT";
+    public static final String BLOG_FOURTH_COUNT = "BLOG_FOURTH_COUNT";
 }
 

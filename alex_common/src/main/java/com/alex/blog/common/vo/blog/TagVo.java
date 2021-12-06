@@ -31,10 +31,6 @@ public class TagVo extends BaseVo<TagVo> {
     @TableField("content")
     private String content;
 
-    @ApiModelProperty("状态")
-    @TableField("`status`")
-    private Integer status;
-
     @ApiModelProperty("标签简介")
     @TableField("click_count")
     private Integer clickCount;

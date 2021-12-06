@@ -35,10 +35,6 @@ public class BlogSort extends BaseEntity {
     @TableField("content")
     private String content;
 
-    @ApiModelProperty("状态")
-    @TableField("`status`")
-    private Integer status;
-
     @ApiModelProperty("排序字段，越大越靠前")
     @TableField("sort")
     private Integer sort;
@@ -46,6 +42,4 @@ public class BlogSort extends BaseEntity {
     @ApiModelProperty("点击数")
     @TableField("click_count")
     private Integer clickCount;
-
-
 }

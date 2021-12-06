@@ -199,7 +199,8 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
                     minioUrl = minIoService.uploadFile(item);
                 }
                 File file = new File();
-                file.setFileSortId(fileSort.getId());
+                // TODO: 2021/12/2 后将id修改为string
+                file.setFileSortId(fileSort.getId() + "");
                 file.setFileOldName(oldName);
                 file.setFileSize(size);
                 file.setPicExpandedName(picExpandedName);
@@ -281,7 +282,8 @@ public class FileServiceImpl extends SuperServiceImpl<FileMapper, File> implemen
             file.setPicUrl(picUrl);
             file.setPicExpandedName("jpg");
             file.setPicName(newFileName);
-            file.setFileSortId(fileSort.getId());
+            // TODO: 2021/12/2 后将id修改为string
+            file.setFileSortId(fileSort.getId() + "");
             file.setFileOldName(item);
             return file;
         }).collect(Collectors.toList());

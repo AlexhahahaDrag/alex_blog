@@ -110,7 +110,7 @@ public interface AdminService extends SuperService<Admin> {
      * @author:       alex
      * @return:       java.lang.String
      */
-    String deleteBatchAdmin(List<Long> ids);
+    String deleteBatchAdmin(List<String> ids);
 
     /**
      * @param tokenIdList

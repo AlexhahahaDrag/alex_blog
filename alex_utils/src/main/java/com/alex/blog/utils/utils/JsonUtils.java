@@ -88,16 +88,39 @@ public class JsonUtils {
      * @author:       alex
      * @return:       java.util.ArrayList<?>
      */
-    public static ArrayList<?> jsonToArrayList(String jsonArray) {
+    public static <T> List<T> jsonToArrayList(String jsonArray) {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 //设置导出空值
                 .serializeNulls()
                 //忽略策略
                 .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                 .create();
-        ArrayList<?> list = null;
+        List<T> list = null;
         try {
-            Type type = new TypeToken<ArrayList<?>>() {}.getType();
+            Type type = new TypeToken<ArrayList<T>>() {}.getType();
+            list = gson.fromJson(jsonArray, type);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     * @param jsonArray
+     * @description:  将json转换成arrayList
+     * @author:       alex
+     * @return:       java.util.ArrayList<?>
+     */
+    public static <T> List<T> jsonToArrayList(String jsonArray, Class<T> clazz) {
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                //设置导出空值
+                .serializeNulls()
+                //忽略策略
+                .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+                .create();
+        List<T> list = null;
+        try {
+            Type type = new TypeToken<ArrayList<T>>() {}.getType();
             list = gson.fromJson(jsonArray, type);
         } catch (Exception e) {
             e.printStackTrace();
