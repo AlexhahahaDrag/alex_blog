@@ -1,6 +1,8 @@
 package com.alex.blog.xo.service.blog.impl;
 
 import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.base.global.Constants;
+import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.entity.blog.BlogSort;
@@ -9,6 +11,7 @@ import com.alex.blog.common.enums.EPublish;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.blog.BlogVo;
+import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.mapper.blog.BlogMapper;
 import com.alex.blog.xo.service.blog.BlogService;
@@ -17,15 +20,14 @@ import com.alex.blog.xo.service.blog.TagService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.convert.EntityWriter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <p>
@@ -43,6 +45,12 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Autowired
     private BlogSortService blogSortService;
+
+    @Autowired
+    private BlogService blogService;
+
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Override
     public List<Blog> setTagByBlogList(List<Blog> list) {
@@ -72,20 +80,28 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         if (tagIds.size() > 0) {
             blogSorts = blogSortService.listByIds(tagIds);
         }
-        //将标签信息按id做成map
-        Map<Long, Tag> tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
+        Map<Long, Tag> tagMap = new HashMap<>();
+        if (tags != null && !tags.isEmpty()) {
+            //将标签信息按id做成map
+            tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
+        }
+        Map<Long, BlogSort> blogSortMap = new HashMap<>();
+        if (blogSorts != null && !blogSorts.isEmpty()) {
+            blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
+        }
         //将分类信息按id做成map
-        Map<Long, BlogSort> blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
+        Map<Long, Tag> finalTagMap = tagMap;
+        Map<Long, BlogSort> finalBlogSortMap = blogSortMap;
         list.forEach(item -> {
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
                 item.setTagList(StringUtils.splitLongByCode(item.getTagId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(tagId -> tagMap.get(tagId)).collect(Collectors.toList()));
+                        stream().map(finalTagMap::get).collect(Collectors.toList()));
             }
             //设置分类信息
             if (StringUtils.isNotEmpty(item.getBlogSortId())) {
                 item.setBlogSortList(StringUtils.splitLongByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(blogSortId -> blogSortMap.get(blogSortId)).collect(Collectors.toList()));
+                        stream().map(finalBlogSortMap::get).collect(Collectors.toList()));
             }
         });
         return list;
@@ -114,32 +130,33 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         }
         //查询博客分类信息
         List<BlogSort> blogSorts = null;
-        if (tagIds.size() > 0) {
-            blogSorts = blogSortService.listByIds(tagIds);
+        if (sortIds.size() > 0) {
+            blogSorts = blogSortService.listByIds(sortIds);
         }
         List<Map<String, Object>> picList = new ArrayList<>();
-        // TODO: 2021/11/26 查询图片数据
+
         //将标签信息按id做成map
         Map<Long, Tag> tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
         //将分类信息按id做成map
         Map<Long, BlogSort> blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
         //将图片信息按id做成map
+        // TODO: 2021/11/26 查询图片数据
         Map<Long, String> picMap = picList.stream().collect(Collectors.toMap(item -> (long)item.get(SysConf.ID), item -> item.get(SysConf.URL).toString()));
         list.forEach(item -> {
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
                 item.setTagList(StringUtils.splitLongByCode(item.getTagId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(tagId -> tagMap.get(tagId)).collect(Collectors.toList()));
+                        stream().map(tagMap::get).collect(Collectors.toList()));
             }
             //设置分类信息
             if (StringUtils.isNotEmpty(item.getBlogSortId())) {
                 item.setBlogSortList(StringUtils.splitLongByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(blogSortId -> blogSortMap.get(blogSortId)).collect(Collectors.toList()));
+                        stream().map(blogSortMap::get).collect(Collectors.toList()));
             }
             //设置图片信息
             if (StringUtils.isNotEmpty(item.getFileId())) {
                 item.setBlogSortList(StringUtils.splitLongByCode(item.getFileId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(blogSortId -> blogSortMap.get(blogSortId)).collect(Collectors.toList()));
+                        stream().map(blogSortMap::get).collect(Collectors.toList()));
             }
         });
         return list;
@@ -177,22 +194,37 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         //查询状态是可用的发布的博客信息
         query.eq(SQLConf.LEVEL, level).eq(SQLConf.STATUS, EStatus.ENABLE.getCode())
                 .eq(SQLConf.IS_PUBLISH, EPublish.PUBLISH.getCode());
-
-        return null;
+        return blogService.list(query);
     }
 
     @Override
     public IPage<Blog> getBlogPageByLevel(Page<Blog> page, int level, Integer useSort) {
-        return null;
+        QueryWrapper<Blog> query = new QueryWrapper<>();
+        //查询状态是可用的发布的博客信息
+        query.eq(SQLConf.LEVEL, level).eq(SQLConf.STATUS, EStatus.ENABLE.getCode())
+                .eq(SQLConf.IS_PUBLISH, EPublish.PUBLISH.getCode());
+        if (useSort == 0) {
+            query.orderByDesc(SysConf.CREATE_TIME);
+        } else {
+            query.orderByDesc(SysConf.SORT);
+        }
+        //首页不需要显示内筒，所以不需要查询内容
+        query.select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
+        return blogService.page(page, query);
     }
 
     @Override
     public Integer getBlogCount(Integer status) {
-        return null;
+        QueryWrapper<Blog> query = new QueryWrapper<>();
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode());
+        return blogService.count(query);
     }
 
     @Override
     public List<Map<String, Object>> getBlogCountByTag() {
+        //从redis中获取标签下含有的博客数量
+        redisUtils.get(RedisConf.DASHBOARD + RedisConf.SEGMENTATION + );
+
         return null;
     }
 
