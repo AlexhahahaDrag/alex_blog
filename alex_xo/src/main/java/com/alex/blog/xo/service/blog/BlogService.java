@@ -170,7 +170,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.lang.String
     */
-    String deleteBlog(Integer id);
+    String deleteBlog(String id);
 
     /**
      * @param blogIds
@@ -178,7 +178,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.lang.String
     */
-    String deleteBatchBlog(List<Integer> blogIds);
+    String deleteBatchBlog(List<String> blogIds);
 
     /**
      * @param blogInfo

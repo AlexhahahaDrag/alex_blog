@@ -123,5 +123,12 @@ public final class SysConf extends BaseSysConf {
     public static final String BLOG_FOURTH_COUNT = "BLOG_FOURTH_COUNT";
     public static final String BLOG_COUNT_BY_TAG = "BLOG_COUNT_BY_TAG";
     public static final String BLOG_COUNT_BY_SORT = "BLOG_COUNT_BY_SORT";
+
+    //rabbitmq命令
+    public static final String COMMAND = "command";
+    public static final String DELETE = "delete";
+    public static final String LEVEL = "level";
+    public static final String EXCHANGE_DIRECT = "exchange.direct";
+    public static final String ALEX_BLOG = "alex.blog";
 }
 

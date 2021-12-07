@@ -1,6 +1,5 @@
 package com.alex.blog.base.entity;
 
-import com.alex.blog.base.enums.EStatus;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -32,7 +31,7 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      @TableField(value = "creator", fill = FieldFill.INSERT)
      private Long creator;
 
-     @ApiModelProperty(value = "create_time", name = "创建时间")
+     @ApiModelProperty(value = "createTime", name = "创建时间")
      @TableField(value = "create_time", fill = FieldFill.INSERT, keepGlobalFormat=true)
      @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
      private LocalDateTime createTime;
@@ -41,7 +40,7 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      @TableField(value = "updater", fill = FieldFill.INSERT_UPDATE)
      private Long updater;
 
-     @ApiModelProperty(value = "update_time", name = "更新时间")
+     @ApiModelProperty(value = "updateTime", name = "更新时间")
      @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
      private LocalDateTime updateTime;
 
@@ -49,25 +48,27 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      @TableField(value = "deleter")
      private Long deleter;
 
-     @ApiModelProperty(value = "delete_time", name = "删除时间")
+     @ApiModelProperty(value = "deleteTime", name = "删除时间")
      @TableField(value = "delete_time")
      private LocalDateTime deleteTime;
 
      @TableLogic
      @ApiModelProperty(value = "is_delete", name = "是否删除(0:否1：是)")
-     // TODO: 2021/10/14 添加自动查询
      @TableField(value = "is_delete", fill = FieldFill.INSERT, keepGlobalFormat = true, condition = "0")
-//     @TableField(value = "is_delete", fill = FieldFill.INSERT, keepGlobalFormat=true)
      private Integer isDelete;
+
+     @ApiModelProperty(value = "operator", name = "删除人")
+     @TableField(value = "operator")
+     private String operator;
+
+     @ApiModelProperty(value = "operateTime", name = "操作时间")
+     @TableField(value = "operate_time")
+     private LocalDateTime operateTime;
 
      @ApiModelProperty(value = "status", name="状态", example = "0：失效  1：生效")
      @TableField(value = "status", fill = FieldFill.INSERT)
      private Integer status;
 
      public BaseEntity() {
-          LocalDateTime time = LocalDateTime.now();
-          this.status = EStatus.ENABLE.getCode();
-          this.createTime = time;
-          this.updateTime = time;
      }
 }

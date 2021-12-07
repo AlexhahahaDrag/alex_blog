@@ -29,6 +29,7 @@ import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,6 +81,9 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Autowired
     private BlogMapper blogMapper;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public List<Blog> setTagByBlogList(List<Blog> list) {
@@ -388,12 +392,30 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     }
 
     @Override
-    public String deleteBlog(Integer id) {
-        return null;
+    public String deleteBlog(String id) {
+        Blog blog = blogService.getById(id);
+        blog.setStatus(EStatus.DISABLED.getCode());
+        boolean delete = blog.updateById();
+        //删除成功后，删除redis和rabbit中的博客
+        if (delete) {
+            Map<String, Object> map = new HashMap<>();
+            map.put(SysConf.COMMAND, SysConf.DELETE);
+            map.put(SysConf.BLOG_ID, id);
+            map.put(SysConf.LEVEL, blog.getLevel());
+            map.put(SysConf.OPERATE_TIME, blog.getOperateTime());
+            rabbitTemplate.convertAndSend(SysConf.EXCHANGE_DIRECT, SysConf.ALEX_BLOG, map);
+            //移除专题中包含该博客的信息
+            // TODO: 2021/12/7 添加专题
+            //删除所有评论
+            List<String> list = new ArrayList<>(0);
+            list.add(id);
+            commentService.deleteBatchCommentByBlogIds(list);
+        }
+        return ResultUtil.resultErrorWithMessage(MessageConf.DELETE_SUCCESS);
     }
 
     @Override
-    public String deleteBatchBlog(List<Integer> blogIds) {
+    public String deleteBatchBlog(List<String> blogIds) {
         return null;
     }
 
@@ -453,16 +475,37 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             String blogHotCountStr = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_HOT_COUNT);
             String blogFirstCountStr = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FIRST_COUNT);
             Long blogHotCount;
+            Long blogFirstCount;
             if (StringUtils.isEmpty(blogHotCountStr) || StringUtils.isEmpty(blogFirstCountStr)) {
                 log.error(MessageConf.PLEASE_CONFIGURE_SYSTEM_PARAMS);
-                blogHotCount = null;
+                return null;
             } else {
                 blogHotCount = Long.parseLong(blogHotCountStr);
+                blogFirstCount = Long.parseLong(blogFirstCountStr);
             }
-// TODO: 2021/12/6 111111111111111111111111111111111111111111111111111111111111111111111111
+            IPage<Blog> hotBlog = getHotBlog();
+            List<Blog> hotBlogList = hotBlog.getRecords();
+            List<Blog> firstBlogList = hotBlogList.subList(0, Math.toIntExact(blogFirstCount > blogHotCount ? blogHotCount : blogFirstCount));
+            List<Blog> secondBlogList = hotBlogList.subList(Math.toIntExact(blogFirstCount), Math.toIntExact(blogHotCount));
+            //设置redis，有效时间1小时
+            if (firstBlogList.size() > 0) {
+                redisUtils.setEx(RedisConf.BLOG_LEVEL + RedisConf.SEGMENTATION + ELevel.FIRST.getCode(), JsonUtils.objectToJson(firstBlogList), 1, TimeUnit.HOURS);
+            }
+            if (secondBlogList.size() > 0) {
+                redisUtils.setEx(RedisConf.BLOG_LEVEL + RedisConf.SEGMENTATION + ELevel.SECOND.getCode(), JsonUtils.objectToJson(secondBlogList), 1, TimeUnit.HOURS);
+            }
+            if (ELevel.FIRST.getCode() == level) {
+                blogList = firstBlogList;
+            } else if (ELevel.SECOND.getCode() == level) {
+                blogList = secondBlogList;
+            }
         }
         blogList = setTagPictureAndSortByBlogList(blogList);
         blogPage.setRecords(blogList);
+        //设置数据到redis中，有效时间1小时
+        if (blogList.size() > 0) {
+            redisUtils.setEx(RedisConf.BLOG_LEVEL + RedisConf.SEGMENTATION + level, JsonUtils.objectToJson(blogList), 1, TimeUnit.HOURS);
+        }
         return blogPage;
     }
 

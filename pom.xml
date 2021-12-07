@@ -23,6 +23,7 @@
         <module>alex_base</module>
         <module>alex_utils</module>
         <module>alex_xo</module>
+        <module>alex_web</module>
     </modules>
     <properties>
         <alibaba.version>2.2.3.RELEASE</alibaba.version>

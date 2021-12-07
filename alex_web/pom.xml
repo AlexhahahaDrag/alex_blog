@@ -9,27 +9,24 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>alex_xo</artifactId>
+    <artifactId>alex_web</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
     <dependencies>
-        <!-- alex_utils -->
-        <dependency>
-            <groupId>com.alex</groupId>
-            <artifactId>alex_utils</artifactId>
-            <version>${alex_utils.version}</version>
-        </dependency>
-
-        <!-- alex-common -->
-        <dependency>
-            <groupId>com.alex</groupId>
-            <artifactId>alex_common</artifactId>
-            <version>${alex_common.version}</version>
-        </dependency>
-
         <!-- RabbitMq  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
+        <!-- 添加Nacos相关依赖-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
     </dependencies>
 </project>
