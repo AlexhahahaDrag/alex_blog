@@ -4,10 +4,6 @@ spring:
   profiles:
     active: dev
 
-logging:
-  level:
-    com.alex.blog.xo.mapper: debug
-
   redis:
     host: localhost #redis服务地址
     port: 6379      #redis端口号
@@ -19,6 +15,12 @@ logging:
         max-await: -1      #最大阻塞等待时间（负数表示没有限制）
         max-idle: 5        #连接池中最大的空闲连接数
         min-idle: 0        #连接池中最小的空闲连接数
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 
 isRememberMeExpiresSecond: 259200000 #记住密码三天
 tokenHead: bearer_
@@ -31,3 +33,7 @@ audience:
   refreshSecond: 3600
 
 tokenHeader: Authorization
+
+logging:
+  level:
+    com.alex.blog.xo.mapper: debug

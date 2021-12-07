@@ -114,20 +114,27 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             blogSorts = blogSortService.listByIds(sortIds);
         }
         //将标签信息按id做成map
-        assert tags != null;
-        Map<String, Tag> tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
+        Map<String, Tag> tagMap = new HashMap<>();
+        if (tags != null && !tags.isEmpty()) {
+            tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
+        }
         //将分类信息按id做成map
-        Map<String, BlogSort> blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
+        Map<String, BlogSort> blogSortMap = new HashMap<>();
+        if (blogSorts != null &&!blogSorts.isEmpty()) {
+            blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
+        }
+        Map<String, Tag> finalTagMap = tagMap;
+        Map<String, BlogSort> finalBlogSortMap = blogSortMap;
         list.forEach(item -> {
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
                 item.setTagList(StringUtils.splitStringByCode(item.getTagId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(tagMap::get).collect(Collectors.toList()));
+                        stream().map(finalTagMap::get).collect(Collectors.toList()));
             }
             //设置分类信息
             if (StringUtils.isNotEmpty(item.getBlogSortId())) {
                 item.setBlogSortList(StringUtils.splitStringByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(blogSortMap::get).collect(Collectors.toList()));
+                        stream().map(finalBlogSortMap::get).collect(Collectors.toList()));
             }
         });
         return list;
@@ -241,20 +248,25 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         return blogService.list(query);
     }
 
+    /**
+     * @param page
+     * @param level
+     * @param useSort
+     * @description: 分页查询数据
+     * @author:       alex
+     * @return:       com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
+    */
     @Override
     public IPage<Blog> getBlogPageByLevel(Page<Blog> page, int level, Integer useSort) {
-        QueryWrapper<Blog> query = new QueryWrapper<>();
-        //查询状态是可用的发布的博客信息
-        query.eq(SQLConf.LEVEL, level).eq(SQLConf.STATUS, EStatus.ENABLE.getCode())
-                .eq(SQLConf.IS_PUBLISH, EPublish.PUBLISH.getCode());
+        String sortStr;
         if (useSort == 0) {
-            query.orderByDesc(SysConf.CREATE_TIME);
+            sortStr = SysConf.CREATE_TIME;
         } else {
-            query.orderByDesc(SysConf.SORT);
+            sortStr = SysConf.SORT;
         }
-        //首页不需要显示内筒，所以不需要查询内容
-        query.select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
-        return blogService.page(page, query);
+        Map<String, Object> eqMap = new HashMap<>();
+        eqMap.put(SysConf.LEVEL, level);
+        return searchBlogByType(page.getCurrent(), page.getSize(), eqMap, sortStr);
     }
 
     @Override
@@ -358,12 +370,24 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public Blog getBlogById(String id) {
-        return null;
+        if (StringUtils.isEmpty(id)) {
+            return null;
+        }
+        Blog blog = blogService.getById(id);
+        if (blog != null && EStatus.ENABLE.getCode().equals(blog.getStatus())) {
+            blog = setTagByBlog(blog);
+            blog = setSortByBlog(blog);
+        }
+        return blog;
     }
 
     @Override
     public List<Blog> getSameBlogById(String id) {
-        return null;
+        Blog blog = blogService.getById(id);
+        Map<String, Object> eqMap = new HashMap<>();
+        eqMap.put(SysConf.BLOG_SORT_ID, blog.getBlogSortId());
+        IPage<Blog> blogIPage = searchBlogByType(0L, 10L, eqMap, null);
+        return blogIPage.getRecords();
     }
 
     @Override
@@ -524,7 +548,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         if (StringUtils.isEmpty(blogHotCountStr)) {
             log.error(MessageConf.PLEASE_CONFIGURE_SYSTEM_PARAMS);
         } else {
-            blogIPage = searchBlogByType(null, 0l, Long.parseLong(blogHotCountStr), null, SysConf.CLICK_COUNT);
+            blogIPage = searchBlogByType(0L, Long.parseLong(blogHotCountStr), new HashMap<>(), SysConf.CLICK_COUNT);
             //保存热门博客列表到redis,有效时间为1小时
             if (blogIPage.getRecords() != null && !blogIPage.getRecords().isEmpty()) {
                 redisUtils.setEx(RedisConf.HOT_BLOG, JsonUtils.objectToJson(blogIPage.getRecords()), 1, TimeUnit.HOURS);
@@ -540,7 +564,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         if (StringUtils.isEmpty(blogNewCountStr)) {
             log.error(MessageConf.PLEASE_CONFIGURE_SYSTEM_PARAMS);
         } else {
-            blogPage = searchBlogByType(null, currentPage, Long.parseLong(blogNewCountStr), null, SysConf.CLICK_COUNT);
+            blogPage = searchBlogByType(currentPage, Long.parseLong(blogNewCountStr), new HashMap<>(), SysConf.CLICK_COUNT);
             //保存热门博客列表到redis,有效时间为1小时
             if (blogPage.getRecords() != null && !blogPage.getRecords().isEmpty()) {
                 redisUtils.setEx(RedisConf.HOT_BLOG, JsonUtils.objectToJson(blogPage.getRecords()), 1, TimeUnit.HOURS);
@@ -556,8 +580,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public IPage<Blog> getBlogByTime(Long currentPage, Long currentSize) {
-        IPage<Blog> blogPage = searchBlogByType(null, currentPage, currentSize, null, null);
-        return blogPage;
+        return searchBlogByType(currentPage, currentSize, new HashMap<>(), null);
     }
 
     @Override
@@ -613,12 +636,16 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public IPage<Blog> getSameBlogByTagId(Integer tagId) {
-        return searchBlogByType(tagId, 0l, 10l, TAG, null);
+        Map<String, Object> eqMap = new HashMap<>();
+        eqMap.put(SysConf.TAG_ID, tagId);
+        return searchBlogByType(0L, 10L, eqMap, null);
     }
 
     @Override
     public IPage<Blog> getBlogListBySortId(Integer blogSortId, Long currentPage, Long currentPageSize) {
-        return searchBlogByType(blogSortId, currentPage, currentPageSize, BLOG_SORT, null);
+        Map<String, Object> eqMap = new HashMap<>();
+        eqMap.put(SysConf.BLOG_SORT_ID, blogSortId);
+        return searchBlogByType(currentPage, currentPageSize, eqMap, null);
     }
 
     @Override
@@ -713,35 +740,39 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
                         clickCount + "", 24, TimeUnit.HOURS);
             }
         }
-        return searchBlogByType(blogTagId, currentPage, currentPageSize, TAG, null);
+        Map<String, Object> eqMqp = new HashMap<>();
+        eqMqp.put(SysConf.TAG_ID, blogTagId);
+        return searchBlogByType(currentPage, currentPageSize, eqMqp, null);
     }
 
     /**
-     * @param blogTagId
      * @param currentPage
      * @param currentPageSize
-     * @param type  类型tag、blogSort
+     * @param eqMap  相等sql条件
      * @description: 根据类型分类查询
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
      */
-    private IPage<Blog> searchBlogByType(Integer blogTagId, Long currentPage, Long currentPageSize, String type, String orderBy) {
+    private IPage<Blog> searchBlogByType(Long currentPage, Long currentPageSize, Map<String, Object> eqMap, String orderBy) {
         //设置分页
         Page<Blog> page = new Page<>();
         page.setCurrent(currentPage == null ? 1 : currentPage);
         page.setSize(currentPageSize == null ? 10 : currentPageSize);
         //设置查询条件
         QueryWrapper<Blog> query = new QueryWrapper<>();
-        String idType = "";
-        if ("tag".equals(type)) {
-            idType = SysConf.TAG_ID;
-        } else if ("blogSort".equals(type)) {
-            idType = SysConf.BLOG_SORT_ID;
-        }
         query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
                 .orderByDesc(StringUtils.isEmpty(orderBy) ? SysConf.OPERATE_TIME : orderBy).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
-        if (StringUtils.isNotEmpty(idType)) {
-            query.eq(idType, blogTagId);
+        //当传tag_id和blog_sort_id的时候，需要用in，因为这两个都是多标签、多分类的情况
+        if (eqMap != null && !eqMap.isEmpty()) {
+            for (Map.Entry<String, Object> entry : eqMap.entrySet()) {
+                switch (entry.getKey()) {
+                    case SysConf.BLOG_SORT_ID:
+                    case SysConf.TAG_ID:
+                        query.in(entry.getKey(), Arrays.asList(entry.getValue().toString().split(",")));
+                    default:
+                        query.eq(entry.getKey(), entry.getValue());
+                }
+            }
         }
         IPage<Blog> pageList = blogService.page(page, query);
         List<Blog> blogList = pageList.getRecords();
@@ -770,7 +801,9 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
                         clickCount + "", 24, TimeUnit.HOURS);
             }
         }
-        return searchBlogByType(blogSortId, currentPage, currentPageSize, BLOG_SORT, null);
+        Map<String, Object> eqMap = new HashMap<>();
+        eqMap.put(SysConf.BLOG_SORT_ID, blogSortId);
+        return searchBlogByType(currentPage, currentPageSize, eqMap, null);
     }
 
     @Override
