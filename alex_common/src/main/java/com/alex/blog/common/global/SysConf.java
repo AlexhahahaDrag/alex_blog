@@ -132,5 +132,7 @@ public final class SysConf extends BaseSysConf {
     public static final String ALEX_BLOG = "alex.blog";
     public static final String ADD = "ADD";
     public static final String EDIT = "EDIT";
+    public static final String EDIT_BATCH = "edit_batch";
+    public static final String DELETE_BATCH = "delete_batch";
 }
 

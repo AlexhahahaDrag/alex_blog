@@ -6,6 +6,7 @@ import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.Admin;
+import com.alex.blog.common.entity.admin.SystemConfig;
 import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.entity.blog.BlogSort;
 import com.alex.blog.common.entity.blog.Tag;
@@ -18,6 +19,7 @@ import com.alex.blog.common.vo.blog.BlogVo;
 import com.alex.blog.common.vo.blog.Comment;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.mapper.blog.BlogMapper;
+import com.alex.blog.xo.service.SystemConfigService;
 import com.alex.blog.xo.service.admin.AdminService;
 import com.alex.blog.xo.service.blog.BlogService;
 import com.alex.blog.xo.service.blog.BlogSortService;
@@ -87,6 +89,9 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Autowired
     private AdminService adminService;
+    
+    @Autowired
+    private SystemConfigService systemConfigService;
 
     @Override
     public List<Blog> setTagByBlogList(List<Blog> list) {
@@ -504,7 +509,26 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public String editBatch(List<BlogVo> blogVoList) {
-        return null;
+        if (blogVoList == null || blogVoList.isEmpty()) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
+        }
+        List<String> blogIdList = blogVoList.stream().map(BlogVo::getId).collect(Collectors.toList());
+        Map<String, BlogVo> map = blogVoList.stream().collect(Collectors.toMap(BlogVo::getId, blogVo -> blogVo));
+        List<Blog> blogList = blogService.listByIds(blogIdList);
+        blogList.forEach(blog -> {
+            BlogVo blogVo = map.get(blog.getId());
+            if (blogVo != null) {
+                BeanUtils.copyProperties(blogVo, blog);
+                blog.setStatus(EStatus.ENABLE.getCode());
+            }
+        });
+        boolean isSave = blogService.updateBatchById(blogList);
+        if (isSave) {
+            Map<String, Object> map1 = new HashMap<>();
+            map1.put(SysConf.COMMAND, SysConf.EDIT_BATCH);
+            rabbitTemplate.convertAndSend(SysConf.EXCHANGE_DIRECT, SysConf.ALEX_BLOG, map1);
+        }
+        return ResultUtil.resultSuccessWithMessage(MessageConf.UPDATE_SUCCESS);
     }
 
     @Override
@@ -532,11 +556,28 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public String deleteBatchBlog(List<String> blogIds) {
-        return null;
+        if (blogIds == null || blogIds.isEmpty()) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
+        }
+        String ids = blogIds.stream().collect(Collectors.joining(","));
+        int isSave = blogMapper.deleteBatchIds(blogIds);
+        //删除成功后，需要发送消息到redis和elasticsearch
+        if (isSave == 1) {
+            Map<String, Object> map = new HashMap<>();
+            map.put(SysConf.COMMAND, SysConf.DELETE_BATCH);
+            map.put(SysConf.ID, ids);
+            //发送到rabbitmq
+            rabbitTemplate.convertAndSend(SysConf.EXCHANGE_DIRECT, SysConf.ALEX_BLOG, map);
+            // TODO: 2021/12/23 移除专题 
+            //删除博客下的评论
+            commentService.deleteBatchCommentByBlogIds(blogIds);
+        }
+        return ResultUtil.resultSuccessWithMessage(MessageConf.DELETE_SUCCESS);
     }
 
     @Override
     public String uploadLocalBlog(List<MultipartFile> blogInfo) throws IOException {
+        SystemConfig config = systemConfigService.getConfig();
         return null;
     }
 
@@ -1088,6 +1129,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             map.put(SysConf.BLOG_ID, blog.getId());
             map.put(SysConf.LEVEL, blog.getLevel());
             map.put(SysConf.OPERATE_TIME, blog.getOperateTime());
+            // TODO: 2021/12/23 了解发送到消息队列的目的
             rabbitTemplate.convertAndSend(SysConf.EXCHANGE_DIRECT, SysConf.ALEX_BLOG, map);
         } else if (EPublish.NO_PUBLISH.getCode().equals(blog.getIsPublish())) {
             Map<String, Object> map = new HashMap<>();

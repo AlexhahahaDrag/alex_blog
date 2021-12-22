@@ -1,17 +1,17 @@
 package com.alex.blog.xo.service.blog.impl;
 
-import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.base.service.impl.SuperServiceImpl;
+import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.blog.Comment;
+import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.xo.mapper.blog.CommentMapper;
 import com.alex.blog.xo.service.blog.CommentService;
-import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -27,13 +27,17 @@ public class CommentServiceImp extends SuperServiceImpl<CommentMapper, Comment> 
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private CommentMapper commentMapper;
+
     @Override
-    public boolean deleteBatchCommentByBlogIds(List<String> blogIds) {
+    public String deleteBatchCommentByBlogIds(List<String> blogIds) {
         if (blogIds == null || blogIds.isEmpty()) {
-            return false;
+            return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
         QueryWrapper<Comment> query = new QueryWrapper<>();
         query.in(SysConf.BLOG_ID, blogIds);
-        return commentService.remove(query);
+        commentService.remove(query);
+        return ResultUtil.resultSuccessWithMessage(MessageConf.DELETE_SUCCESS);
     }
 }
