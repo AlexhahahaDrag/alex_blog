@@ -18,5 +18,5 @@ public interface AdminMapper extends SuperMapper<Admin> {
      * @author:       alex
      * @return:       com.alex.blog.common.entity.admin.Admin
     */
-    Admin getAdminById(@Param("id") Integer id);
+    Admin getAdminById(@Param("id") String id);
 }

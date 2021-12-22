@@ -5,13 +5,11 @@ import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
+import com.alex.blog.common.entity.admin.Admin;
 import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.entity.blog.BlogSort;
 import com.alex.blog.common.entity.blog.Tag;
-import com.alex.blog.common.enums.ECommentSource;
-import com.alex.blog.common.enums.ECommentType;
-import com.alex.blog.common.enums.ELevel;
-import com.alex.blog.common.enums.EPublish;
+import com.alex.blog.common.enums.*;
 import com.alex.blog.common.feign.PictureFeignClient;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SQLConf;
@@ -20,6 +18,7 @@ import com.alex.blog.common.vo.blog.BlogVo;
 import com.alex.blog.common.vo.blog.Comment;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.mapper.blog.BlogMapper;
+import com.alex.blog.xo.service.admin.AdminService;
 import com.alex.blog.xo.service.blog.BlogService;
 import com.alex.blog.xo.service.blog.BlogSortService;
 import com.alex.blog.xo.service.blog.CommentService;
@@ -30,6 +29,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,6 +84,9 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private AdminService adminService;
 
     @Override
     public List<Blog> setTagByBlogList(List<Blog> list) {
@@ -255,7 +258,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
      * @description: 分页查询数据
      * @author:       alex
      * @return:       com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
-    */
+     */
     @Override
     public IPage<Blog> getBlogPageByLevel(Page<Blog> page, int level, Integer useSort) {
         String sortStr;
@@ -287,8 +290,8 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         Map<String, Long> tagCountMap = new HashMap<>();
         String tagId;
         for (Map<String, Object> map : blogTagCountList) {
-             tagId = map.get(SysConf.TAG_ID).toString();
-             //如果长度是32所名师一个标签
+            tagId = map.get(SysConf.TAG_ID).toString();
+            //如果长度是32所名师一个标签
             if (tagId.length() == Constants.NUM_32) {
                 tagCountMap.put(tagId, tagCountMap.getOrDefault(tagId, 0L) + Long.parseLong(map.get(SysConf.COUNT).toString()));
             } else {
@@ -392,22 +395,111 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public List<Blog> getBlogListByTop(Integer top) {
-        return null;
+        IPage<Blog> blogPage = searchBlogByType(0L, (long) top, null, SysConf.SORT);
+        return blogPage.getRecords();
     }
 
     @Override
     public IPage<Blog> getPageList(BlogVo blogVo) {
-        return null;
+        Map<String, Object> eqMap = new HashMap<>();
+        if (!StringUtils.isEmpty(blogVo.getLevelKeyword())) {
+            eqMap.put(SQLConf.LEVEL, blogVo.getLevelKeyword());
+        }
+        if (!StringUtils.isEmpty(blogVo.getIsPublish())) {
+            eqMap.put(SQLConf.IS_PUBLISH, blogVo.getIsPublish());
+        }
+        if (!StringUtils.isEmpty(blogVo.getIsOriginal())) {
+            eqMap.put(SQLConf.IS_ORIGINAL, blogVo.getIsOriginal());
+        }
+        if(!StringUtils.isEmpty(blogVo.getType())) {
+            eqMap.put(SQLConf.TYPE, blogVo.getType());
+        }
+        Map<String, Object> likeMap = new HashMap<>();
+        if (StringUtils.isNotEmpty(blogVo.getKeyword()) && !StringUtils.isEmpty(blogVo.getKeyword().trim())) {
+            likeMap.put(SysConf.TITLE, blogVo.getKeyword().trim());
+        }
+        if (!StringUtils.isEmpty(blogVo.getTagId())) {
+            likeMap.put(SQLConf.TAG_ID, blogVo.getTagId());
+        }
+        if (!StringUtils.isEmpty(blogVo.getBlogSortId())) {
+            likeMap.put(SysConf.BLOG_SORT_ID, blogVo.getBlogSortId());
+        }
+        List<String> orderList = null;
+        if (blogVo.getUseSort() == 1){
+            orderList = new ArrayList<>();
+            orderList.add(SysConf.SORT);
+        }
+        return searchBlogByType(blogVo.getCurrentPage(), blogVo.getPageSize(), eqMap, likeMap, orderList);
     }
 
     @Override
     public String addBlog(BlogVo blogVo) {
-        return null;
+        QueryWrapper<Blog> query = new QueryWrapper<>();
+        query.eq(SysConf.LEVEL, blogVo.getLevel()).eq(SysConf.STATUS, blogVo.getStatus());
+        int count = blogService.count(query);
+        String res = addVerdict(count + 1, blogVo.getLevel());
+        if (StringUtils.isNotEmpty(res)) {
+            return res;
+        }
+        Blog blog = new Blog();
+        BeanUtils.copyProperties(blogVo, blog);
+        //如果是原创，为用户添加昵称
+        if (EOriginal.ORIGINAL.getCode().equals(blogVo.getIsOriginal())) {
+            String adminId = RequestHolder.getAdminId();
+            Admin admin = adminService.getAdminById(adminId);
+            if (admin != null) {
+                blog.setAuthor(admin.getNickName() == null ? admin.getUsername() : admin.getNickName());
+                blog.setAdminId(adminId);
+            }
+            String projectName = sysParamsService.getSysParamsValueByKey(SysConf.PROJECT_NAME);
+            blog.setArticlesPart(projectName);
+        } else {
+            blog.setAuthor(blogVo.getAuthor());
+            blog.setArticlesPart(blogVo.getArticlesPart());
+        }
+        blog.setStatus(EStatus.ENABLE.getCode());
+        boolean isSave = blog.insert();
+        //保存成功后，需要发送消息到redis
+        updateSolrAndRedis(isSave, blog);
+        return ResultUtil.resultSuccessWithMessage(MessageConf.INSERT_SUCCESS);
     }
 
     @Override
     public String editBlog(BlogVo blogVo) {
-        return null;
+        Blog blog = blogService.getBlogById(blogVo.getId());
+        if (blog == null) {
+            return ResultUtil.resultErrorWithMessage("博客不存在！");
+        }
+        //如果数据库中的级别和vo中的级别不一致，则说明级别已经进行修改了
+        if (!blog.getLevel().equals(blogVo.getLevel())) {
+            //查询当前vo级别的博客数量
+            QueryWrapper<Blog> query = new QueryWrapper<>();
+            query.eq(SysConf.LEVEL, blogVo.getLevel()).eq(SysConf.STATUS, EStatus.ENABLE.getCode());
+            int count = blogService.count(query);
+            String res = addVerdict(count + 1, blogVo.getLevel());
+            if (StringUtils.isNotEmpty(res)) {
+                return res;
+            }
+        }
+        BeanUtils.copyProperties(blogVo, blog);
+        //如果是原创，为用户添加昵称
+        if (EOriginal.ORIGINAL.getCode().equals(blogVo.getIsOriginal())) {
+            String adminId = RequestHolder.getAdminId();
+            Admin admin = adminService.getAdminById(adminId);
+            if (admin != null) {
+                blog.setAuthor(admin.getNickName() == null ? admin.getUsername() : admin.getNickName());
+                blog.setAdminId(adminId);
+            }
+            String projectName = sysParamsService.getSysParamsValueByKey(SysConf.PROJECT_NAME);
+            blog.setArticlesPart(projectName);
+        } else {
+            blog.setAuthor(blogVo.getAuthor());
+            blog.setArticlesPart(blogVo.getArticlesPart());
+        }
+        boolean isSave = blog.updateById();
+        //保存成功后，需要发送消息到redis
+        updateSolrAndRedis(isSave, blog);
+        return ResultUtil.resultSuccessWithMessage(MessageConf.UPDATE_SUCCESS);
     }
 
     @Override
@@ -495,7 +587,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         IPage<Blog> blogPage = blogService.getBlogPageByLevel(page, level, useSort);
         List<Blog> blogList = blogPage.getRecords();
         //如果查询的是一二级推荐的时候，如果没有值，自动将top5的数据放入
-        if ((Constants.NUM_ONE == level || Constants.NUM_ONE == level) && blogList.isEmpty()) {
+        if ((Constants.NUM_ONE == level || Constants.NUM_TWO == level) && blogList.isEmpty()) {
             String blogHotCountStr = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_HOT_COUNT);
             String blogFirstCountStr = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FIRST_COUNT);
             Long blogHotCount;
@@ -518,9 +610,9 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             if (secondBlogList.size() > 0) {
                 redisUtils.setEx(RedisConf.BLOG_LEVEL + RedisConf.SEGMENTATION + ELevel.SECOND.getCode(), JsonUtils.objectToJson(secondBlogList), 1, TimeUnit.HOURS);
             }
-            if (ELevel.FIRST.getCode() == level) {
+            if (ELevel.FIRST.getCode().equals(level)) {
                 blogList = firstBlogList;
-            } else if (ELevel.SECOND.getCode() == level) {
+            } else if (ELevel.SECOND.getCode().equals(level)) {
                 blogList = secondBlogList;
             }
         }
@@ -782,6 +874,58 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         return pageList;
     }
 
+    /**
+     * @param currentPage
+     * @param currentPageSize
+     * @param eqMap
+     * @param likeMap
+     * @param orderList
+     * @description:
+     * @author:       alex
+     * @return:       com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
+    */
+    private IPage<Blog> searchBlogByType(Long currentPage, Long currentPageSize, Map<String, Object> eqMap,  Map<String, Object> likeMap,  List<String> orderList) {
+        //设置分页
+        Page<Blog> page = new Page<>();
+        page.setCurrent(currentPage == null ? 1 : currentPage);
+        page.setSize(currentPageSize == null ? 10 : currentPageSize);
+        //设置查询条件
+        QueryWrapper<Blog> query = new QueryWrapper<>();
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
+                .select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
+        //当传tag_id和blog_sort_id的时候，需要用in，因为这两个都是多标签、多分类的情况
+        if (eqMap != null && !eqMap.isEmpty()) {
+            for (Map.Entry<String, Object> entry : eqMap.entrySet()) {
+                switch (entry.getKey()) {
+                    case SysConf.BLOG_SORT_ID:
+                    case SysConf.TAG_ID:
+                        query.in(entry.getKey(), Arrays.asList(entry.getValue().toString().split(",")));
+                    default:
+                        query.eq(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        if (likeMap != null && !likeMap.isEmpty()) {
+            for (Map.Entry<String, Object> entry : likeMap.entrySet()) {
+                query.like(entry.getKey(), entry.getValue());
+            }
+        }
+        if (orderList != null && !orderList.isEmpty()) {
+            for (String order : orderList) {
+                query.orderByDesc(order);
+            }
+        } else {
+            //默认按照操作时间排序
+            query.orderByDesc(SysConf.OPERATE_TIME);
+        }
+        IPage<Blog> pageList = blogService.page(page, query);
+        List<Blog> blogList = pageList.getRecords();
+        //设置分类、标签和图片
+        blogList = setTagPictureAndSortByBlogList(blogList);
+        pageList.setRecords(blogList);
+        return pageList;
+    }
+
     @Override
     public IPage<Blog> searchBlogByBlogSort(Integer blogSortId, Long currentPage, Long currentPageSize) {
         BlogSort blogSort = blogSortService.getById(blogSortId);
@@ -812,9 +956,8 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         Page<Blog> page = new Page<>();
         page.setCurrent(currentPage);
         page.setSize(currentPageSize);
-        // TODO: 2021/11/30 以后修改成按照操作时间排序
         query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
-                .eq(SysConf.AUTHOR, author).orderByDesc(SysConf.CREATE_TIME).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
+                .eq(SysConf.AUTHOR, author).orderByDesc(SysConf.OPERATE_TIME).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
         IPage<Blog> pageList = blogService.page(page, query);
         List<Blog> blogList = pageList.getRecords();
         blogList = setTagPictureAndSortByBlogList(blogList);
@@ -854,14 +997,12 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     private Map<String, Blog> getFile() {
         QueryWrapper<Blog> qeury = new QueryWrapper<>();
         //列表中不需要博客内容
-        // TODO: 2021/11/30 按照操作时间排序
         qeury.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
-                .orderByDesc(SysConf.CREATE_TIME).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
+                .orderByDesc(SysConf.OPERATE_TIME).select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
         List<Blog> list = blogService.list(qeury);
         //将分类、标签和图片添加到博客中去
         list = blogService.setTagPictureAndSortByBlogList(list);
-        // TODO: 2021/11/30 修改为按照操作时间排序
-        Map<String, Blog> map = list.stream().collect(Collectors.toMap(item -> DateUtils.getTimeStr(item.getCreateTime(), "YYYY-MM-DD"), item -> item));
+        Map<String, Blog> map = list.stream().collect(Collectors.toMap(item -> DateUtils.getTimeStr(item.getOperateTime(), "YYYY-MM-DD"), item -> item));
         //将数据缓存到redis中
         map.forEach((key, value) -> {
             redisUtils.set(SysConf.BLOG_SORT_BY_MONTH + RedisConf.SEGMENTATION + key, JsonUtils.objectToJson(value));
@@ -900,7 +1041,62 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         return sb.toString();
     }
 
+    // TODO: 2021/12/9 测试标题变红
     public static void main(String[] args) {
         System.out.println(getHitCode("abdbbb", "b"));
+    }
+
+    private String addVerdict(Integer count, Integer level) {
+        if (level > 4) {
+            return ResultUtil.resultErrorWithMessage("不能设置四级以上推荐");
+        }
+        //添加博客的时候进行判断
+        switch (Objects.requireNonNull(ELevel.getByCode(level))) {
+            case FIRST:
+                String blogFirstCount = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FIRST_COUNT);
+                if (count > Long.parseLong(blogFirstCount)) {
+                    return ResultUtil.resultErrorWithMessage("一级推荐不能超过" + blogFirstCount + "个");
+                }
+                break;
+            case SECOND:
+                String blogSecondCount = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FIRST_COUNT);
+                if (count > Long.parseLong(blogSecondCount)) {
+                    return ResultUtil.resultErrorWithMessage("二级推荐不能超过" + blogSecondCount + "个");
+                }
+                break;
+            case THIRD:
+                String blogThirdCount = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FIRST_COUNT);
+                if (count > Long.parseLong(blogThirdCount)) {
+                    return ResultUtil.resultErrorWithMessage("三级推荐不能超过" + blogThirdCount + "个");
+                }
+                break;
+            case FOURTH:
+                String blogFourthCount = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FIRST_COUNT);
+                if (count > Long.parseLong(blogFourthCount)) {
+                    return ResultUtil.resultErrorWithMessage("四级推荐不能超过" + blogFourthCount + "个");
+                }
+                break;
+        }
+        return null;
+    }
+
+    private void updateSolrAndRedis(Boolean isSave, Blog blog) {
+        //保存文章，并且文章已经发布
+        if (isSave && EPublish.PUBLISH.getCode().equals(blog.getIsPublish())) {
+            Map<String, Object> map = new HashMap<>();
+            map.put(SysConf.COMMAND, SysConf.ADD);
+            map.put(SysConf.BLOG_ID, blog.getId());
+            map.put(SysConf.LEVEL, blog.getLevel());
+            map.put(SysConf.OPERATE_TIME, blog.getOperateTime());
+            rabbitTemplate.convertAndSend(SysConf.EXCHANGE_DIRECT, SysConf.ALEX_BLOG, map);
+        } else if (EPublish.NO_PUBLISH.getCode().equals(blog.getIsPublish())) {
+            Map<String, Object> map = new HashMap<>();
+            map.put(SysConf.COMMAND, SysConf.EDIT);
+            map.put(SysConf.BLOG_ID, blog.getId());
+            map.put(SysConf.LEVEL, blog.getLevel());
+            map.put(SysConf.OPERATE_TIME, blog.getOperateTime());
+            rabbitTemplate.convertAndSend(SysConf.EXCHANGE_DIRECT, SysConf.ALEX_BLOG, map);
+        }
+
     }
 }

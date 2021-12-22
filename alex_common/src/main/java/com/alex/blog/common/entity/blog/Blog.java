@@ -65,7 +65,7 @@ public class Blog extends BaseEntity {
 
     @ApiModelProperty("管理员id")
     @TableField("admin_id")
-    private Integer adminId;
+    private String adminId;
 
     @ApiModelProperty("是否原创（0:不是 1：是）")
     @TableField("is_original")
@@ -86,7 +86,7 @@ public class Blog extends BaseEntity {
 
     @ApiModelProperty("推荐等级(0:正常)")
     @TableField("`level`")
-    private Boolean level;
+    private Integer level;
 
     @ApiModelProperty("是否发布：0：否，1：是")
     @TableField("is_publish")

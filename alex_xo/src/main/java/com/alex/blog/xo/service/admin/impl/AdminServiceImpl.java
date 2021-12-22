@@ -58,7 +58,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
     private RoleService roleService;
 
     @Override
-    public Admin getAdminById(Integer id) {
+    public Admin getAdminById(String id) {
         return adminMapper.getAdminById(id);
     }
 

@@ -130,5 +130,7 @@ public final class SysConf extends BaseSysConf {
     public static final String LEVEL = "level";
     public static final String EXCHANGE_DIRECT = "exchange.direct";
     public static final String ALEX_BLOG = "alex.blog";
+    public static final String ADD = "ADD";
+    public static final String EDIT = "EDIT";
 }
 

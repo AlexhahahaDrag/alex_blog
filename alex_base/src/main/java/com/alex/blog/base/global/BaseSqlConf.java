@@ -20,6 +20,8 @@ public class BaseSqlConf {
 
     public static final String IS_PUBLISH = "is_publish";
 
+    public static final String IS_ORIGINAL = "is_original";
+
     public static final String LEVEL = "level";
 
     public static final String SORT = "sort";

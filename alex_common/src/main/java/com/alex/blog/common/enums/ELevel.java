@@ -39,4 +39,13 @@ public enum ELevel {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public static ELevel getByCode(Integer level) {
+        for (ELevel i : values()) {
+            if (i.getCode().equals(level)) {
+                return i;
+            }
+        }
+        return null;
+    }
 }
