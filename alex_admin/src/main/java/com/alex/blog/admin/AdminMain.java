@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.ComponentScan;
         "com.alex.blog.base.config"
 })
 @EnableRabbit
+@EnableFeignClients(value = "com.alex.blog.common.feign")
 public class AdminMain {
 
     public static void main(String[] args) {

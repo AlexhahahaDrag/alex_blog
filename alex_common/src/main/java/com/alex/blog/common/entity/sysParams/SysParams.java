@@ -3,8 +3,6 @@ package com.alex.blog.common.entity.sysParams;
 import com.alex.blog.base.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -47,14 +45,6 @@ public class SysParams extends BaseEntity {
     @ApiModelProperty("参数键值")
     @TableField("params_value")
     private String paramsValue;
-
-    @ApiModelProperty("操作人")
-    @TableField("operator")
-    private String operator;
-
-    @ApiModelProperty("操作时间")
-    @TableField("operate_time")
-    private LocalDateTime operateTime;
 
     @ApiModelProperty("排序字段")
     @TableField("sort")

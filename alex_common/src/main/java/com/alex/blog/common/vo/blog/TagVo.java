@@ -1,9 +1,7 @@
 package com.alex.blog.common.vo.blog;
 
-import com.alex.blog.base.entity.BaseEntity;
 import com.alex.blog.base.vo.BaseVo;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -21,7 +19,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("t_tag")
 @ApiModel(value = "Tag对象", description = "标签表")
 public class TagVo extends BaseVo<TagVo> {
 
@@ -38,6 +35,4 @@ public class TagVo extends BaseVo<TagVo> {
     @ApiModelProperty("排序字段，越大越靠前")
     @TableField("sort")
     private Integer sort;
-
-
 }

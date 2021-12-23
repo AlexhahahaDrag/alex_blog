@@ -57,6 +57,9 @@ public class IpUtils {
      * @return:       java.lang.String
      */
     public static String getIpAddr(HttpServletRequest request) {
+        if (request == null) {
+            return "";
+        }
         String ipAddress = request.getHeader("x-forwarded-for");
         if (checkNotIp(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");

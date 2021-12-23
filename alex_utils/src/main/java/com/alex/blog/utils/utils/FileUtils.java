@@ -17,7 +17,7 @@ public class FileUtils {
      * @description:  获取图后缀名
      * @author:       alex
      * @return:       java.lang.String
-    */
+     */
     public static String getPicExpandedName(String fileName) {
         if (StringUtils.isEmpty(fileName)) {
             return "";
@@ -27,5 +27,32 @@ public class FileUtils {
             ex = StringUtils.substring(fileName, fileName.indexOf(".") + 1);
         }
         return StringUtils.isEmpty(ex) ? "jpg" : ex.toLowerCase();
+    }
+
+    /*
+     * @param fileName
+     * @description:  校验文件是否是markdown
+     * @author:       alex
+     * @return:       boolean
+    */
+    public static boolean isMarkdown(String fileName) {
+        if (StringUtils.isEmpty(fileName)){
+            return false;
+        }
+        return fileName.contains(".md");
+    }
+
+    // TODO: 2021/12/23 添加markdown转html方法
+    public static String markdownToHtml(String markdown) {
+        //new MutableDa
+        return "";
+    }
+
+    public static String getFileName(String fileOriginalName) {
+        if (StringUtils.isNotBlank(fileOriginalName) && StringUtils.contains(fileOriginalName, ".")) {
+            return fileOriginalName.substring(0, fileOriginalName.indexOf("."));
+        }
+        return "";
+
     }
 }

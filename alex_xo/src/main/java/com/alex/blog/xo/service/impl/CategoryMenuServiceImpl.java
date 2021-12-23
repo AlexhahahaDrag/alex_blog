@@ -65,14 +65,14 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
         Page<CategoryMenu> pageList = categoryMenuService.page(page, query);
         List<CategoryMenu> records = pageList.getRecords();
         //获取父级id
-        List<Long> pIds = records.stream().filter(item -> item.getPid() != null).map(CategoryMenu::getPid).collect(Collectors.toList());
+        List<String> pIds = records.stream().filter(item -> item.getPid() != null).map(CategoryMenu::getPid).collect(Collectors.toList());
         //如果父级id不为空，这查询父级id,并设置父级
         if (pIds.size() > 0) {
             List<CategoryMenu> pList = categoryMenuService.listByIds(pIds);
             resultMap.put(SysConf.OTHER_DATA, pList);
-            Map<Long, CategoryMenu> map = pList.stream().collect(Collectors.toMap(BaseEntity::getId, CategoryMenu -> CategoryMenu));
+            Map<String, CategoryMenu> map = pList.stream().collect(Collectors.toMap(BaseEntity::getId, CategoryMenu -> CategoryMenu));
             records.forEach(item -> {
-                if (item.getPid() != 0) {
+                if (StringUtils.isNotEmpty(item.getPid())) {
                     item.setParentCategoryMenu(map.get(item.getPid()));
                 }
             });

@@ -1,9 +1,7 @@
 package com.alex.blog.common.entity.blog;
 
 import com.alex.blog.base.entity.BaseEntity;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -109,7 +107,7 @@ public class Blog extends BaseEntity {
     private String outsideLink;
 
     @ApiModelProperty("唯一oid")
-    @TableId(value = "oid", type = IdType.AUTO)
+//    @TableId(value = "oid", type = IdType.AUTO)
     private Integer oid;
 
     @TableField(exist = false)

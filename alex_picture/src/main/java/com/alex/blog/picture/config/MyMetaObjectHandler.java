@@ -1,4 +1,4 @@
-package com.alex.blog.admin.config;
+package com.alex.blog.picture.config;
 
 import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.common.utils.UserUtil;

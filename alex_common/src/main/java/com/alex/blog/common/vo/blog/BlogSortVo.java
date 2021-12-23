@@ -2,7 +2,6 @@ package com.alex.blog.common.vo.blog;
 
 import com.alex.blog.base.vo.BaseVo;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -20,7 +19,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("t_blog_sort")
 @ApiModel(value = "BlogSort对象", description = "博客分类表")
 public class BlogSortVo extends BaseVo<BlogSortVo> {
 

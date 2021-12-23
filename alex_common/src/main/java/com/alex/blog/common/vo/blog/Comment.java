@@ -21,7 +21,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("t_comment")
 @ApiModel(value = "Comment对象", description = "评论表")
 public class Comment extends BaseEntity {
 

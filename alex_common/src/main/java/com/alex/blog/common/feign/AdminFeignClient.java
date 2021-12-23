@@ -1,7 +1,5 @@
 package com.alex.blog.common.feign;
 
-import com.alex.blog.common.config.feign.FeignConfiguration;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -11,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *createDate:   2021/8/16 7:01
  *version:      1.0.0
  */
-@FeignClient(name = "alex_admin", configuration = FeignConfiguration.class)
+//@FeignClient(name = "alex_admin", configuration = FeignConfiguration.class)
 public interface AdminFeignClient {
 
     /**

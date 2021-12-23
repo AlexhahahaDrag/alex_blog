@@ -577,7 +577,38 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public String uploadLocalBlog(List<MultipartFile> blogInfo) throws IOException {
-        SystemConfig config = systemConfigService.getConfig();
+        SystemConfig systemConfig = systemConfigService.getConfig();
+        if(systemConfig == null) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.SYSTEM_CONFIG_NOT_EXIST);
+        }
+        if (EOpenStatus.OPEN.getCode().equals(systemConfig.getUploadQiNiu()) && (StringUtils.isEmpty(systemConfig.getQiNiuAccessKey()) ||
+                StringUtils.isEmpty(systemConfig.getQiNiuArea()) || StringUtils.isEmpty(systemConfig.getQiNiuBucket()) ||
+                StringUtils.isEmpty(systemConfig.getQiNiuPictureBaseUrl()) || StringUtils.isEmpty(systemConfig.getQiNiuSecretKey()))) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PLEASE_SET_QI_NIU);
+
+        }
+        if (EOpenStatus.OPEN.getCode().equals(systemConfig.getUploadLocal()) && (StringUtils.isEmpty(systemConfig.getLocalPictureBaseUrl()) )) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PLEASE_SET_LOCAL);
+        }
+        List<MultipartFile> fileList = new ArrayList<>();
+        List<String> fileNameList = new ArrayList<>();
+        //校验文件
+        String fileOriginalName;
+        for (MultipartFile file : blogInfo) {
+            fileOriginalName = file.getOriginalFilename();
+            if (FileUtils.isMarkdown(fileOriginalName)) {
+                fileList.add(file);
+                fileNameList.add(FileUtils.getFileName(fileOriginalName));
+            } else {
+                return ResultUtil.resultErrorWithMessage("目前仅支持Markdown文件!");
+            }
+        }
+        if (fileList.isEmpty()) {
+            return ResultUtil.resultErrorWithMessage("请选中要上传的文件！");
+        }
+        //文件解析
+        List<String> fileContentList = new ArrayList<>();
+// TODO: 2021/12/23 未完待续
         return null;
     }
 
@@ -1139,6 +1170,5 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             map.put(SysConf.OPERATE_TIME, blog.getOperateTime());
             rabbitTemplate.convertAndSend(SysConf.EXCHANGE_DIRECT, SysConf.ALEX_BLOG, map);
         }
-
     }
 }

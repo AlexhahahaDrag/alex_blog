@@ -62,7 +62,7 @@ public class AdminRestApi {
     @OperationLogger(value = "批量删除管理员")
     @ApiOperation(value = "批量删除管理员", notes = "批量删除管理员")
     @DeleteMapping("/delete")
-    public String delete(@ApiParam(name ="adminIds", value = "管理员id") @RequestParam(value = "adminIds", required = false) List<Long> adminIds) {
+    public String delete(@ApiParam(name ="adminIds", value = "管理员id") @RequestParam(value = "adminIds", required = false) List<String> adminIds) {
         //参数校验
         return adminService.deleteBatchAdmin(adminIds);
     }
