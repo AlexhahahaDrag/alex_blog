@@ -90,15 +90,15 @@ public class WebConfig extends BaseEntity<WebConfig> {
     private String gitee;
 
     @ApiModelProperty(value = "qqNumber", name = "qq号", example = "734663446")
-    @TableField(value = "qqNumber", updateStrategy = FieldStrategy.IGNORED)
+    @TableField(value = "qq_number", updateStrategy = FieldStrategy.IGNORED)
     private String qqNumber;
 
     @ApiModelProperty(value = "qqGroup", name = "qq群组", example = "283454")
-    @TableField(value = "qqGroup", updateStrategy = FieldStrategy.IGNORED)
+    @TableField(value = "qq_group", updateStrategy = FieldStrategy.IGNORED)
     private String qqGroup;
 
     @ApiModelProperty(value = "weChat", name = "微信", example = "alex_hahaha")
-    @TableField(value = "weChat", updateStrategy = FieldStrategy.IGNORED)
+    @TableField(value = "we_chat", updateStrategy = FieldStrategy.IGNORED)
     private String weChat;
 
     @ApiModelProperty(value = "email", name = "邮箱", example = "734663446@qq.com")

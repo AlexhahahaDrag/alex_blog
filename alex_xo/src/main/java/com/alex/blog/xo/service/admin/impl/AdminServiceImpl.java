@@ -226,6 +226,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         QueryWrapper<Admin> query = new QueryWrapper<>();
         query.eq(SysConf.USERNAME, username);
         Admin one = adminService.getOne(query);
+        // TODO: 2021/12/27 校验手机号和邮箱 
         if (one != null) {
             return ResultUtil.result(SysConf.ERROR, "用户名称已经存在！！");
         }
@@ -253,9 +254,10 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         query.eq(SQLConf.STATUS, EStatus.ENABLE.getCode());
         List<Admin> adminList = adminService.list(query);
         //判断用户名是否存在
-        if (adminList != null && (adminList.size() > 1 || !adminList.get(0).getId().equals(adminVo.getId()))) {
+        if (!(adminList == null || adminList.size() == 0 || adminList.get(0).getId().equals(adminVo.getId()))) {
             return ResultUtil.result(SysConf.ERROR, "修改失败，用户名已存在！");
         }
+        // TODO: 2021/12/27 校验手机号和邮箱 
         Admin admin = adminService.getById(adminVo.getId());
         if (adminVo.getRoleId() != null && !adminVo.getRoleId().equals(admin.getRoleId())) {
             redisUtils.delete(RedisConf.ADMIN_VISIT_MENU + RedisConf.SEGMENTATION + admin.getId());

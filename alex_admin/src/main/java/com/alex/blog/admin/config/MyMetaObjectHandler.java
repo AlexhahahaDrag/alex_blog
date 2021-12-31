@@ -2,6 +2,7 @@ package com.alex.blog.admin.config;
 
 import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.common.utils.UserUtil;
+import com.alex.blog.utils.utils.StringUtils;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -22,23 +23,34 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         log.info("start insert fill ....");
-        this.fillStrategy(metaObject, "status", EStatus.ENABLE.getCode());
-        this.fillStrategy(metaObject, "isDelete", 0);
-        this.fillStrategy(metaObject, "createTime", LocalDateTime.now());
-        this.fillStrategy(metaObject, "updateTime",  LocalDateTime.now());
-        this.fillStrategy(metaObject, "operateTime",  LocalDateTime.now());
-        // TODO: 2021/12/2 测试是否可以通过
-        this.fillStrategy(metaObject, "creator",  UserUtil.getLoginUser() == null ? "" : UserUtil.getLoginUser().getId());
-        this.fillStrategy(metaObject, "operator",  UserUtil.getLoginUser().getId());
+        LocalDateTime now = LocalDateTime.now();
+        this.strictInsertFill(metaObject, "status", Integer.class, EStatus.ENABLE.getCode());
+        this.strictInsertFill(metaObject, "isDelete", Integer.class,0);
+        this.strictInsertFill(metaObject, "createTime", LocalDateTime.class, now);
+        metaObject.setValue("operateTime", null);
+        this.strictInsertFill(metaObject, "operateTime", LocalDateTime.class,  now);
+        if (UserUtil.getLoginUser() != null && StringUtils.isNotEmpty(UserUtil.getLoginUser().getId())) {
+            String id = UserUtil.getLoginUser().getId();
+            this.strictInsertFill(metaObject, "creator", String.class, id);
+            this.strictInsertFill(metaObject, "operator", String.class, id);
+        }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         log.info("start update fill ....");
-        this.fillStrategy(metaObject, "updateTime",  LocalDateTime.now());
-        this.fillStrategy(metaObject, "operateTime",  LocalDateTime.now());
-        // TODO: 2021/12/2 测试是否可以通过
-        this.fillStrategy(metaObject, "updater",  UserUtil.getLoginUser() == null ? "" : UserUtil.getLoginUser().getId());
-        this.fillStrategy(metaObject, "operator",  UserUtil.getLoginUser().getId());
+        LocalDateTime now = LocalDateTime.now();
+        this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class,  now);
+        metaObject.setValue("operateTime", null);
+        metaObject.setValue("updateTime", null);
+        this.strictUpdateFill(metaObject, "operateTime", LocalDateTime.class,  now);
+        if (UserUtil.getLoginUser() != null && StringUtils.isNotEmpty(UserUtil.getLoginUser().getId())) {
+            String id = UserUtil.getLoginUser().getId();
+            metaObject.setValue("updater", null);
+            metaObject.setValue("operator", null);
+            this.strictUpdateFill(metaObject, "updater", String.class, id);
+            this.strictUpdateFill(metaObject, "operator", String.class, id);
+        }
+
     }
 }

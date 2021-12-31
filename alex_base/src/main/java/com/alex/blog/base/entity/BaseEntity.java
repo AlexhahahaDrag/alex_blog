@@ -29,7 +29,7 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
 
      @ApiModelProperty(value = "creator", name = "创建人")
      @TableField(value = "creator", fill = FieldFill.INSERT)
-     private Long creator;
+     private String creator;
 
      @ApiModelProperty(value = "createTime", name = "创建时间")
      @TableField(value = "create_time", fill = FieldFill.INSERT, keepGlobalFormat=true)
@@ -37,16 +37,16 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      private LocalDateTime createTime;
 
      @ApiModelProperty(value = "updater", name = "修改人")
-     @TableField(value = "updater", fill = FieldFill.INSERT_UPDATE)
-     private Long updater;
+     @TableField(value = "updater", fill = FieldFill.UPDATE)
+     private String updater;
 
      @ApiModelProperty(value = "updateTime", name = "更新时间")
-     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+     @TableField(value = "update_time", fill = FieldFill.UPDATE)
      private LocalDateTime updateTime;
 
      @ApiModelProperty(value = "deleter", name = "删除人")
      @TableField(value = "deleter")
-     private Long deleter;
+     private String deleter;
 
      @ApiModelProperty(value = "deleteTime", name = "删除时间")
      @TableField(value = "delete_time")
@@ -57,12 +57,12 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      @TableField(value = "is_delete", fill = FieldFill.INSERT, keepGlobalFormat = true, condition = "0")
      private Integer isDelete;
 
-     @ApiModelProperty(value = "operator", name = "删除人")
-     @TableField(value = "operator")
+     @ApiModelProperty(value = "operator", name = "操作人")
+     @TableField(value = "operator", fill = FieldFill.INSERT_UPDATE)
      private String operator;
 
      @ApiModelProperty(value = "operateTime", name = "操作时间")
-     @TableField(value = "operate_time")
+     @TableField(value = "operate_time", fill = FieldFill.INSERT_UPDATE, updateStrategy = FieldStrategy.DEFAULT)
      private LocalDateTime operateTime;
 
      @ApiModelProperty(value = "status", name="状态", example = "0：失效  1：生效")

@@ -13,7 +13,3 @@ spring:
           - data-id: nacos-server.yaml
             group: majf-dev-test
             refresh: true
-            #todo调节为什么没有读取到redis.yaml数据
-#          - data-id: redis.yaml
-#            group: majf-dev-test
-#            refresh: true
