@@ -8,7 +8,7 @@ import com.alex.blog.common.vo.log.ExceptionLogVo;
 import com.alex.blog.common.vo.log.SysLogVo;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.xo.service.ExceptionLogService;
-import com.alex.blog.xo.service.SysLogService;
+import com.alex.blog.xo.service.sys.SysLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

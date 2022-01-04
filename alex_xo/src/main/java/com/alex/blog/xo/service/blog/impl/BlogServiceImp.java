@@ -9,23 +9,24 @@ import com.alex.blog.common.entity.admin.Admin;
 import com.alex.blog.common.entity.admin.SystemConfig;
 import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.entity.blog.BlogSort;
+import com.alex.blog.common.entity.blog.Comment;
 import com.alex.blog.common.entity.blog.Tag;
 import com.alex.blog.common.enums.*;
 import com.alex.blog.common.feign.PictureFeignClient;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
+import com.alex.blog.common.utils.UserUtil;
 import com.alex.blog.common.vo.blog.BlogVo;
-import com.alex.blog.common.vo.blog.Comment;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.mapper.blog.BlogMapper;
-import com.alex.blog.xo.service.SystemConfigService;
 import com.alex.blog.xo.service.admin.AdminService;
 import com.alex.blog.xo.service.blog.BlogService;
 import com.alex.blog.xo.service.blog.BlogSortService;
 import com.alex.blog.xo.service.blog.CommentService;
 import com.alex.blog.xo.service.blog.TagService;
 import com.alex.blog.xo.service.sys.SysParamsService;
+import com.alex.blog.xo.service.sys.SystemConfigService;
 import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -39,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -534,8 +536,9 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     @Override
     public String deleteBlog(String id) {
         Blog blog = blogService.getById(id);
-        blog.setStatus(EStatus.DISABLED.getCode());
-        boolean delete = blog.updateById();
+        blog.setDeleter(UserUtil.getLoginUser().getId());
+        blog.setDeleteTime(LocalDateTime.now());
+        boolean delete = blog.deleteById();
         //删除成功后，删除redis和rabbit中的博客
         if (delete) {
             Map<String, Object> map = new HashMap<>();
@@ -1131,19 +1134,19 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
                 }
                 break;
             case SECOND:
-                String blogSecondCount = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FIRST_COUNT);
+                String blogSecondCount = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_SECOND_COUNT);
                 if (count > Long.parseLong(blogSecondCount)) {
                     return ResultUtil.resultErrorWithMessage("二级推荐不能超过" + blogSecondCount + "个");
                 }
                 break;
             case THIRD:
-                String blogThirdCount = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FIRST_COUNT);
+                String blogThirdCount = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_THIRD_COUNT);
                 if (count > Long.parseLong(blogThirdCount)) {
                     return ResultUtil.resultErrorWithMessage("三级推荐不能超过" + blogThirdCount + "个");
                 }
                 break;
             case FOURTH:
-                String blogFourthCount = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FIRST_COUNT);
+                String blogFourthCount = sysParamsService.getSysParamsValueByKey(SysConf.BLOG_FOURTH_COUNT);
                 if (count > Long.parseLong(blogFourthCount)) {
                     return ResultUtil.resultErrorWithMessage("四级推荐不能超过" + blogFourthCount + "个");
                 }

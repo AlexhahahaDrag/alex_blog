@@ -1,4 +1,4 @@
-package com.alex.blog.xo.service.impl;
+package com.alex.blog.xo.service.sys.impl;
 
 import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.Constants;
@@ -9,7 +9,7 @@ import com.alex.blog.common.vo.log.SysLogVo;
 import com.alex.blog.utils.utils.DateUtils;
 import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.mapper.SysLogMapper;
-import com.alex.blog.xo.service.SysLogService;
+import com.alex.blog.xo.service.sys.SysLogService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

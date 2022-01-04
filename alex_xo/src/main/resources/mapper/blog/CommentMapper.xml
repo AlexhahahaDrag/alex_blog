@@ -3,7 +3,7 @@
 <mapper namespace="com.alex.blog.xo.mapper.blog.CommentMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.alex.blog.common.vo.blog.Comment">
+    <resultMap id="BaseResultMap" type="com.alex.blog.common.vo.blog.CommentVo">
         <result column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="creator" property="creator" />

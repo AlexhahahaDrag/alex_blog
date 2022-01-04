@@ -1,7 +1,7 @@
 package com.alex.blog.xo.mapper.blog;
 
-import com.alex.blog.common.vo.blog.Comment;
 import com.alex.blog.base.mapper.SuperMapper;
+import com.alex.blog.common.entity.blog.Comment;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

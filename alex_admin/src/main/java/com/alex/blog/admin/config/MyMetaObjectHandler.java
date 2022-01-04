@@ -40,9 +40,9 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         log.info("start update fill ....");
         LocalDateTime now = LocalDateTime.now();
-        this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class,  now);
         metaObject.setValue("operateTime", null);
         metaObject.setValue("updateTime", null);
+        this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class,  now);
         this.strictUpdateFill(metaObject, "operateTime", LocalDateTime.class,  now);
         if (UserUtil.getLoginUser() != null && StringUtils.isNotEmpty(UserUtil.getLoginUser().getId())) {
             String id = UserUtil.getLoginUser().getId();

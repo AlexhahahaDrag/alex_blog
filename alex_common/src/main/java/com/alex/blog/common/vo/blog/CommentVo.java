@@ -1,9 +1,7 @@
 package com.alex.blog.common.vo.blog;
 
-import com.alex.blog.base.entity.BaseEntity;
+import com.alex.blog.base.vo.BaseVo;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -21,8 +19,8 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@ApiModel(value = "Comment对象", description = "评论表")
-public class Comment extends BaseEntity {
+@ApiModel(value = "Comment对象Vo", description = "评论表")
+public class CommentVo extends BaseVo<CommentVo> {
 
     private static final long serialVersionUID = 1L;
 

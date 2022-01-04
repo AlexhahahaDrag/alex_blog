@@ -1,7 +1,7 @@
 package com.alex.blog.xo.service.blog;
 
-import com.alex.blog.common.vo.blog.Comment;
 import com.alex.blog.base.service.SuperService;
+import com.alex.blog.common.entity.blog.Comment;
 
 import java.util.List;
 

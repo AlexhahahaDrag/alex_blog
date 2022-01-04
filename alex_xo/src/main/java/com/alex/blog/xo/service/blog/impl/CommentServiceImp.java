@@ -1,9 +1,9 @@
 package com.alex.blog.xo.service.blog.impl;
 
 import com.alex.blog.base.service.impl.SuperServiceImpl;
+import com.alex.blog.common.entity.blog.Comment;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
-import com.alex.blog.common.vo.blog.Comment;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.xo.mapper.blog.CommentMapper;
 import com.alex.blog.xo.service.blog.CommentService;

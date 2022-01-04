@@ -1,3 +1,4 @@
+drop table if exists `alex_blog`.`t_blog`;
 CREATE TABLE `alex_blog`.`t_blog`  (
  `id` varchar(32) NOT NULL COMMENT '唯一id',
  `title` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '博客标题',
@@ -10,22 +11,22 @@ CREATE TABLE `alex_blog`.`t_blog`  (
  `file_id` int(11) NULL DEFAULT NULL COMMENT '标题图片uid',
  `status` tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态',
  `creator` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
- `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+ `create_time` timestamp COMMENT '创建时间',
  `updater` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
- `update_time` timestamp NOT NULL COMMENT '更新时间',
+ `update_time` timestamp COMMENT '更新时间',
  `deleter` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
- `delete_time` timestamp NOT NULL COMMENT '更新时间',
+ `delete_time` timestamp  COMMENT '删除时间',
  `is_delete` tinyint(4) NULL DEFAULT NULL COMMENT '是否删除',
  `operator` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '操作人',
- `operate_time` timestamp NOT NULL COMMENT '操作时间',
- `admin_id` int(11) NULL DEFAULT NULL COMMENT '管理员id',
+ `operate_time` timestamp COMMENT '操作时间',
+ `admin_id` varchar(64) NULL DEFAULT NULL COMMENT '管理员id',
  `is_original` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '1' COMMENT '是否原创（0:不是 1：是）',
  `author` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '作者',
  `articles_part` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文章出处',
  `blog_sort_id` varchar(200) COMMENT '博客分类ID',
- `level` tinyint(1) NULL DEFAULT 0 COMMENT '推荐等级(0:正常)',
+ `level` tinyint(1) NULL COMMENT '推荐等级(0:正常)',
  `is_publish` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '1' COMMENT '是否发布：0：否，1：是',
- `sort` int(11) NOT NULL DEFAULT 0 COMMENT '排序字段',
+ `sort` int(11) COMMENT '排序字段',
  `open_comment` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否开启评论(0:否 1:是)',
  `type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '类型【0 博客， 1：推广】',
  `outside_link` varchar(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '外链【如果是推广，那么将跳转到外链】',
@@ -76,7 +77,6 @@ CREATE TABLE `t_blog_sort` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='博客分类表';
 
-
 DROP TABLE IF EXISTS `t_comment`;
 
 CREATE TABLE `t_comment` (
@@ -86,18 +86,18 @@ CREATE TABLE `t_comment` (
  `to_user_id` varchar(32) DEFAULT NULL COMMENT '回复某个人的id',
  `content` varchar(2048) DEFAULT NULL COMMENT '评论内容',
  `blog_id` varchar(32) DEFAULT NULL COMMENT '博客id',
- `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态',
+ `status` tinyint unsigned  COMMENT '状态',
  `create_time` timestamp COMMENT '创建时间',
  `creator` varchar(32) COMMENT '创建人',
  `update_time` timestamp COMMENT '更新时间',
  `updater` varchar(32) COMMENT '更新人',
  `delete_time` timestamp COMMENT '删除时间',
  `deleter` varchar(32) COMMENT '删除人',
- `is_delete` tinyint(4) NULL DEFAULT NULL COMMENT '是否删除',
- `operator` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '操作人',
- `operate_time` timestamp NOT NULL COMMENT '操作时间'
- `source` varchar(255) NOT NULL COMMENT '评论来源： MESSAGE_BOARD，ABOUT，BLOG_INFO 等',
- `TYPE` tinyint(1) NOT NULL DEFAULT '0' COMMENT '评论类型 1:点赞 0:评论',
+ `is_delete` tinyint(4) COMMENT '是否删除',
+ `operator` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT '操作人',
+ `operate_time` timestamp COMMENT '操作时间',
+ `source` varchar(255) COMMENT '评论来源： MESSAGE_BOARD，ABOUT，BLOG_INFO 等',
+ `TYPE` tinyint(1)  COMMENT '评论类型 1:点赞 0:评论',
  `first_comment_id` varchar(32) DEFAULT NULL COMMENT '一级评论ID',
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论表';
@@ -110,18 +110,16 @@ CREATE TABLE `t_sys_params` (
     `params_key` VARCHAR ( 255 ) DEFAULT NULL COMMENT '参数键名',
     `remark` VARCHAR ( 255 ) DEFAULT NULL COMMENT '备注',
     `params_value` VARCHAR ( 255 ) DEFAULT NULL COMMENT '参数键值',
-    `status` TINYINT ( 1 ) DEFAULT '1' COMMENT '状态',
+    `status` TINYINT ( 1 ) COMMENT '状态',
+    `creator` VARCHAR ( 200 ) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '创建人',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updater` VARCHAR ( 200 ) CHARACTER
-        SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
-    `update_time` TIMESTAMP NOT NULL COMMENT '更新时间',
-    `deleter` VARCHAR ( 200 ) CHARACTER
-        SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
-    `delete_time` TIMESTAMP NOT NULL COMMENT '更新时间',
-    `is_delete` TINYINT ( 4 ) NULL DEFAULT NULL COMMENT '是否删除',
-    `operator` VARCHAR ( 200 ) CHARACTER
-        SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '操作人',
-    `operate_time` TIMESTAMP NOT NULL COMMENT '操作时间',
-    `sort` INT NOT NULL DEFAULT '0' COMMENT '排序字段',
+    `updater` VARCHAR ( 200 ) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '修改人',
+    `update_time` TIMESTAMP COMMENT '更新时间',
+    `deleter` VARCHAR ( 200 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
+    `delete_time` TIMESTAMP COMMENT '更新时间',
+    `is_delete` TINYINT ( 4 ) NULL COMMENT '是否删除',
+    `operator` VARCHAR ( 200 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '操作人',
+    `operate_time` TIMESTAMP COMMENT '操作时间',
+    `sort` INT NOT NULL COMMENT '排序字段',
     PRIMARY KEY ( `id` )
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '参数配置表';

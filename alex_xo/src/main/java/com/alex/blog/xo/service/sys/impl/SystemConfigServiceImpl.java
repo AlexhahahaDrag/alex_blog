@@ -1,4 +1,4 @@
-package com.alex.blog.xo.service.impl;
+package com.alex.blog.xo.service.sys.impl;
 
 import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.base.global.RedisConf;
@@ -15,7 +15,7 @@ import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.xo.mapper.SystemConfigMapper;
-import com.alex.blog.xo.service.SystemConfigService;
+import com.alex.blog.xo.service.sys.SystemConfigService;
 import com.alex.blog.common.vo.admin.SystemConfigVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
