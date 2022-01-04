@@ -1,4 +1,4 @@
-package com.alex.blog.admin.annotion;
+package com.alex.blog.admin.annotion.authorityVerify;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,6 +1,6 @@
 package com.alex.blog.admin.restApi;
 
-import com.alex.blog.admin.annotion.AuthorityVerify;
+import com.alex.blog.admin.annotion.authorityVerify.AuthorityVerify;
 import com.alex.blog.admin.global.SysConf;
 import com.alex.blog.base.validator.group.GetList;
 import com.alex.blog.common.exception.ThrowableUtils;

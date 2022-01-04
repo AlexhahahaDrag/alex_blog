@@ -1,4 +1,4 @@
-package com.alex.blog.xo.service;
+package com.alex.blog.xo.service.admin;
 
 import com.alex.blog.base.service.SuperService;
 import com.alex.blog.common.entity.admin.CategoryMenu;
@@ -29,7 +29,7 @@ public interface CategoryMenuService extends SuperService<CategoryMenu> {
      * @author:       alex
      * @return:       java.util.List<com.alex.blog.common.entity.admin.CategoryMenu>
     */
-    List<CategoryMenu> getAllList(Integer id);
+    List<CategoryMenu> getAllList(String id);
 
     /**
      * @param keyword
@@ -61,7 +61,7 @@ public interface CategoryMenuService extends SuperService<CategoryMenu> {
      * @author:       alex
      * @return:       java.lang.String
     */
-    String deleteCategoryMenu(Integer id);
+    String deleteCategoryMenu(String id);
 
     /**
      * @param categoryMenuVo

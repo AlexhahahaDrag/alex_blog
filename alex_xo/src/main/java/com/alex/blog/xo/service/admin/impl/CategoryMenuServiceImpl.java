@@ -1,4 +1,4 @@
-package com.alex.blog.xo.service.impl;
+package com.alex.blog.xo.service.admin.impl;
 
 import com.alex.blog.base.entity.BaseEntity;
 import com.alex.blog.base.enums.EStatus;
@@ -13,7 +13,7 @@ import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.mapper.admin.CategoryMenuMapper;
-import com.alex.blog.xo.service.CategoryMenuService;
+import com.alex.blog.xo.service.admin.CategoryMenuService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
@@ -89,10 +89,10 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
      * @return:       java.util.List<com.alex.blog.common.entity.admin.CategoryMenu>
     */
     @Override
-    public List<CategoryMenu> getAllList(Integer id) {
+    public List<CategoryMenu> getAllList(String id) {
         QueryWrapper<CategoryMenu> query = new QueryWrapper<>();
         query.eq(SysConf.MENU_LEVEL, Constants.NUM_ONE);
-        if (id != null) {
+        if (StringUtils.isNotEmpty(id)) {
             query.eq(SysConf.ID, id);
         }
 
@@ -104,7 +104,7 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
         QueryWrapper<CategoryMenu> query = new QueryWrapper<>();
         query.eq(SysConf.MENU_LEVEL, Constants.NUM_TWO).orderByDesc(SysConf.SORT);
         if (StringUtils.isNotEmpty(keyword)) {
-
+            // TODO: 2022/1/5 完成二级菜单
         }
         return null;
     }
@@ -138,7 +138,7 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
      * @return:       java.lang.String
     */
     @Override
-    public String deleteCategoryMenu(Integer id) {
+    public String deleteCategoryMenu(String id) {
         QueryWrapper<CategoryMenu> query = new QueryWrapper<>();
         query.eq(SysConf.STATUS, EStatus.ENABLE.getCode());
         query.eq(SysConf.PID, id);

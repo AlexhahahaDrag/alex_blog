@@ -1,4 +1,4 @@
-package com.alex.blog.admin.annotion;
+package com.alex.blog.admin.annotion.avoidRepeatableCommit;
 
 import com.alex.blog.admin.global.SysConf;
 import com.alex.blog.base.global.RedisConf;
@@ -39,7 +39,7 @@ public class AvoidRepeatableCommitAspect {
      * @author:       alex
      * @return:       java.lang.Object
     */
-    @Around("@annotation(com.alex.blog.admin.annotion.AvoidRepeatableCommit)")
+    @Around("@annotation(com.alex.blog.admin.annotion.avoidRepeatableCommit.AvoidRepeatableCommit)")
     public Object around(ProceedingJoinPoint point) throws Throwable {
         HttpServletRequest request = RequestHolder.getRequest();
         String ip = IpUtils.getIpAddr(request);

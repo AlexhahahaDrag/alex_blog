@@ -7,6 +7,7 @@ import com.alex.blog.common.entity.admin.Admin;
 import com.alex.blog.common.entity.admin.Role;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SysConf;
+import com.alex.blog.common.utils.UserUtil;
 import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
@@ -22,6 +23,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -51,8 +53,8 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         }
         query.eq(SQLConf.STATUS, EStatus.ENABLE.getCode());
         Page<Role> page = new Page<>();
-        page.setCurrent(roleVo.getCurrentPage());
-        page.setSize(roleVo.getPageSize());
+        page.setCurrent(roleVo.getCurrentPage() == null ? 1 : roleVo.getCurrentPage());
+        page.setSize(roleVo.getPageSize() == null ? 10 : roleVo.getPageSize());
         return roleService.page(page, query);
     }
 
@@ -62,7 +64,6 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         QueryWrapper<Role> query = new QueryWrapper<>();
         query.eq(SQLConf.ROLENAME, roleName);
         query.eq(SysConf.STATUS, EStatus.ENABLE.getCode());
-        query.eq("is_delete", 0);
         Role one = roleService.getOne(query);
         if (one == null) {
             Role role = new Role();
@@ -111,8 +112,9 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
             return ResultUtil.result(SysConf.ERROR, MessageConf.ADMIN_UNDER_THIS_ROLE);
         }
         Role role = roleService.getById(id);
-        role.setStatus(EStatus.DISABLED.getCode());
-        role.updateById();
+        role.setDeleter(UserUtil.getLoginUser().getId());
+        role.setDeleteTime(LocalDateTime.now());
+        role.deleteById();
         //删除角色信息成功后，需要删除redis中所有的admin访问路径
         deleteAdminVisitUrl();
         return ResultUtil.result(SysConf.SUCCESS, "删除角色成功！");

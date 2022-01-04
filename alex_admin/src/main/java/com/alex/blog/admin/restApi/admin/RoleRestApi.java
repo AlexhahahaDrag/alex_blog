@@ -1,8 +1,8 @@
 package com.alex.blog.admin.restApi.admin;
 
-import com.alex.blog.admin.annotion.AuthorityVerify;
-import com.alex.blog.admin.annotion.AvoidRepeatableCommit;
-import com.alex.blog.admin.annotion.OperationLogger;
+import com.alex.blog.admin.annotion.authorityVerify.AuthorityVerify;
+import com.alex.blog.admin.annotion.avoidRepeatableCommit.AvoidRepeatableCommit;
+import com.alex.blog.admin.annotion.operationLogger.OperationLogger;
 import com.alex.blog.admin.global.SysConf;
 import com.alex.blog.base.validator.group.GetList;
 import com.alex.blog.base.validator.group.Insert;

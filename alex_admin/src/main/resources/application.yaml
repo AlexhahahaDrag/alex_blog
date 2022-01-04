@@ -4,17 +4,6 @@ spring:
   profiles:
     active: dev
 
-#  redis:
-#    host: localhost #redis服务地址
-#    port: 6379      #redis端口号
-#    database: 0     #redis默认数据库索引
-#    timeout: 180000 #redis连接超时时间（毫秒）
-#    lettuce:
-#      pool:
-#        max-active: 20     #连接池最大连接数
-#        max-await: -1      #最大阻塞等待时间（负数表示没有限制）
-#        max-idle: 5        #连接池中最大的空闲连接数
-#        min-idle: 0        #连接池中最小的空闲连接数
   rabbitmq:
     host: localhost
     port: 5672
