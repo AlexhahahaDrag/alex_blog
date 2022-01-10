@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class UserUtil {
 
     public static SecurityUser getLoginUser() {
+
         /**
          SecurityContextHolder.getContext()获取安全上下文对象，就是那个保存在 ThreadLocal 里面的安全上下文对象
          总是不为null(如果不存在，则创建一个authentication属性为null的empty安全上下文对象)

@@ -31,6 +31,7 @@ public final class SysConf extends BaseSysConf {
 
     public static final String LIMIT_ONE = "limit 1";
     public static final String COUNT = "count";
+    public static final String EQUAL_TO = "equal_to";
 
     //IP相关
     public static final String OS = "OS";

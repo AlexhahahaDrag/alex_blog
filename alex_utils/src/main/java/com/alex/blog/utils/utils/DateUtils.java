@@ -332,7 +332,7 @@ public class DateUtils {
      */
     public static long diffSecondByTwoDays(LocalDateTime date1, LocalDateTime date2) {
         Duration diffTime = Duration.between(date1, date2);
-        return diffTime.toMillis() / 1000;
+        return diffTime.toMillis();
     }
 
     /**

@@ -101,7 +101,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 LocalDateTime expirationDate = LocalDateTime.ofInstant(instant, zoneId);
                 LocalDateTime nowDate = LocalDateTime.now();
                 // 得到两个日期相差的间隔，秒
-                long survivalSecond = DateUtils.diffSecondByTwoDays(nowDate, expirationDate);
+                long survivalSecond = DateUtils.diffSecondByTwoDays(nowDate, expirationDate) / 1000;
                 // 当存活时间小于更新时间，那么将颁发新的Token到客户端，同时重置新的过期时间
                 // 而旧的Token将会在不久之后从Redis中过期
                 if (survivalSecond < refreshSecond) {
