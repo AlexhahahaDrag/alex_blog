@@ -68,8 +68,10 @@ public class OperationLoggerAspect {
         boolean save = annotation.save();
         String businessName = AspectUtils.INSTANCE.parseParams(point.getArgs(), annotation.value());
         String ip = IpUtils.getIpAddr(request);
-        // TODO: 2022/1/10 添加request util
-        log.info("{} | {} - {} {} - {}", businessName, ip, "", "", "");
+        String requestMethod = RequestUtils.getMethod();
+        String requestUrl = RequestUtils.getRequestUrl();
+        String userAgent = RequestUtils.getUserAgent();
+        log.info("{} | {} - {} {} - {}", businessName, ip, requestMethod, requestUrl, userAgent);
         if (!save) {
             return;
         }

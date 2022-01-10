@@ -1,8 +1,8 @@
 package com.alex.blog.admin.annotion.avoidRepeatableCommit;
 
-import com.alex.blog.admin.global.SysConf;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
+import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.IpUtils;
 import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
