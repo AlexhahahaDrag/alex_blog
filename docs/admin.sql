@@ -73,7 +73,7 @@ CREATE TABLE `alex_blog`.`t_web_config`  (
   `deleter` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
   `is_delete` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除标识',
   `delete_time` timestamp NULL DEFAULT NULL COMMENT '删除时间',
-	`operator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+  `operator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
   `operate_time` timestamp NOT NULL COMMENT '更新时间',
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '标题',
   `ali_pay` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '支付宝收款码FileId',
@@ -93,3 +93,31 @@ CREATE TABLE `alex_blog`.`t_web_config`  (
   `link_apply_template` varchar(2018) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '友链申请模板, 添加友链申请模板格式',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+
+drop table if exists `alex_blog`.`t_category_menu`;
+
+CREATE TABLE `alex_blog`.`t_category_menu`  (
+  `id` varchar(32) NOT NULL COMMENT '唯一id',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '菜单名称',
+  `menu_level` tinyint(1) NULL DEFAULT NULL COMMENT '菜单级别',
+  `summary` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '简介',
+  `pid` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '父id',
+  `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'url地址',
+  `icon` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图标',
+  `sort` int NULL DEFAULT 0 COMMENT '排序字段，越大越靠前',
+  `status` tinyint UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态',
+  `creator` varchar(50) NULL DEFAULT NULL COMMENT '创建人',
+  `create_time` timestamp NULL DEFAULT NULL COMMENT '创建时间',
+  `updater` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+  `update_time` timestamp NULL COMMENT '更新时间',
+  `operator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+  `operate_time` timestamp NULL COMMENT '更新时间',
+  `deleter` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
+  `delete_time` timestamp NULL DEFAULT NULL COMMENT '删除时间',
+  `is_delete` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+  `is_show` tinyint(1) NULL DEFAULT 0 COMMENT '是否显示 1:是 0:否',
+  `menu_type` tinyint(1) NULL DEFAULT 0 COMMENT '菜单类型 0: 菜单   1: 按钮',
+  `is_jump_external_url` tinyint(1) NULL DEFAULT 0 COMMENT '是否跳转外部链接 0：否，1：是',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 195 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;

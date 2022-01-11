@@ -41,6 +41,9 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
     @Autowired
     private RedisUtils redisUtils;
 
+    @Autowired
+    private CategoryMenuMapper categoryMenuMapper;
+
     /**
      * @param categoryMenuVo
      * @description:    
@@ -60,7 +63,7 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
         Page<CategoryMenu> page = new Page<>();
         page.setSize(categoryMenuVo.getPageSize() == null ? Constants.NUM_TEN : categoryMenuVo.getPageSize());
         page.setCurrent(categoryMenuVo.getCurrentPage() == null ? 0 : categoryMenuVo.getCurrentPage());
-        query.eq(SysConf.STATUS, EStatus.ENABLE.getValue());
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode());
         query.orderByDesc(SysConf.SORT);
         Page<CategoryMenu> pageList = categoryMenuService.page(page, query);
         List<CategoryMenu> records = pageList.getRecords();
@@ -111,6 +114,7 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
 
     @Override
     public String addCategoryMenu(CategoryMenuVo categoryMenuVo) {
+        // TODO: 2022/1/11 校验同级菜单名称 
         //如果菜单是一级菜单则将父级id清空
         if (categoryMenuVo.getMenuLevel() == Constants.NUM_ONE) {
             categoryMenuVo.setPid(null);
@@ -146,9 +150,8 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
         if (count > 0) {
             return ResultUtil.result(SysConf.ERROR, "该菜单下还有菜单不能删除！");
         }
-        CategoryMenu categoryMenu = categoryMenuService.getById(id);
-        categoryMenu.setStatus(EStatus.DISABLED.getCode());
-        categoryMenu.updateById();
+        //删除菜单
+        categoryMenuMapper.deleteById(id);
         //删除成功后，需要删除redis中的所有admin访问路径
         deleteAdminVisitUrl();
         return ResultUtil.result(SysConf.SUCCESS, "删除成功！");

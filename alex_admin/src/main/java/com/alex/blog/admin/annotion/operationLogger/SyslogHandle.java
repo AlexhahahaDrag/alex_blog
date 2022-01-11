@@ -9,7 +9,6 @@ import com.alex.blog.utils.utils.DateUtils;
 import com.alex.blog.utils.utils.IpUtils;
 import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +21,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class SyslogHandle extends AbstractRequestAwareRunnable {
 
-    @Autowired
     private RedisUtils redisUtils;
 
     //参数json
@@ -53,7 +51,7 @@ public class SyslogHandle extends AbstractRequestAwareRunnable {
 
     public SyslogHandle(String paramsJson, String classPath, String methodName, LocalDateTime startTime,
                         String operationName, String ip, String type, String requestUrl,
-                        SecurityUser securityUser) {
+                        SecurityUser securityUser, RedisUtils redisUtils) {
         this.paramsJson = paramsJson;
         this.classPath = classPath;
         this.methodName = methodName;
@@ -63,6 +61,7 @@ public class SyslogHandle extends AbstractRequestAwareRunnable {
         this.type = type;
         this.requestUrl = requestUrl;
         this.securityUser = securityUser;
+        this.redisUtils = redisUtils;
     }
 
     @Override
@@ -78,6 +77,7 @@ public class SyslogHandle extends AbstractRequestAwareRunnable {
         } else {
             sysLog.setIpSource(jsonResult);
         }
+        sysLog.setUrl(requestUrl);
         sysLog.setIp(ip);
         sysLog.setClassPath(classPath);
         sysLog.setMethod(methodName);

@@ -87,6 +87,6 @@ public class OperationLoggerAspect {
         SecurityUser loginUser = UserUtil.getLoginUser();
         //异步存储日志
         threadPoolTaskExecutor.execute(new SyslogHandle(paramsJson, point.getTarget().getClass().getName(),
-                method.getName(), startTime, businessName, ip, type, uri, loginUser));
+                method.getName(), startTime, businessName, ip, type, uri, loginUser, redisUtils));
     }
 }

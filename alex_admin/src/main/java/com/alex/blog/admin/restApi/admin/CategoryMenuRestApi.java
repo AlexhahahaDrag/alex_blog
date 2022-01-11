@@ -78,7 +78,7 @@ public class CategoryMenuRestApi {
     @AuthorityVerify
     @OperationLogger(value = "删除菜单")
     @ApiOperation(value = "删除菜单", notes = "删除菜单", response = String.class)
-    @PostMapping(value = "/delete")
+    @DeleteMapping(value = "/delete")
     public String deleteCategory(@Validated({Delete.class}) @ApiParam(value = "id", name = "id", required = true) @RequestParam(value = "id", name = "id") String id) {
         return categoryMenuService.deleteCategoryMenu(id);
     }
