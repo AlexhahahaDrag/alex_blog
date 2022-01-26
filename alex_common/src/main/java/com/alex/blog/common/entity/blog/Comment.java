@@ -1,6 +1,7 @@
 package com.alex.blog.common.entity.blog;
 
 import com.alex.blog.base.entity.BaseEntity;
+import com.alex.blog.common.entity.admin.Admin;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -57,4 +58,20 @@ public class Comment extends BaseEntity {
     @ApiModelProperty("一级评论ID")
     @TableField("first_comment_id")
     private String firstCommentId;
+
+    @ApiModelProperty("评论来源名称")
+    @TableField(exist = false)
+    private String sourceName;
+
+    @ApiModelProperty("评论的用户")
+    @TableField(exist = false)
+    private Admin user;
+
+    @ApiModelProperty("本条博客对哪一条评论说")
+    @TableField(exist = false)
+    private Admin toUser;
+
+    @ApiModelProperty("博客信息")
+    @TableField(exist = false)
+    private Blog blog;
 }

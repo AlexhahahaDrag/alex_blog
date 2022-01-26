@@ -27,6 +27,9 @@ public class CommentVo extends BaseVo<CommentVo> {
     @ApiModelProperty("用户id")
     private String userId;
 
+    @ApiModelProperty("用户名称")
+    private String username;
+
     @ApiModelProperty("回复某条评论的id")
     private String toId;
 

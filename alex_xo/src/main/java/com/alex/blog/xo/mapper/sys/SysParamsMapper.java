@@ -1,6 +1,6 @@
 package com.alex.blog.xo.mapper.sys;
 
-import com.alex.blog.common.entity.sysParams.SysParams;
+import com.alex.blog.common.entity.sys.SysParams;
 import com.alex.blog.base.mapper.SuperMapper;
 import org.apache.ibatis.annotations.Mapper;
 

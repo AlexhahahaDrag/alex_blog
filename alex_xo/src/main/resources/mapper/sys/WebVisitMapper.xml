@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alex.blog.xo.mapper.sys.WebVisitMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.alex.blog.common.entity.sys.WebVisit">
+        <result column="id" property="id" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleter" property="deleter" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="is_delete" property="isDelete" />
+        <result column="operator" property="operator" />
+        <result column="operate_time" property="operateTime" />
+        <result column="admin_id" property="adminId" />
+        <result column="ip" property="ip" />
+        <result column="behavior" property="behavior" />
+        <result column="module_id" property="moduleId" />
+        <result column="other_data" property="otherData" />
+        <result column="status" property="status" />
+        <result column="os" property="os" />
+        <result column="browser" property="browser" />
+        <result column="ip_source" property="ipSource" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        creator,
+        create_time,
+        updater,
+        update_time,
+        deleter,
+        delete_time,
+        is_delete,
+        operator,
+        operate_time,
+        admin_id, ip, behavior, module_id, other_data, `status`, os, browser, ip_source
+    </sql>
+
+    <select id="getIpCount">
+        select distinct ip from alex_blog.t_web_visit where is_delete = 0 and status = '1'
+        and operate_time between to_timestamp(${startTime}, 'yyyy-mm-dd hh24:mi:ss') and to_timestamp(${endTime}, 'yyyy-mm-dd hh24:mi:ss')
+    </select>
+</mapper>

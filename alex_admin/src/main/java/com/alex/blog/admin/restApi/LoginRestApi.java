@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/auth")
 @Api(value = "登陆相关接口", tags = {"登陆相关接口"})
 @Slf4j
-public class LoginController {
+public class LoginRestApi {
 
     @Autowired
     private LoginService loginService;

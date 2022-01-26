@@ -3,7 +3,7 @@
 <mapper namespace="com.alex.blog.xo.mapper.sysParams.SysParamsMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.alex.blog.common.entity.sysParams.SysParams">
+    <resultMap id="BaseResultMap" type="com.alex.blog.common.entity.sys.SysParams">
         <result column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="updater" property="updater" />

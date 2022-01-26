@@ -421,4 +421,11 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         });
         return null;
     }
+
+    @Override
+    public Integer getUserCount() {
+        QueryWrapper<Admin> query = new QueryWrapper<>();
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode());
+        return this.count(query);
+    }
 }

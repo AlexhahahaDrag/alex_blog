@@ -46,18 +46,18 @@ public class Generate {
                 })
                 .packageConfig(builder -> {
                     builder.parent("com.alex.blog.xo") // 设置父包名
-                            .moduleName("task") // 设置父包模块名
+                            .moduleName("sys") // 设置父包模块名
                             .entity("entity")
                             .service("service")
                             .serviceImpl("service.impl")
                             .mapper("mapper")
                             .controller("controller")
                             .other("other")
-                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "F:\\alex\\alex_blog\\alex_xo\\src\\main\\resources\\mapper\\task")
+                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "F:\\alex\\alex_blog\\alex_xo\\src\\main\\resources\\mapper\\sys")
                             ); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_todo")
+                    builder.addInclude("t_web_visit")
                             .addTablePrefix("t_")
                             .entityBuilder()
                             .superClass(BaseEntity.class)
