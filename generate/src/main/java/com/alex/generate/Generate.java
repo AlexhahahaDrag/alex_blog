@@ -16,9 +16,7 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.fill.Column;
 import com.baomidou.mybatisplus.generator.keywords.MySqlKeyWordsHandler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Generate {
 
@@ -32,7 +30,10 @@ public class Generate {
                 .dbQuery(new MySqlQuery())
                 .typeConvert(new MySqlTypeConvert())
                 .keyWordsHandler(new MySqlKeyWordsHandler());
-
+        String modulePath = "sys";
+        Map<OutputFile, String> pathMap = new HashMap<>();
+        pathMap.put(OutputFile.mapperXml, "F:\\alex\\alex_blog\\alex_xo\\src\\main\\resources\\mapper\\" + modulePath);
+        pathMap.put(OutputFile.service, "\\service" + modulePath);
         FastAutoGenerator.create(dataSourceConfig)
                 .globalConfig(builder -> {
                     builder.fileOverride()
@@ -46,15 +47,14 @@ public class Generate {
                 })
                 .packageConfig(builder -> {
                     builder.parent("com.alex.blog.xo") // 设置父包名
-                            .moduleName("sys") // 设置父包模块名
+                            .moduleName(modulePath) // 设置父包模块名
                             .entity("entity")
                             .service("service")
                             .serviceImpl("service.impl")
                             .mapper("mapper")
                             .controller("controller")
                             .other("other")
-                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "F:\\alex\\alex_blog\\alex_xo\\src\\main\\resources\\mapper\\sys")
-                            ); // 设置mapperXml生成路径
+                            .pathInfo(pathMap); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
                     builder.addInclude("t_web_visit")
