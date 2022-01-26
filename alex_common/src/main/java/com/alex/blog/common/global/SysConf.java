@@ -135,5 +135,8 @@ public final class SysConf extends BaseSysConf {
     public static final String EDIT = "EDIT";
     public static final String EDIT_BATCH = "edit_batch";
     public static final String DELETE_BATCH = "delete_batch";
+
+    //todo待办
+    public static final String TEXT = "text";
 }
 

@@ -1,4 +1,4 @@
-package com.alex.blog.xo.mapper.sysParams;
+package com.alex.blog.xo.mapper.sys;
 
 import com.alex.blog.common.entity.sysParams.SysParams;
 import com.alex.blog.base.mapper.SuperMapper;

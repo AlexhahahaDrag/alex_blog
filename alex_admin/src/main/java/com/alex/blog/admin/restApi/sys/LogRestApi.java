@@ -1,4 +1,4 @@
-package com.alex.blog.admin.restApi;
+package com.alex.blog.admin.restApi.sys;
 
 import com.alex.blog.admin.annotion.authorityVerify.AuthorityVerify;
 import com.alex.blog.admin.global.SysConf;
@@ -7,7 +7,7 @@ import com.alex.blog.common.exception.ThrowableUtils;
 import com.alex.blog.common.vo.log.ExceptionLogVo;
 import com.alex.blog.common.vo.log.SysLogVo;
 import com.alex.blog.utils.utils.ResultUtil;
-import com.alex.blog.xo.service.ExceptionLogService;
+import com.alex.blog.xo.service.sys.ExceptionLogService;
 import com.alex.blog.xo.service.sys.SysLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -12,7 +12,7 @@ import com.alex.blog.common.vo.sysParams.SysParamsVo;
 import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
-import com.alex.blog.xo.mapper.sysParams.SysParamsMapper;
+import com.alex.blog.xo.mapper.sys.SysParamsMapper;
 import com.alex.blog.xo.service.sys.SysParamsService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

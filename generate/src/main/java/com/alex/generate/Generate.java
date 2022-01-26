@@ -26,7 +26,8 @@ public class Generate {
 
         List<IFill> list = new ArrayList<>();
         list.add(new Column("create_time", FieldFill.INSERT));
-        list.add(new Column("update_time", FieldFill.INSERT_UPDATE));
+        list.add(new Column("update_time", FieldFill.UPDATE));
+        list.add(new Column("operate_time", FieldFill.INSERT_UPDATE));
         DataSourceConfig.Builder dataSourceConfig = new DataSourceConfig.Builder("jdbc:mysql://localhost:3306/alex_blog", "root", "mysql")
                 .dbQuery(new MySqlQuery())
                 .typeConvert(new MySqlTypeConvert())
@@ -45,18 +46,18 @@ public class Generate {
                 })
                 .packageConfig(builder -> {
                     builder.parent("com.alex.blog.xo") // 设置父包名
-                            .moduleName("generate") // 设置父包模块名
+                            .moduleName("task") // 设置父包模块名
                             .entity("entity")
                             .service("service")
                             .serviceImpl("service.impl")
                             .mapper("mapper")
                             .controller("controller")
                             .other("other")
-                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "F:\\alex\\alex_blog\\alex_xo\\src\\main\\java\\com\\alex\\blog\\xo\\generate\\mapper\\mapper")
+                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "F:\\alex\\alex_blog\\alex_xo\\src\\main\\resources\\mapper\\task")
                             ); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_sys_params")
+                    builder.addInclude("t_todo")
                             .addTablePrefix("t_")
                             .entityBuilder()
                             .superClass(BaseEntity.class)

@@ -55,7 +55,7 @@ public class ElasticSearchService {
     @Autowired
     private BlogRepository blogRepository;
 
-    @Value(value = "#{elasticsearch.index}")
+    @Value(value = "${elasticsearch.index}")
     private String indexName;
 
     @Resource

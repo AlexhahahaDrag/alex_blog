@@ -25,20 +25,14 @@ public class BlogSortVo extends BaseVo<BlogSortVo> {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("分类内容")
-    @TableField("sort_name")
     private String sortName;
 
     @ApiModelProperty("分类简介")
-    @TableField("content")
     private String content;
 
     @ApiModelProperty("排序字段，越大越靠前")
-    @TableField("sort")
     private Integer sort;
 
     @ApiModelProperty("点击数")
-    @TableField("click_count")
     private Integer clickCount;
-
-
 }
