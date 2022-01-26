@@ -6,10 +6,12 @@ import com.alex.blog.admin.annotion.operationLogger.OperationLogger;
 import com.alex.blog.base.validator.group.GetList;
 import com.alex.blog.base.validator.group.Insert;
 import com.alex.blog.base.validator.group.Update;
+import com.alex.blog.common.entity.blog.Blog;
 import com.alex.blog.common.exception.ThrowableUtils;
 import com.alex.blog.common.vo.blog.BlogVo;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.xo.service.blog.BlogService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *description:  博客接口 restApi
@@ -95,5 +98,18 @@ public class BlogRestApi {
     @PostMapping(value = "/deleteBatch")
     public String deleteBlogBatch(@RequestBody List<String> blogIds) {
         return blogService.deleteBatchBlog(blogIds);
+    }
+
+    @ApiOperation(value = "查询博客", notes = "查询博客", response = String.class)
+    @GetMapping(value = "/getBlogById")
+    public Blog getBlogById(@ApiParam(value = "id", required = true) @RequestParam(value = "id") String id) {
+        return blogService.getBlogById(id);
+    }
+
+    @ApiOperation(value = "根据关键字查询博客信息", notes = "根据关键字查询博客信息", response = String.class)
+    @GetMapping(value = "/getBlogPage")
+    public IPage<Blog> getBlogPage(@ApiParam(value = "currentPage", required = true) @RequestParam(value = "currentPage") Long currentPage,
+                                   @ApiParam(value = "pageSize", required = true) @RequestParam(value = "pageSize") Long pageSize) {
+        return blogService.searchBlogByType(currentPage, pageSize, null, null);
     }
 }
