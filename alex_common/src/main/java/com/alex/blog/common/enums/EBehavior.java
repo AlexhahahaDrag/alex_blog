@@ -51,4 +51,13 @@ public enum EBehavior {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public static EBehavior getByCode(String behavior) {
+        for (EBehavior i : values()) {
+            if (i.getCode().equals(behavior)) {
+                return i;
+            }
+        }
+        return null;
+    }
 }

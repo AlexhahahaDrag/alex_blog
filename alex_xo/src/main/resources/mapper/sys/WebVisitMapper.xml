@@ -40,8 +40,34 @@
         admin_id, ip, behavior, module_id, other_data, `status`, os, browser, ip_source
     </sql>
 
-    <select id="getIpCount">
-        select distinct ip from alex_blog.t_web_visit where is_delete = 0 and status = '1'
-        and operate_time between to_timestamp(${startTime}, 'yyyy-mm-dd hh24:mi:ss') and to_timestamp(${endTime}, 'yyyy-mm-dd hh24:mi:ss')
+    <select id="getIpCount" resultType="java.lang.Integer">
+        select count(distinct ip) from alex_blog.t_web_visit where is_delete = 0 and status = '1'
+        and operate_time between ${startTime} and ${endTime}
+    </select>
+
+    <select id="getPvByWeek" resultType="java.lang.Integer">
+        PREPARE s1 FROM '
+            select aa.date, count(t_web_visit.id) as num from
+            (SELECT date_format( adddate( ${startTime}, @num := @num + 1 ), \'%Y-%m-%d\' ) date
+            FROM t_web_visit t_web_visit, ( SELECT @num :=- 1 ) num LIMIT ?) aa
+            left join t_web_visit t_web_visit
+            on DATE_FORMAT(t_web_visit.operate_time, \'%Y-%m-%d\') = aa.date
+            and t_web_visit.is_delete = 0 and status = \'1\'
+            group by aa.date order by aa.date';
+        set @_limit= DATEDIFF( ${endTime}, ${startTime} ) + 1;
+        EXECUTE s1 USING @_limit;
+    </select>
+
+    <select id="getUvByWeek" resultType="java.lang.Integer">
+        PREPARE s1 FROM '
+            select aa.date, count(distinct t_web_visit.admin_id) as num from
+            (SELECT date_format( adddate( ${startTime}, @num := @num + 1 ), \'%Y-%m-%d\' ) date
+            FROM t_web_visit t_web_visit, ( SELECT @num :=- 1 ) num LIMIT ?) aa
+            left join t_web_visit t_web_visit
+            on DATE_FORMAT(t_web_visit.operate_time, \'%Y-%m-%d\') = aa.date
+            and t_web_visit.is_delete = 0 and status = \'1\'
+            group by aa.date order by aa.date';
+        set @_limit= DATEDIFF( ${endTime}, ${startTime} ) + 1;
+        EXECUTE s1 USING @_limit;
     </select>
 </mapper>

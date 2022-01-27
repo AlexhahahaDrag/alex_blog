@@ -57,4 +57,12 @@ public class WebVisit extends BaseEntity {
     @ApiModelProperty("ip来源")
     @TableField("ip_source")
     private String ipSource;
+
+    @ApiModelProperty("内容")
+    @TableField(exist = false)
+    private String content;
+
+    @ApiModelProperty("行为名称")
+    @TableField("ip_source")
+    private String behaviorName;
 }

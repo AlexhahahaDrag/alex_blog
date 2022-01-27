@@ -100,6 +100,7 @@ public final class SysConf extends BaseSysConf {
     public static final String BLOG_SORT_BY_MONTH = "blog_sort_by_month";
     public static final String BLOG_ID = "blog_id";
     public static final String BLOG_COUNT = "blog_count";
+    public static final String OID = "oid";
 
     //月份集合
     public static final String MONTH_SET = "month_set";

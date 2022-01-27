@@ -1,4 +1,4 @@
-package com.alex.blog.xo.service.impl;
+package com.alex.blog.xo.service.sys.impl;
 
 import com.alex.blog.base.exception.exceptionType.AlexException;
 import com.alex.blog.base.global.Constants;
@@ -12,7 +12,7 @@ import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.*;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.xo.mapper.WebConfigMapper;
-import com.alex.blog.xo.service.WebConfigService;
+import com.alex.blog.xo.service.sys.WebConfigService;
 import com.alex.blog.common.vo.admin.WebConfigVo;
 import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

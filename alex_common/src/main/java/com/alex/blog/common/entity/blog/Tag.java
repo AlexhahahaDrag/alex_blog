@@ -31,13 +31,11 @@ public class Tag extends BaseEntity {
     @TableField("content")
     private String content;
 
-    @ApiModelProperty("标签简介")
+    @ApiModelProperty("点击次数")
     @TableField("click_count")
     private Integer clickCount;
 
     @ApiModelProperty("排序字段，越大越靠前")
     @TableField("sort")
     private Integer sort;
-
-
 }

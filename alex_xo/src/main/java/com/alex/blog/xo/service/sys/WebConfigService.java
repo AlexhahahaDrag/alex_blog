@@ -1,4 +1,4 @@
-package com.alex.blog.xo.service;
+package com.alex.blog.xo.service.sys;
 
 import com.alex.blog.base.service.SuperService;
 import com.alex.blog.common.entity.admin.WebConfig;

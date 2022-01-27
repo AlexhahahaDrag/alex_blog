@@ -10,7 +10,7 @@ import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.service.admin.AdminService;
 import com.alex.blog.xo.service.LoginService;
-import com.alex.blog.xo.service.WebConfigService;
+import com.alex.blog.xo.service.sys.WebConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

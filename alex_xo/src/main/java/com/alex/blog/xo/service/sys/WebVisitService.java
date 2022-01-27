@@ -5,6 +5,7 @@ import com.alex.blog.base.service.SuperService;
 import com.alex.blog.common.vo.sys.WebVisitVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -26,7 +27,7 @@ public interface WebVisitService extends SuperService<WebVisit> {
      * @createDate:  2022/1/26 17:35
      * @return:      void
     */
-    void addWebVisit(String adminId, String moduleId, String otherData);
+    void addWebVisit(String adminId, HttpServletRequest request, String moduleId, String otherData);
 
     /**
      * @description: 获取今日访问量

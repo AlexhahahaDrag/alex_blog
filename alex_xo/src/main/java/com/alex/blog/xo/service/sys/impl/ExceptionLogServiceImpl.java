@@ -1,4 +1,4 @@
-package com.alex.blog.xo.service.impl;
+package com.alex.blog.xo.service.sys.impl;
 
 
 import com.alex.blog.base.enums.EStatus;

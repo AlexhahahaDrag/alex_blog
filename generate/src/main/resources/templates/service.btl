@@ -1,0 +1,18 @@
+package ${table.servicePackageName};
+
+import ${table.modelPackageName}.${table.className};
+import com.alex.alexcore.service.CurdService;
+
+/**
+ *-------------------------------
+ * ${table.description} (${table.className}Service)
+ *------------------------
+ * author: alex
+ * createDate: ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
+ * description: 我是由代码生成器生成
+ * version: 1.0.0
+ */
+public interface ${table.className}Service extends CurdService<${table.className}> {
+
+
+}
