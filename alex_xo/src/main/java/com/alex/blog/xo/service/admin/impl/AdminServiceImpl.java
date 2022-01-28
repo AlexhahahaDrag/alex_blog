@@ -7,6 +7,7 @@ import com.alex.blog.base.holder.RequestHolder;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.Admin;
 import com.alex.blog.common.entity.admin.Role;
+import com.alex.blog.common.feign.PictureFeignClient;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
@@ -20,6 +21,7 @@ import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -56,6 +58,9 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private PictureFeignClient pictureFeignClient;
 
     @Override
     public Admin getAdminById(String id) {
@@ -95,15 +100,9 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
     @Override
     public Admin getAdminByUser(String username) {
         QueryWrapper<Admin> query = new QueryWrapper<>();
-        query.eq(SysConf.USERNAME, username);
-        query.last(SysConf.LIMIT_ONE);
+        query.select(i -> !SysConf.PASSWORD.equals(i.getProperty())).eq(SysConf.USERNAME, username).last(SysConf.LIMIT_ONE);
         Admin admin = adminService.getOne(query);
-        //清空密码，防止密码泄露
-        admin.setPassword(null);
-        // TODO: 2021/7/14 获取图片信息
-        if (StringUtils.isNotEmpty(admin.getAvatar())) {
-
-        }
+        admin.setPhotoList(getPhotoList(admin.getAvatar()));
         Admin res = new Admin();
         res.setOccupation(admin.getOccupation());
         res.setNickName(admin.getNickName());
@@ -127,10 +126,7 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         }
         Admin admin = adminService.getById(adminId);
         admin.setPassword("");
-        // TODO: 2021/7/15获取图片
-        if (StringUtils.isNotEmpty(admin.getAvatar())) {
-
-        }
+        admin.setPhotoList(getPhotoList(admin.getAvatar()));
         return admin;
     }
 
@@ -184,22 +180,18 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         query.select(Admin.class, i -> !i.getProperty().equals(SQLConf.PASSWORD));
         query.eq(SQLConf.STATUS, EStatus.ENABLE);
         IPage<Admin> pageList = adminService.page(page, query);
-        StringBuffer fileIds = new StringBuffer();
         List<Admin> list = pageList.getRecords();
-        List<String> adminIdList = list.stream()
-                .map(admin -> {
-                    if (StringUtils.isNotEmpty(admin.getAvatar())) {
-                        fileIds.append(admin.getAvatar()).append(SysConf.FILE_SEGMENTATION);
-                    }
-                    return admin.getId();
-                }).collect(Collectors.toList());
-        Map<String, String> pictureMap = new HashMap<>(Constants.NUM_TEN);
+        String fileIds = list.stream().map(Admin::getAvatar).filter(i -> StringUtils.isNotEmpty(i)).collect(Collectors.joining(SysConf.FILE_SEGMENTATION));
         //获取图片信息
-        String pictureResult = null;
-        // TODO: 2021/9/17  
-//        if (fileIds.length() > 0) {
-//            pictureResult = pictureFeignClient.getPicture(fileIds.toString());
-//        }
+        Map<String, String> photoMap = getPhotoMap(fileIds);
+        if (photoMap != null && !photoMap.isEmpty() && list != null && !list.isEmpty()) {
+            list.forEach(item -> {
+                String photoUrl = photoMap.get(item.getAvatar());
+                if (StringUtils.isNotEmpty(item.getAvatar()) &&  StringUtils.isNotEmpty(photoUrl)) {
+                    item.setPhotoList(Lists.newArrayList(photoUrl));
+                }
+            });
+        }
         return ResultUtil.resultWithData(SysConf.SUCCESS, pageList);
     }
 
@@ -387,17 +379,13 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
     public String info(String token) {
         String adminId = RequestHolder.getAdminId();
         if (StringUtils.isEmpty(adminId)) {
-            // TODO: 2021/9/22 修改提示信息 
             return ResultUtil.result(SysConf.ERROR, "token用户过期!");
         }
         Map<String, Object> map = new HashMap<>(Constants.NUM_THREE);
         map.put(SysConf.TOKEN, token);
         Admin admin = adminService.getById(adminId);
         //获取头像
-        // TODO: 2021/9/22 获取头像图片数据
-        if(StringUtils.isNotEmpty(admin.getAvatar())) {
-
-        }
+        admin.setPhotoList(getPhotoList(admin.getAvatar()));
         Role role = roleService.getById(admin.getRoleId());
         map.put(SysConf.ROLES, new ArrayList<>().add(role));
         return ResultUtil.result(SysConf.SUCCESS, map);
@@ -427,5 +415,38 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         QueryWrapper<Admin> query = new QueryWrapper<>();
         query.eq(SysConf.STATUS, status);
         return this.count(query);
+    }
+
+    /**
+     * @param ids
+     * @description: 获取图片list
+     * @author:      alex
+     * @createDate:  2022/1/28 11:45
+     * @return:      java.util.List<java.lang.String>
+     */
+    private List<String> getPhotoList(String ids) {
+        List<String> result = null;
+        if (StringUtils.isNotEmpty(ids)) {
+            String picture = pictureFeignClient.getPicture(ids, SysConf.FILE_SEGMENTATION);
+            result = webUtils.getPicture(picture);
+        }
+        return result;
+    }
+
+    /**
+     * @param fileIds
+     * @description: 获取图片map
+     * @author:      alex
+     * @createDate:  2022/1/28 11:45
+     * @return:      java.util.Map<java.lang.String,java.lang.String>
+     */
+    private Map<String, String> getPhotoMap(String fileIds) {
+        String picture = pictureFeignClient.getPicture(fileIds, SysConf.FILE_SEGMENTATION);
+        List<Map<String, Object>> pictureList = webUtils.getPictureMap(picture);
+        Map<String, String> pictureMap = null;
+        if (pictureList != null && !pictureList.isEmpty()) {
+            pictureMap = pictureList.stream().collect(Collectors.toMap(item -> item.get(SysConf.ID).toString(), item -> item.get(SysConf.URL).toString()));
+        }
+        return pictureMap;
     }
 }

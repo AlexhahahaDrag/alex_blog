@@ -106,7 +106,6 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
         query.orderByDesc(SQLConf.UPDATE_TIME);
         WebConfig webConfig = webConfigService.getOne(query);
         if (webConfig == null) {
-            // TODO: 2021/9/13 添加错误码
             throw new AlexException("00101", MessageConf.SYSTEM_CONFIG_NOT_EXIST);
         }
         StringBuffer sb = new StringBuffer();
@@ -220,7 +219,6 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
         query.orderByDesc(SysConf.UPDATE_TIME);
         WebConfig webConfig = webConfigService.getOne(query);
         if (webConfig == null) {
-            // TODO: 2021/9/13 添加错误码
             throw new AlexException("00101", MessageConf.SYSTEM_CONFIG_NOT_EXIST);
         }
         String loginTypeListJson = webConfig.getLoginTypeList();
