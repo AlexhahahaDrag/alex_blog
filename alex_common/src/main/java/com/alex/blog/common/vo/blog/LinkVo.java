@@ -1,13 +1,13 @@
 package com.alex.blog.common.vo.blog;
 
-import com.alex.blog.base.entity.BaseEntity;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.alex.blog.base.vo.BaseVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @ApiModel(value = "Link对象Vo", description = "友情链接表Vo")
-public class LinkVo extends BaseEntity {
+public class LinkVo extends BaseVo<LinkVo> {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class LinkVo extends BaseEntity {
     private Integer sort;
 
     @ApiModelProperty("友链状态： 0 申请中， 1：已上线，  2：已下架")
-    private Boolean linkStatus;
+    private String linkStatus;
 
     @ApiModelProperty("申请用户ID")
     private String userId;
@@ -54,4 +54,7 @@ public class LinkVo extends BaseEntity {
 
     @ApiModelProperty("网站图标")
     private String fileId;
+
+    @ApiModelProperty("排序字段")
+    private Map<String, String> orderColumn;
 }

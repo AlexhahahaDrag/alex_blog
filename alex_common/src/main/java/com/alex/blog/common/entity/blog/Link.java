@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
  * <p>
  * 友情链接表
@@ -66,5 +68,7 @@ public class Link extends BaseEntity {
     @TableField("file_id")
     private String fileId;
 
-
+    @ApiModelProperty("图片列表")
+    @TableField(exist = false)
+    private List<String> photoList;
 }

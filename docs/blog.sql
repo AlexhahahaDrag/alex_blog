@@ -144,7 +144,7 @@ CREATE TABLE `t_link` (
   `operate_time` timestamp COMMENT '更新时间',
   `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态',
   `sort` int DEFAULT '0' COMMENT '排序字段，越大越靠前',
-  `link_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '友链状态： 0 申请中， 1：已上线，  2：已下架',
+  `link_status` varchar(2) COMMENT '友链状态： 0 申请中， 1：已上线，  2：已下架',
   `user_id` varchar(32) DEFAULT NULL COMMENT '申请用户ID',
   `admin_id` varchar(32) DEFAULT NULL COMMENT '操作管理员ID',
   `email` varchar(255) DEFAULT NULL COMMENT '站长邮箱',

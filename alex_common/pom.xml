@@ -114,5 +114,11 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
             <version>${feign-version}</version>
         </dependency>
+
+        <!-- RabbitMq  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
     </dependencies>
 </project>

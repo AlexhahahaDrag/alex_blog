@@ -140,11 +140,16 @@ public final class SysConf extends BaseSysConf {
     public static final String EDIT = "EDIT";
     public static final String EDIT_BATCH = "edit_batch";
     public static final String DELETE_BATCH = "delete_batch";
+    public static final String SUBJECT = "subject";
+    public static final String RECEIVER = "receiver";
 
     //todo待办
     public static final String TEXT = "text";
 
     //t_web_visit
     public static final String VISIT_COUNT = "visitCount";
+
+    //t_link
+    public static final String LINK_STATUS = "link_status";
 }
 
