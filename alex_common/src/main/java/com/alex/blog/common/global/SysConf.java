@@ -23,16 +23,18 @@ public final class SysConf extends BaseSysConf {
     public static final String IS_PUBLISH = "is_publish";
     public static final String IS_ORIGINAL = "is_original";
     public static final String USERNAME = "username";
+    public static final String NICK_NAME = "nick_name";
     public static final String NAME = "name";
     public static final String EXPANDED_NAME = "expandedName";
     public static final String FILE_OLD_NAME = "fileOldName";
     public static final String SOURCE = "source";
     public static final String MESSAGE = "message";
-
+    public static final String USER_COUNT = "userCount";
     public static final String LIMIT_ONE = "limit 1";
     public static final String COUNT = "count";
     public static final String EQUAL_TO = "equal_to";
-
+    public static final String PASSWORD = "password";
+    public static final String AVATAR = "avatar";
     //IP相关
     public static final String OS = "OS";
     public static final String BROWSER = "BROWSER";
@@ -98,6 +100,9 @@ public final class SysConf extends BaseSysConf {
     //t_blog
     public static final String BLOG_SORT_BY_MONTH = "blog_sort_by_month";
     public static final String BLOG_ID = "blog_id";
+    public static final String BLOG_COUNT = "blog_count";
+    public static final String OID = "oid";
+
     //月份集合
     public static final String MONTH_SET = "month_set";
     public static final String AUTHOR = "author";
@@ -114,6 +119,7 @@ public final class SysConf extends BaseSysConf {
 
     //t_comment
     public static final String TYPE = "type";
+    public static final String COMMENT_COUNT = "commmetCount";
 
     //t_sys_params
     public static final String BLOG_HOT_COUNT = "BLOG_HOT_COUNT";
@@ -135,5 +141,16 @@ public final class SysConf extends BaseSysConf {
     public static final String EDIT = "EDIT";
     public static final String EDIT_BATCH = "edit_batch";
     public static final String DELETE_BATCH = "delete_batch";
+    public static final String SUBJECT = "subject";
+    public static final String RECEIVER = "receiver";
+
+    //todo待办
+    public static final String TEXT = "text";
+
+    //t_web_visit
+    public static final String VISIT_COUNT = "visitCount";
+
+    //t_link
+    public static final String LINK_STATUS = "link_status";
 }
 

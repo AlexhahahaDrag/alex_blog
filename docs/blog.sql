@@ -42,7 +42,7 @@ CREATE TABLE `t_tag` (
  `id` varchar(32) AUTO_INCREMENT COMMENT '唯一id',
  `content` varchar(1000) DEFAULT NULL COMMENT '标签内容',
  `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态',
- `click_count` int DEFAULT '0' COMMENT '标签简介',
+ `click_count` int DEFAULT '0' COMMENT '点击次数',
  `sort` int DEFAULT '0' COMMENT '排序字段，越大越靠前',
  `creator` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
  `create_time` timestamp COMMENT '创建时间',
@@ -123,3 +123,31 @@ CREATE TABLE `t_sys_params` (
     `sort` INT NOT NULL COMMENT '排序字段',
     PRIMARY KEY ( `id` )
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '参数配置表';
+
+
+DROP TABLE IF EXISTS `t_link`;
+
+CREATE TABLE `t_link` (
+  `id` varchar(32) NOT NULL COMMENT '唯一id',
+  `title` varchar(255) DEFAULT NULL COMMENT '友情链接标题',
+  `summary` varchar(255) DEFAULT NULL COMMENT '友情链接介绍',
+  `url` varchar(255) DEFAULT NULL COMMENT '友情链接URL',
+  `click_count` int DEFAULT '0' COMMENT '点击数',
+  `creator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+  `create_time` timestamp COMMENT '创建时间',
+  `updater` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '修改人',
+  `update_time` timestamp COMMENT '更新时间',
+  `deleter` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
+  `delete_time` timestamp COMMENT '删除时间',
+  `is_delete` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+  `operator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+  `operate_time` timestamp COMMENT '更新时间',
+  `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态',
+  `sort` int DEFAULT '0' COMMENT '排序字段，越大越靠前',
+  `link_status` varchar(2) COMMENT '友链状态： 0 申请中， 1：已上线，  2：已下架',
+  `user_id` varchar(32) DEFAULT NULL COMMENT '申请用户ID',
+  `admin_id` varchar(32) DEFAULT NULL COMMENT '操作管理员ID',
+  `email` varchar(255) DEFAULT NULL COMMENT '站长邮箱',
+  `file_id` varchar(255) DEFAULT NULL COMMENT '网站图标',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='友情链接表';

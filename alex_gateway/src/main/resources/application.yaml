@@ -7,11 +7,23 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true
+          enabled: true #开启从注册中心动态创建的路由功能，利用微服务进行路由
       routes:
-        - id: alex_user
-          uri: lb://alex_user
+        - id: alex_admin
+          uri: lb://alex_admin
           predicates:
-            - Path=/adminInfo/auth/**
+            - Path=/admin/**
           filters:
-            - RewritePath=/adminInfo/(?<segment>.*),/$\{segment}
+            - RewritePath=/admin/(?<segment>.*),/$\{segment}
+        - id: alex_search
+            uri: lb://alex_search
+            predicates:
+              - Path=/search/**
+            filters:
+              - RewritePath=/search/(?<segment>.*),/$\{segment}
+        - id: alex_picture
+            uri: lb://alex_picture
+            predicates:
+              - Path=/picture/**
+            filters:
+              - RewritePath=/picture/(?<segment>.*),/$\{segment}

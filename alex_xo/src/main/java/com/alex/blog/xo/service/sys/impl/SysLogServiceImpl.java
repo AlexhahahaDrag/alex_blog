@@ -8,7 +8,7 @@ import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.log.SysLogVo;
 import com.alex.blog.utils.utils.DateUtils;
 import com.alex.blog.utils.utils.StringUtils;
-import com.alex.blog.xo.mapper.SysLogMapper;
+import com.alex.blog.xo.mapper.sys.SysLogMapper;
 import com.alex.blog.xo.service.sys.SysLogService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

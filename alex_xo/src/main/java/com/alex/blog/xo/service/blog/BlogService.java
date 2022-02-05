@@ -229,7 +229,7 @@ public interface BlogService extends SuperService<Blog> {
 
     /**
      * @param currentPage
-     * @param currentSize
+     * @param pageSize
      * @description: 获取最新的博客
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
@@ -341,4 +341,6 @@ public interface BlogService extends SuperService<Blog> {
      * @return:      java.lang.String
     */
     String getArticleByMonth(String monthDate);
+
+    IPage<Blog> searchBlogByType(Long currentPage, Long currentPageSize, Map<String, Object> eqMap, String orderBy);
  }

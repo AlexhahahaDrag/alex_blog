@@ -819,26 +819,35 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
     public Map<String, Object> getBlogByKeyword(String keyword, Long currentPage, Long currentPageSize) {
         currentPage = currentPage == null ? 1 : currentPage;
         currentPageSize = currentPageSize == null ? 10 : currentPageSize;
-        String keywords = keyword.trim();
         QueryWrapper<Blog> query = new QueryWrapper<>();
         query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
-                .and(wrapper -> wrapper.like(SysConf.TITLE, keywords).or().like(SysConf.SUMMARY, keywords))
                 .select(item -> !item.getProperty().equals(SysConf.CONTENT))
                 .orderByDesc(SysConf.CLICK_COUNT);
+        String keywords = "";
+        if (StringUtils.isNotEmpty(keyword)) {
+            keywords = keyword.trim();
+            String finalKeywords = keywords;
+            query.and(wrapper -> wrapper.like(SysConf.TITLE, finalKeywords).or().like(SysConf.SUMMARY, finalKeywords))
+                    .select(item -> !item.getProperty().equals(SysConf.CONTENT))
+                    .orderByDesc(SysConf.CLICK_COUNT);
+        }
         Page<Blog> page = new Page<>();
         page.setCurrent(currentPage).setSize(currentPageSize);
         Page<Blog> resPage = blogService.page(page, query);
         List<Blog> blogList = resPage.getRecords();
         List<String> blogSortIdList = new ArrayList<>();
         StringBuffer sb = new StringBuffer();
+        String finalKeywords1 = keywords;
         blogList.forEach(item -> {
             blogSortIdList.add(item.getBlogSortId());
             if (StringUtils.isNotEmpty(item.getFileId())) {
                 sb.append(item.getFileId() + SysConf.FILE_SEGMENTATION);
             }
             //给标题和简介设置高亮
-            item.setTitle(getHitCode(item.getTitle(), keywords));
-            item.setSummary(getHitCode(item.getSummary(), keywords));
+            if (StringUtils.isNotEmpty(finalKeywords1)) {
+                item.setTitle(getHitCode(item.getTitle(), finalKeywords1));
+                item.setSummary(getHitCode(item.getSummary(), finalKeywords1));
+            }
         });
         Map<String, String> blogSortMap = null;
         if (blogSortIdList.size() > 0) {
@@ -920,7 +929,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
      */
-    private IPage<Blog> searchBlogByType(Long currentPage, Long currentPageSize, Map<String, Object> eqMap, String orderBy) {
+    public IPage<Blog> searchBlogByType(Long currentPage, Long currentPageSize, Map<String, Object> eqMap, String orderBy) {
         //设置分页
         Page<Blog> page = new Page<>();
         page.setCurrent(currentPage == null ? 1 : currentPage);
@@ -1174,4 +1183,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             rabbitTemplate.convertAndSend(SysConf.EXCHANGE_DIRECT, SysConf.ALEX_BLOG, map);
         }
     }
+
+
+
 }

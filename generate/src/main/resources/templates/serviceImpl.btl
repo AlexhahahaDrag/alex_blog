@@ -1,0 +1,59 @@
+package ${table.serviceImplPackageName};
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alex.alexcore.page.MybatisPageHelper;
+import com.alex.alexcore.page.PageRequest;
+import com.alex.alexcore.page.PageResult;
+
+import ${table.modelPackageName}.${table.className};
+import ${table.daoPackageName}.${table.className}Mapper;
+import ${table.servicePackageName}.${table.className}Service;
+
+/**
+ *-------------------------------
+ * ${table.description} (${table.className}ServiceImpl)
+ *------------------------
+ * author: alex
+ * createDate: ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
+ * description: 我是由代码生成器生成
+ * version: 1.0.0
+ */
+ @Service
+public class ${table.className}ServiceImpl implements ${table.className}Service {
+
+    @Autowired
+    private ${table.className}Mapper ${table.objectName}Mapper;
+
+    @Override
+    public int save(${table.className} record) {
+        if (record.${table.primaryKey.getter}() == null || record.${table.primaryKey.getter}() == 0)
+            return ${table.objectName}Mapper.add(record);
+        return ${table.objectName}Mapper.update(record);
+    }
+
+    @Override
+    public int delete(${table.className} record) {
+        return ${table.objectName}Mapper.delete(record.${table.primaryKey.getter}());
+    }
+
+    @Override
+    public int delete(List<${table.className}> records) {
+        for(${table.className} ${table.objectName} : records)
+            delete(${table.objectName});
+        return 1;
+    }
+
+    @Override
+    public ${table.className} findById(${table.primaryKey.javaType} ${table.primaryKey.fieldName}) {
+        return ${table.objectName}Mapper.findById(${table.primaryKey.fieldName});
+    }
+
+    @Override
+    public PageResult findPage(PageRequest pageRequest) {
+        return MybatisPageHelper.findPage(pageRequest, ${table.objectName}Mapper);
+    }
+}

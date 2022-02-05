@@ -25,14 +25,11 @@ public class TagVo extends BaseVo<TagVo> {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("标签内容")
-    @TableField("content")
     private String content;
 
     @ApiModelProperty("标签简介")
-    @TableField("click_count")
     private Integer clickCount;
 
     @ApiModelProperty("排序字段，越大越靠前")
-    @TableField("sort")
     private Integer sort;
 }

@@ -134,4 +134,12 @@ public interface AdminService extends SuperService<Admin> {
      * @return:       java.lang.String
     */
     String getMenu();
+
+    /**
+     * @description: 获取用户数量
+     * @author:      alex
+     * @createDate:  2022/1/26 17:20
+     * @return:      java.lang.Integer
+    */
+    Integer getUserCount(Integer status);
 }

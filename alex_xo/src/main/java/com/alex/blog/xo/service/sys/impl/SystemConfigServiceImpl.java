@@ -14,7 +14,7 @@ import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.common.global.SQLConf;
-import com.alex.blog.xo.mapper.SystemConfigMapper;
+import com.alex.blog.xo.mapper.sys.SystemConfigMapper;
 import com.alex.blog.xo.service.sys.SystemConfigService;
 import com.alex.blog.common.vo.admin.SystemConfigVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

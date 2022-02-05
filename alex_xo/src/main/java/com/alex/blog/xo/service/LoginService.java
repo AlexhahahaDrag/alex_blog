@@ -8,6 +8,7 @@ import com.alex.blog.common.config.jwt.Audience;
 import com.alex.blog.common.config.jwt.JwtTokenUtil;
 import com.alex.blog.common.entity.admin.Admin;
 import com.alex.blog.common.entity.admin.Role;
+import com.alex.blog.common.feign.PictureFeignClient;
 import com.alex.blog.common.global.MessageConf;
 import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
@@ -15,6 +16,8 @@ import com.alex.blog.utils.utils.*;
 import com.alex.blog.xo.entity.OnlineAdmin;
 import com.alex.blog.xo.service.admin.AdminService;
 import com.alex.blog.xo.service.admin.RoleService;
+import com.alex.blog.xo.service.sys.WebConfigService;
+import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;
@@ -66,6 +69,12 @@ public class LoginService {
 
     @Autowired
     private WebConfigService webConfigService;
+
+    @Autowired
+    private PictureFeignClient pictureFeignClient;
+
+    @Autowired
+    private WebUtils webUtils;
 
     public String login(HttpServletRequest request, String username, String password, boolean isRemember) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
@@ -145,7 +154,12 @@ public class LoginService {
         }
         Admin admin = adminService.getById(adminId);
         map.put(SysConf.TOKEN, token);
-        // TODO: 2021/7/31 获取图片信息
+        if (StringUtils.isNotEmpty(admin.getAvatar())) {
+            String picture = pictureFeignClient.getPicture(admin.getAvatar(), SysConf.FILE_SEGMENTATION);
+            List<String> pictureList = webUtils.getPicture(picture);
+            map.put(SysConf.AVATAR, pictureList == null || pictureList.isEmpty() ?
+                    "https://gitee.com/moxi159753/wx_picture/raw/master/picture/favicon.png" : pictureList.get(0));
+        }
         List<Role> roles = roleService.listByIds(Lists.newArrayList(admin.getRoleId()));
         map.put(SysConf.ROLES, roles);
         return ResultUtil.result(SysConf.SUCCESS, map);

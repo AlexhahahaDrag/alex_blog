@@ -1,8 +1,8 @@
 package com.alex.blog.xo.service.sys;
 
 import com.alex.blog.base.service.SuperService;
-import com.alex.blog.common.entity.sysParams.SysParams;
-import com.alex.blog.common.vo.sysParams.SysParamsVo;
+import com.alex.blog.common.entity.sys.SysParams;
+import com.alex.blog.common.vo.sys.SysParamsVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.List;

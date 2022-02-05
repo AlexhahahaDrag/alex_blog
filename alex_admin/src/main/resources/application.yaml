@@ -26,3 +26,12 @@ tokenHeader: Authorization
 logging:
   level:
     com.alex.blog.xo.mapper: debug
+
+#将来单独拿出来生成一个yaml
+data:
+  web:
+    project_name: alex博客
+    project_name_en: alex_blog
+    logo: https://gitee.com/moxi159753/mogu_blog_v2/raw/Nacos/doc/images/gitee/favicon2.ico
+  website:
+    url: http://192.168.177.140:9527/#/
