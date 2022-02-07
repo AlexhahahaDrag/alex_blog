@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  *version:      1.0.0
  */
 @RestController
-//@RefreshScope
+@RefreshScope
 @RequestMapping("/auth")
 @Api(value = "登陆相关接口", tags = {"登陆相关接口"})
 @Slf4j
