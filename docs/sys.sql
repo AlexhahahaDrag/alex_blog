@@ -9,7 +9,7 @@ CREATE TABLE `t_web_visit` (
    `other_data` varchar(255) DEFAULT NULL COMMENT '附加数据(比如搜索内容)',
    `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
    `creator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
-   `create_time` timestamp NOT NULL COMMENT '创建时间',
+   `create_time` timestamp NULL COMMENT '创建时间',
    `updater` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
    `update_time` timestamp NOT NULL COMMENT '更新时间',
    `deleter` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',

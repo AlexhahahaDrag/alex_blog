@@ -1,10 +1,7 @@
 package com.alex.blog.common.feign;
 
-import com.alex.blog.common.config.feign.FeignConfiguration;
 import com.alex.blog.common.entity.blog.Blog;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.swagger.annotations.ApiParam;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -14,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *createDate:   2022/1/25 17:01
  *version:      1.0.0
  */
-@FeignClient(name = "alex_admin", configuration = FeignConfiguration.class)
+//@FeignClient(name = "alex_admin", configuration = FeignConfiguration.class)
 public interface WebFeignClient {
 
     /**
