@@ -1,21 +1,22 @@
 package com.alex.blog.admin.restApi;
 
-import com.alex.blog.admin.global.SysConf;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.holder.RequestHolder;
+import com.alex.blog.common.global.SysConf;
 import com.alex.blog.utils.utils.JsonUtils;
 import com.alex.blog.utils.utils.RedisUtils;
 import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.utils.utils.StringUtils;
 import com.alex.blog.xo.entity.OnlineAdmin;
-import com.alex.blog.xo.service.admin.AdminService;
 import com.alex.blog.xo.service.LoginService;
+import com.alex.blog.xo.service.admin.AdminService;
 import com.alex.blog.xo.service.sys.WebConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  *version:      1.0.0
  */
 @RestController
-//@RefreshScope
+@RefreshScope
 @RequestMapping("/auth")
 @Api(value = "登陆相关接口", tags = {"登陆相关接口"})
 @Slf4j

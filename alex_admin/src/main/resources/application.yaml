@@ -1,6 +1,6 @@
 spring:
   application:
-    name: alex_admin
+    name: alex-admin
   profiles:
     active: dev
 
