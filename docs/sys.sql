@@ -22,3 +22,51 @@ CREATE TABLE `t_web_visit` (
    `ip_source` varchar(255) DEFAULT NULL COMMENT 'ip来源',
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Web访问记录表';
+
+
+DROP TABLE IF EXISTS `t_system_config`;
+
+CREATE TABLE `t_system_config` (
+   `id` varchar(32) NOT NULL COMMENT '主键',
+   `qi_niu_access_key` varchar(255) DEFAULT NULL COMMENT '七牛云公钥',
+   `qi_niu_secret_key` varchar(255) DEFAULT NULL COMMENT '七牛云私钥',
+   `email` varchar(255) DEFAULT NULL COMMENT '邮箱账号',
+   `email_user_name` varchar(255) DEFAULT NULL COMMENT '邮箱发件人用户名',
+   `email_password` varchar(255) DEFAULT NULL COMMENT '邮箱密码',
+   `smtp_address` varchar(20) DEFAULT NULL COMMENT 'SMTP地址',
+   `smtp_port` varchar(6) DEFAULT '1' COMMENT 'SMTP端口',
+   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
+   `create_time` timestamp NULL DEFAULT NULL COMMENT '创建时间',
+   `update_time` timestamp NULL DEFAULT NULL COMMENT '更新时间',
+   `qi_niu_bucket` varchar(255) DEFAULT NULL COMMENT '七牛云上传空间',
+   `qi_niu_area` varchar(10) DEFAULT NULL COMMENT '七牛云存储区域 华东（z0），华北(z1)，华南(z2)，北美(na0)，东南亚(as0)',
+   `upload_qi_niu` varchar(1) DEFAULT '1' COMMENT '图片是否上传七牛云 (0:否， 1：是)',
+   `upload_local` varchar(1) DEFAULT '1' COMMENT '图片是否上传本地存储 (0:否， 1：是)',
+   `picture_priority` varchar(1) DEFAULT '1' COMMENT '图片显示优先级（ 1 展示 七牛云,  0 本地）',
+   `qi_niu_picture_base_url` varchar(255) DEFAULT NULL COMMENT '七牛云域名前缀：http://images.moguit.cn',
+   `local_picture_base_url` varchar(255) DEFAULT NULL COMMENT '本地服务器域名前缀：http://localhost:8600',
+   `start_email_notification` varchar(1) NOT NULL DEFAULT '0' COMMENT '是否开启邮件通知(0:否， 1:是)',
+   `editor_model` tinyint(1) NOT NULL DEFAULT '0' COMMENT '编辑器模式，(0：富文本编辑器CKEditor，1：markdown编辑器Veditor)',
+   `theme_color` varchar(10) NOT NULL DEFAULT '#409EFF' COMMENT '主题颜色',
+   `minio_end_point` varchar(255) DEFAULT NULL COMMENT 'Minio远程连接地址',
+   `minio_access_key` varchar(255) DEFAULT NULL COMMENT 'Minio公钥',
+   `minio_secret_key` varchar(255) DEFAULT NULL COMMENT 'Minio私钥',
+   `minio_bucket` varchar(255) DEFAULT NULL COMMENT 'Minio桶',
+   `upload_minio` tinyint(1) NOT NULL DEFAULT '0' COMMENT '图片是否上传Minio (0:否， 1：是)',
+   `minio_picture_base_url` varchar(255) DEFAULT NULL COMMENT 'Minio服务器文件域名前缀',
+   `open_dashboard_notification` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否开启仪表盘通知(0:否， 1:是)',
+   `dashboard_notification` longtext COMMENT '仪表盘通知【用于首次登录弹框】',
+   `content_picture_priority` tinyint(1) NOT NULL DEFAULT '0' COMMENT '博客详情图片显示优先级（ 0:本地  1: 七牛云 2: Minio）',
+   `open_email_activate` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否开启用户邮件激活功能【0 关闭，1 开启】',
+   `search_model` tinyint(1) NOT NULL DEFAULT '0' COMMENT '搜索模式【0:SQL搜索 、1：全文检索】',
+   `creator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+   `create_time` timestamp NULL COMMENT '创建时间',
+   `updater` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+   `update_time` timestamp NOT NULL COMMENT '更新时间',
+   `deleter` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
+   `delete_time` timestamp NULL DEFAULT NULL COMMENT '删除时间',
+   `is_delete` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+   `operator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+   `operate_time` timestamp NOT NULL COMMENT '更新时间',
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统配置表';

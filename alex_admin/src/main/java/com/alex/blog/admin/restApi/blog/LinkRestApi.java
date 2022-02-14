@@ -41,8 +41,8 @@ public class LinkRestApi {
     @AuthorityVerify
     @ApiOperation(value = "获取友情链接列表", notes = "获取友情链接列表", response = String.class)
     @PostMapping(value = "/getList")
-    public String getList(@Validated({GetList.class}) @RequestBody LinkVo LinkVo) {
-        return ResultUtil.resultSuccessWithData(linkService.getPageList(LinkVo));
+    public String getList(@Validated({GetList.class}) @RequestBody LinkVo linkVo) {
+        return ResultUtil.resultSuccessWithData(linkService.getPageList(linkVo));
     }
 
     @AvoidRepeatableCommit
@@ -50,18 +50,18 @@ public class LinkRestApi {
     @ApiOperation(value = "新增友情链接", notes = "新增友情链接", response = String.class)
     @PutMapping(value = "/add")
     @OperationLogger(value = "新增友情链接")
-    public String addLink(@Validated({Insert.class}) @RequestBody LinkVo LinkVo, BindingResult result) {
+    public String addLink(@Validated({Insert.class}) @RequestBody LinkVo linkVo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
-        return linkService.addLink(LinkVo);
+        return linkService.addLink(linkVo);
     }
 
     @AuthorityVerify
     @ApiOperation(value = "修改友情链接", notes = "修改友情链接", response = String.class)
     @PutMapping(value = "/edit")
     @OperationLogger(value = "修改友情链接")
-    public String editLink(@Validated({Update.class}) @RequestBody LinkVo LinkVo, BindingResult result) {
+    public String editLink(@Validated({Update.class}) @RequestBody LinkVo linkVo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
-        return linkService.editLink(LinkVo);
+        return linkService.editLink(linkVo);
     }
 
     @AuthorityVerify

@@ -142,4 +142,8 @@ public class SystemConfig extends BaseEntity<SystemConfig> {
     @ApiModelProperty(value = "openEmailActivate", name = "是否开启用户邮件激活功能【0 关闭，1 开启】", example = "1")
     @TableField(value = "open_email_activate")
     private String openEmailActivate;
+
+    @ApiModelProperty(value = "searchModel", name = "0:SQL搜索 、1：全文检索", example = "1")
+    @TableField(value = "search_model")
+    private String searchModel;
 }
