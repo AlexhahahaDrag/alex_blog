@@ -65,6 +65,8 @@ public class TagServiceImp extends SuperServiceImpl<TagMapper, Tag> implements T
         }
         Tag tag = new Tag();
         BeanUtils.copyProperties(tagVo, tag);
+        //默认新增的标签是有效的
+        tag.setStatus(EStatus.ENABLE.getCode());
         tag.insert();
         //删除redis中的blog_tag
         deleteRedisBlogTagList();
@@ -166,7 +168,7 @@ public class TagServiceImp extends SuperServiceImpl<TagMapper, Tag> implements T
         this.updateBatchById(tagList);
         //删除redis中的blog tag
         deleteRedisBlogTagList();
-        return null;
+        return ResultUtil.resultSuccessWithMessage(MessageConf.OPERATION_SUCCESS);
     }
 
     @Override

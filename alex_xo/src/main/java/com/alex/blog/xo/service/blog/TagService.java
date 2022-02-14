@@ -36,7 +36,7 @@ public interface TagService extends SuperService<Tag> {
 
     /**
      * @param tagVo
-     * @description: 行政博客标签
+     * @description: 新增博客标签
      * @author:      alex
      * @createDate:  2022/2/11 10:28
      * @return:      java.lang.String

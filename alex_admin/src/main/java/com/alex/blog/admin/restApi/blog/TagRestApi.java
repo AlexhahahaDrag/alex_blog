@@ -80,7 +80,7 @@ public class TagRestApi {
     @OperationLogger(value = "置顶标签")
     public String stickTag(@Validated({Update.class}) @RequestBody TagVo tagVo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
-        return tagService.editTag(tagVo);
+        return tagService.stickTag(tagVo);
     }
 
     @AuthorityVerify
