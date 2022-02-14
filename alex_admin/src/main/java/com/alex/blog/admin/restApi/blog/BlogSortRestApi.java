@@ -59,7 +59,7 @@ public class BlogSortRestApi {
     @ApiOperation(value = "修改博客分类", notes = "修改博客分类", response = String.class)
     @PutMapping(value = "/edit")
     @OperationLogger(value = "修改博客分类")
-    public String upateBlogSort(@Validated({Update.class}) @RequestBody BlogSortVo BlogSortVo, BindingResult result) {
+    public String editBlogSort(@Validated({Update.class}) @RequestBody BlogSortVo BlogSortVo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
         return blogSortService.editBlogSort(BlogSortVo);
     }

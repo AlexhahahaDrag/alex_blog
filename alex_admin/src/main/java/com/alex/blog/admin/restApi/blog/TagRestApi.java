@@ -59,7 +59,7 @@ public class TagRestApi {
     @ApiOperation(value = "修改标签", notes = "修改标签", response = String.class)
     @PutMapping(value = "/edit")
     @OperationLogger(value = "修改标签")
-    public String upateTag(@Validated({Update.class}) @RequestBody TagVo tagVo, BindingResult result) {
+    public String editTag(@Validated({Update.class}) @RequestBody TagVo tagVo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
         return tagService.editTag(tagVo);
     }

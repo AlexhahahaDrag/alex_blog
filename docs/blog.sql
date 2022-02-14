@@ -151,3 +151,28 @@ CREATE TABLE `t_link` (
   `file_id` varchar(255) DEFAULT NULL COMMENT '网站图标',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='友情链接表';
+
+
+
+DROP TABLE IF EXISTS `t_feedback`;
+
+CREATE TABLE `t_feedback` (
+    `id` varchar(32) NOT NULL COMMENT '唯一id',
+    `user_id` varchar(32) NOT NULL COMMENT '用户id',
+    `content` varchar(1000) DEFAULT NULL COMMENT '反馈的内容',
+    `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态',
+    `creator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+    `create_time` timestamp null COMMENT '创建时间',
+    `updater` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '修改人',
+    `update_time` timestamp null COMMENT '更新时间',
+    `deleter` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
+    `delete_time` timestamp null COMMENT '删除时间',
+    `is_delete` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+    `operator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+    `operate_time` timestamp COMMENT '更新时间',
+    `title` varchar(255) DEFAULT NULL COMMENT '标题',
+    `feedback_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '反馈状态： 0：已开启  1：进行中  2：已完成  3：已拒绝',
+    `reply` varchar(255) DEFAULT NULL COMMENT '回复',
+    `admin_id` varchar(32) DEFAULT NULL COMMENT '管理员id',
+                              PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='反馈表';

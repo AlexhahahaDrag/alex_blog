@@ -27,7 +27,7 @@ public class Generate {
         String fileName = "blog";
         String moduleName = "alex_xo";
         String javaFileName = "com/alex/blog/xo";
-        String tableName = "t_link";
+        String tableName = "t_feedback";
 
         List<IFill> list = new ArrayList<>();
         list.add(new Column("create_time", FieldFill.INSERT));

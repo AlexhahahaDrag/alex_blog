@@ -147,7 +147,7 @@ public class LinkServiceImp extends SuperServiceImpl<LinkMapper, Link> implement
     }
 
     @Override
-    public String deleteLink(List<String> ids) {
+    public String deleteBatchLink(List<String> ids) {
         if (ids == null || ids.isEmpty()) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }

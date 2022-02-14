@@ -60,7 +60,7 @@ public interface LinkService extends SuperService<Link> {
      * @createDate:  2022/1/28 9:44
      * @return:      java.lang.String
     */
-    String deleteLink(List<String> ids);
+    String deleteBatchLink(List<String> ids);
 
     /**
      * @param linkVo
