@@ -176,3 +176,31 @@ CREATE TABLE `t_feedback` (
     `admin_id` varchar(32) DEFAULT NULL COMMENT '管理员id',
                               PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='反馈表';
+
+
+
+DROP TABLE IF EXISTS `t_resource_sort`;
+CREATE TABLE `t_resource_sort` (
+   `id` VARCHAR ( 32 ) NOT NULL COMMENT '唯一id',
+   `file_uid` VARCHAR ( 32 ) DEFAULT NULL COMMENT '分类图片uid',
+   `sort_name` VARCHAR ( 255 ) DEFAULT NULL COMMENT '分类名',
+   `content` VARCHAR ( 255 ) DEFAULT NULL COMMENT '分类介绍',
+   `click_count` VARCHAR ( 255 ) DEFAULT NULL COMMENT '点击数',
+   `status` TINYINT UNSIGNED NOT NULL DEFAULT '1' COMMENT '状态',
+   `creator` VARCHAR ( 50 ) CHARACTER
+       SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+   `create_time` TIMESTAMP NULL COMMENT '创建时间',
+   `updater` VARCHAR ( 50 ) CHARACTER
+       SET utf8 COLLATE utf8_general_ci NULL COMMENT '修改人',
+   `update_time` TIMESTAMP NULL COMMENT '更新时间',
+   `deleter` VARCHAR ( 50 ) CHARACTER
+       SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
+   `delete_time` TIMESTAMP NULL COMMENT '删除时间',
+   `is_delete` TINYINT ( 1 ) NULL DEFAULT 0 COMMENT '是否删除',
+   `operator` VARCHAR ( 50 ) CHARACTER
+       SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+   `operate_time` TIMESTAMP COMMENT '更新时间',
+   `parent_id` VARCHAR ( 32 ) DEFAULT NULL COMMENT '父ID',
+   `sort` INT DEFAULT '0' COMMENT '排序字段',
+   PRIMARY KEY ( `id` )
+) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '资源分类表';
