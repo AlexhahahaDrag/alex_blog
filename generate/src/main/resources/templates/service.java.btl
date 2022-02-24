@@ -3,11 +3,10 @@ package ${package.Service};
 import ${package.Entity}.${entity};
 import ${superServiceClassPackage};
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import ${package.Other}.${entity}.${entity}Vo;
 import java.util.List;
 /**
- * <p>
  * ${table.comment!} 服务类
- * </p>
  * @author: ${author}
  * @createDate: ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
  * @description: 我是由代码生成器生成
@@ -19,31 +18,31 @@ interface ${table.serviceName} : ${superServiceClass}<${entity}>
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
     /**
-     * @param FeedbackVo
+     * @param: ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo
      * @description: 获取${table.comment!}列表
      * @author:      ${author}
      * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<${package.Entity}.${entity}>
      */
-    IPage<${entity}> getPageList(FeedbackVo FeedbackVo);
+    IPage<${entity}> getPageList(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo);
 
     /**
-     * @param FeedbackVo
+     * @param: ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo
      * @description: 新增${table.comment!}
      * @author:      ${author}
      * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
      * @return:      java.lang.String
      */
-    String add${entity}(FeedbackVo FeedbackVo);
+    String add${entity}(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo);
 
     /**
-     * @param FeedbackVo
+     * @param: ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo
      * @description: 编辑${table.comment!}
      * @author:      ${author}
      * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
      * @return:      java.lang.String
      */
-    String edit${entity}(FeedbackVo FeedbackVo);
+    String edit${entity}(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo);
 
     /**
      * @param ids

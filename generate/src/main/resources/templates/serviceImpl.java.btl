@@ -14,7 +14,7 @@ import com.alex.blog.common.global.SysConf;
 import org.springframework.beans.BeanUtils;
 import java.util.List;
 import com.alex.blog.base.enums.EStatus;
-
+import ${package.Other}.${entity}.${entity}Vo;
 /**
  * <p>
  * @description:  ${table.comment!}服务实现类
@@ -31,33 +31,33 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
 
     @Override
-    public IPage<${entity}> getPageList(FeedbackVo feedbackVo) {
+    public IPage<${entity}> getPageList(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo) {
         QueryWrapper<${entity}> query = getQuery();
         Page<${entity}> page = new Page<>();
-        page.setCurrent(feedbackVo.getCurrentPage());
-        page.setSize(feedbackVo.getPageSize());
-        Page<${entity}> feedbackPage = this.page(page, query);
-        return feedbackPage;
+        page.setCurrent(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo.getCurrentPage());
+        page.setSize(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo.getPageSize());
+        Page<${entity}> ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Page = this.page(page, query);
+        return ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Page;
     }
 
     @Override
-    public String add${entity}(FeedbackVo feedbackVo) {
-        ${entity} feedback = new ${entity}();
-        BeanUtils.copyProperties(feedbackVo, feedback);
-        feedback.insert();
+    public String add${entity}(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo) {
+        ${entity} ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)} = new ${entity}();
+        BeanUtils.copyProperties(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo, ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)});
+        ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}.insert();
         return ResultUtil.resultSuccessWithMessage(MessageConf.INSERT_SUCCESS);
     }
 
     @Override
-    public String edit${entity}(FeedbackVo feedbackVo) {
+    public String edit${entity}(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo) {
         QueryWrapper<${entity}> query = getQuery();
-        query.eq(SysConf.ID, feedbackVo.getId());
-        ${entity} feedback = this.getOne(query);
-        if (feedback == null) {
+        query.eq(SysConf.ID, ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo.getId());
+        ${entity} ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)} = this.getOne(query);
+        if (${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)} == null) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
-        BeanUtils.copyProperties(feedbackVo, feedback);
-        feedback.updateById();
+        BeanUtils.copyProperties(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo, ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)});
+        ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}.updateById();
         return ResultUtil.resultSuccessWithMessage(MessageConf.UPDATE_SUCCESS);
     }
 

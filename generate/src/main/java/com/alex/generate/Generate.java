@@ -119,14 +119,14 @@ public class Generate {
                 })
                 .injectionConfig(builder -> {
                     builder.beforeOutputFile((tableInfo, objectMap) -> {
-                                System.out.println("tableInfo: " + tableInfo.getEntityName() + " objectMap: " + objectMap.size());
-                                ConfigBuilder config = (ConfigBuilder) objectMap.get("config");
-                                Map<String, String> customFile = config.getInjectionConfig().getCustomFile();
-                                customFile.put(tableInfo.getEntityName() + "Vo.java", "/templates/vo.java.btl");
-                                Map<String, Object> customMap = config.getInjectionConfig().getCustomMap();
-//                                customMap.put(tableInfo.getEntityName() + "Vo.java", config.getPackageConfig());
-                            })
-                            .customMap(Collections.singletonMap("vo", "aaaVo"))
+                        System.out.println("tableInfo: " + tableInfo.getEntityName() + " objectMap: " + objectMap.size());
+                        ConfigBuilder config = (ConfigBuilder) objectMap.get("config");
+                        Map<String, String> customFile = Objects.requireNonNull(config.getInjectionConfig()).getCustomFile();
+                        customFile.put(tableInfo.getEntityName() + "Vo.java", "/templates/vo.java.btl");
+                        Map<String, Object> customMap = Objects.requireNonNull(config.getInjectionConfig()).getCustomMap();
+                        customMap.put("vo", tableInfo.getEntityName() + "Vo");
+                    })
+//                            .customMap(Collections.singletonMap("vo11", "aaaVo"))
                             .build();
                 })
                 .templateEngine(new BeetlTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
