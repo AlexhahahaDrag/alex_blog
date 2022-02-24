@@ -1,0 +1,57 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import java.util.List;
+/**
+ * <p>
+ * ${table.comment!} 服务类
+ * </p>
+ * @author: ${author}
+ * @createDate: ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
+ * @description: 我是由代码生成器生成
+ * version: 1.0.0
+ */
+<% if(kotlin){ %>
+interface ${table.serviceName} : ${superServiceClass}<${entity}>
+<% }else{ %>
+public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+
+    /**
+     * @param FeedbackVo
+     * @description: 获取${table.comment!}列表
+     * @author:      ${author}
+     * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
+     * @return:      com.baomidou.mybatisplus.core.metadata.IPage<${package.Entity}.${entity}>
+     */
+    IPage<${entity}> getPageList(FeedbackVo FeedbackVo);
+
+    /**
+     * @param FeedbackVo
+     * @description: 新增${table.comment!}
+     * @author:      ${author}
+     * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
+     * @return:      java.lang.String
+     */
+    String add${entity}(FeedbackVo FeedbackVo);
+
+    /**
+     * @param FeedbackVo
+     * @description: 编辑${table.comment!}
+     * @author:      ${author}
+     * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
+     * @return:      java.lang.String
+     */
+    String edit${entity}(FeedbackVo FeedbackVo);
+
+    /**
+     * @param ids
+     * @description: 批量删除${table.comment!}
+     * @author:      ${author}
+     * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
+     * @return:      java.lang.String
+     */
+    String deleteBatch${entity}(List<String> ids);
+}
+<% } %>

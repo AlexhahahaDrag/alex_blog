@@ -1,11 +1,13 @@
 package com.alex.blog.common.vo.blog;
 
 import com.alex.blog.base.vo.BaseVo;
+import com.alex.blog.common.entity.blog.BlogSort;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,9 +19,8 @@ import lombok.experimental.Accessors;
  */
 @Getter
 @Setter
-@Accessors(chain = true)
-@ApiModel(value = "Blog对象Vo", description = "博客Vo")
-public class BlogVo extends BaseVo<BlogVo> {
+@ApiModel(value = "Blog对象", description = "博客表")
+public class BlogVo extends BaseVo {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,6 +33,7 @@ public class BlogVo extends BaseVo<BlogVo> {
     @ApiModelProperty("博客内容")
     private String content;
 
+    //多标签用逗号分隔
     @ApiModelProperty("标签id")
     private String tagId;
 
@@ -41,7 +43,10 @@ public class BlogVo extends BaseVo<BlogVo> {
     @ApiModelProperty("博客收藏数")
     private Integer collectCount;
 
-    @ApiModelProperty("标题图片uid")
+    @ApiModelProperty("博客点赞数")
+    private Integer praiseCount;
+
+    @ApiModelProperty("标题图片id")
     private String fileId;
 
     @ApiModelProperty("管理员id")
@@ -56,6 +61,7 @@ public class BlogVo extends BaseVo<BlogVo> {
     @ApiModelProperty("文章出处")
     private String articlesPart;
 
+    //博客分类id，多id时用逗号分隔
     @ApiModelProperty("博客分类ID")
     private String blogSortId;
 
@@ -72,17 +78,24 @@ public class BlogVo extends BaseVo<BlogVo> {
     private Boolean openComment;
 
     @ApiModelProperty("类型【0 博客， 1：推广】")
-    private String type;
+    private Boolean type;
 
     @ApiModelProperty("外链【如果是推广，那么将跳转到外链】")
     private String outsideLink;
 
     @ApiModelProperty("唯一oid")
+//    @TableId(value = "oid", type = IdType.AUTO)
     private Integer oid;
 
-    @ApiModelProperty("博客等级关键字")
-    private String levelKeyword;
+    @ApiModelProperty("标签列表")
+    private List<Tag> tagList;
 
-    @ApiModelProperty("是否使用排序，1使用，0不适用，默认0")
-    private Integer useSort;
+    @ApiModelProperty("博客分类列表")
+    private List<BlogSort> blogSortList;
+
+    @ApiModelProperty("博客分类名")
+    private String blogSortName;
+
+    @ApiModelProperty("博客标题图")
+    private String photoUrl;
 }

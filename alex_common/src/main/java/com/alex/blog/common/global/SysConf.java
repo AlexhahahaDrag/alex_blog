@@ -152,5 +152,8 @@ public final class SysConf extends BaseSysConf {
 
     //t_link
     public static final String LINK_STATUS = "link_status";
+
+    //t_feedback
+    public static final String FEEDBACK_STATUS = "feedback_status";
 }
 

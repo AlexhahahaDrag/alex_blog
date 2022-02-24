@@ -60,7 +60,7 @@ public interface CommentService extends SuperService<Comment> {
      * @createDate:  2022/1/26 10:45
      * @return:      java.lang.String
     */
-    String batchDeleteComment(List<String> ids);
+    String deleteBatchComment(List<String> ids);
 
     /**
      * @param blogIds 博客ids

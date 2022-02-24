@@ -1,6 +1,7 @@
 package com.alex.blog.xo.service.sys.impl;
 
 import com.alex.blog.base.exception.exceptionType.AlexException;
+import com.alex.blog.base.global.Constants;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.admin.SystemConfig;
@@ -22,6 +23,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -108,5 +111,29 @@ public class SystemConfigServiceImpl extends SuperServiceImpl<SystemConfigMapper
         //更新配置成功后，删除redis中的系统配置
         redisUtils.delete(RedisConf.SYSTEM_CONFIG);
         return ResultUtil.result(SysConf.SUCCESS, MessageConf.UPDATE_SUCCESS);
+    }
+
+    @Override
+    public String cleanRedisByKey(List<String> keys) {
+        if (keys == null || keys.isEmpty()) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
+        }
+        keys.forEach(item -> {
+            //清除所有
+            if (RedisConf.ALL.equals(item)) {
+                Set<String> keys1 = redisUtils.keys(Constants.SYMBOL_STAR);
+                redisUtils.delete(keys1);
+            } else {
+                Set<String> keys1 = redisUtils.keys(item + Constants.SYMBOL_STAR);
+                redisUtils.delete(keys1);
+            }
+        });
+        return ResultUtil.resultSuccessWithMessage(MessageConf.DELETE_SUCCESS);
+    }
+
+    @Override
+    public String getSearchModel() {
+        SystemConfig config = this.getConfig();
+        return config.getSearchModel();
     }
 }

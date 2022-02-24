@@ -151,3 +151,110 @@ CREATE TABLE `t_link` (
   `file_id` varchar(255) DEFAULT NULL COMMENT '网站图标',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='友情链接表';
+
+
+
+DROP TABLE IF EXISTS `t_feedback`;
+
+CREATE TABLE `t_feedback` (
+    `id` varchar(32) NOT NULL COMMENT '唯一id',
+    `user_id` varchar(32) NOT NULL COMMENT '用户id',
+    `content` varchar(1000) DEFAULT NULL COMMENT '反馈的内容',
+    `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态',
+    `creator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+    `create_time` timestamp null COMMENT '创建时间',
+    `updater` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '修改人',
+    `update_time` timestamp null COMMENT '更新时间',
+    `deleter` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
+    `delete_time` timestamp null COMMENT '删除时间',
+    `is_delete` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+    `operator` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+    `operate_time` timestamp COMMENT '更新时间',
+    `title` varchar(255) DEFAULT NULL COMMENT '标题',
+    `feedback_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '反馈状态： 0：已开启  1：进行中  2：已完成  3：已拒绝',
+    `reply` varchar(255) DEFAULT NULL COMMENT '回复',
+    `admin_id` varchar(32) DEFAULT NULL COMMENT '管理员id',
+                              PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='反馈表';
+
+
+
+DROP TABLE IF EXISTS `t_resource_sort`;
+CREATE TABLE `t_resource_sort` (
+   `id` VARCHAR ( 32 ) NOT NULL COMMENT '唯一id',
+   `file_uid` VARCHAR ( 32 ) DEFAULT NULL COMMENT '分类图片uid',
+   `sort_name` VARCHAR ( 255 ) DEFAULT NULL COMMENT '分类名',
+   `content` VARCHAR ( 255 ) DEFAULT NULL COMMENT '分类介绍',
+   `click_count` VARCHAR ( 255 ) DEFAULT NULL COMMENT '点击数',
+   `status` TINYINT UNSIGNED NOT NULL DEFAULT '1' COMMENT '状态',
+   `creator` VARCHAR ( 50 ) CHARACTER
+       SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+   `create_time` TIMESTAMP NULL COMMENT '创建时间',
+   `updater` VARCHAR ( 50 ) CHARACTER
+       SET utf8 COLLATE utf8_general_ci NULL COMMENT '修改人',
+   `update_time` TIMESTAMP NULL COMMENT '更新时间',
+   `deleter` VARCHAR ( 50 ) CHARACTER
+       SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
+   `delete_time` TIMESTAMP NULL COMMENT '删除时间',
+   `is_delete` TINYINT ( 1 ) NULL DEFAULT 0 COMMENT '是否删除',
+   `operator` VARCHAR ( 50 ) CHARACTER
+       SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+   `operate_time` TIMESTAMP COMMENT '更新时间',
+   `parent_id` VARCHAR ( 32 ) DEFAULT NULL COMMENT '父ID',
+   `sort` INT DEFAULT '0' COMMENT '排序字段',
+   PRIMARY KEY ( `id` )
+) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT = '资源分类表';
+
+
+DROP TABLE IF EXISTS `t_subject`;
+
+CREATE TABLE `t_subject` (
+     `id` varchar(32) NOT NULL COMMENT '主键',
+     `subject_name` varchar(255) DEFAULT NULL COMMENT '专题名称',
+     `summary` varchar(255) DEFAULT NULL COMMENT '简介',
+     `file_uid` varchar(32) DEFAULT NULL COMMENT '封面图片UID',
+     `click_count` int NOT NULL DEFAULT '0' COMMENT '专题点击数',
+     `collect_count` int NOT NULL DEFAULT '0' COMMENT '专题收藏数',
+     `status` tinyint(1) DEFAULT '1' COMMENT '状态',
+     `sort` int NOT NULL DEFAULT '0' COMMENT '排序字段',
+     `creator` VARCHAR ( 50 ) CHARACTER
+         SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+     `create_time` TIMESTAMP NULL COMMENT '创建时间',
+     `updater` VARCHAR ( 50 ) CHARACTER
+         SET utf8 COLLATE utf8_general_ci NULL COMMENT '修改人',
+     `update_time` TIMESTAMP NULL COMMENT '更新时间',
+     `deleter` VARCHAR ( 50 ) CHARACTER
+         SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
+     `delete_time` TIMESTAMP NULL COMMENT '删除时间',
+     `is_delete` TINYINT ( 1 ) NULL DEFAULT 0 COMMENT '是否删除',
+     `operator` VARCHAR ( 50 ) CHARACTER
+         SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+     `operate_time` TIMESTAMP COMMENT '更新时间',
+     PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='专题表';
+
+
+
+DROP TABLE IF EXISTS `t_subject_item`;
+
+CREATE TABLE `t_subject_item` (
+      `id` varchar(32) NOT NULL COMMENT '主键',
+      `subject_id` varchar(32) NOT NULL COMMENT '专题id',
+      `blog_id` varchar(32) NOT NULL COMMENT '博客id',
+      `status` tinyint(1) DEFAULT '1' COMMENT '状态',
+      `sort` int NOT NULL DEFAULT '0' COMMENT '排序字段',
+      `creator` VARCHAR ( 50 ) CHARACTER
+          SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+      `create_time` TIMESTAMP NULL COMMENT '创建时间',
+      `updater` VARCHAR ( 50 ) CHARACTER
+          SET utf8 COLLATE utf8_general_ci NULL COMMENT '修改人',
+      `update_time` TIMESTAMP NULL COMMENT '更新时间',
+      `deleter` VARCHAR ( 50 ) CHARACTER
+          SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '删除人',
+      `delete_time` TIMESTAMP NULL COMMENT '删除时间',
+      `is_delete` TINYINT ( 1 ) NULL DEFAULT 0 COMMENT '是否删除',
+      `operator` VARCHAR ( 50 ) CHARACTER
+          SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+      `operate_time` TIMESTAMP COMMENT '更新时间',
+      PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='专题Item表';

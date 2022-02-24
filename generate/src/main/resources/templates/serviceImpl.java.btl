@@ -1,0 +1,79 @@
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.alex.blog.utils.utils.ResultUtil;
+import com.alex.blog.common.global.MessageConf;
+import com.alex.blog.common.global.SysConf;
+import org.springframework.beans.BeanUtils;
+import java.util.List;
+import com.alex.blog.base.enums.EStatus;
+
+/**
+ * <p>
+ * @description:  ${table.comment!}服务实现类
+ * @author:       ${author}
+ * @createDate:   ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
+ * @version:      1.0.0
+ */
+@Service
+<% if(kotlin){ %>
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>(), ${table.serviceName} {
+
+}
+<% }else{ %>
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+
+    @Override
+    public IPage<${entity}> getPageList(FeedbackVo feedbackVo) {
+        QueryWrapper<${entity}> query = getQuery();
+        Page<${entity}> page = new Page<>();
+        page.setCurrent(feedbackVo.getCurrentPage());
+        page.setSize(feedbackVo.getPageSize());
+        Page<${entity}> feedbackPage = this.page(page, query);
+        return feedbackPage;
+    }
+
+    @Override
+    public String add${entity}(FeedbackVo feedbackVo) {
+        ${entity} feedback = new ${entity}();
+        BeanUtils.copyProperties(feedbackVo, feedback);
+        feedback.insert();
+        return ResultUtil.resultSuccessWithMessage(MessageConf.INSERT_SUCCESS);
+    }
+
+    @Override
+    public String edit${entity}(FeedbackVo feedbackVo) {
+        QueryWrapper<${entity}> query = getQuery();
+        query.eq(SysConf.ID, feedbackVo.getId());
+        ${entity} feedback = this.getOne(query);
+        if (feedback == null) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
+        }
+        BeanUtils.copyProperties(feedbackVo, feedback);
+        feedback.updateById();
+        return ResultUtil.resultSuccessWithMessage(MessageConf.UPDATE_SUCCESS);
+    }
+
+    @Override
+    public String deleteBatch${entity}(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
+        }
+        this.baseMapper.deleteBatchIds(ids);
+        return ResultUtil.resultSuccessWithMessage(MessageConf.DELETE_SUCCESS);
+    }
+
+    private QueryWrapper<${entity}> getQuery() {
+        QueryWrapper<${entity}> query = new QueryWrapper<>();
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode());
+        return query;
+    }
+}
+<% } %>

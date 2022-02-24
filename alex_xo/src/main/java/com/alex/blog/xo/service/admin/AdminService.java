@@ -142,4 +142,6 @@ public interface AdminService extends SuperService<Admin> {
      * @return:      java.lang.Integer
     */
     Integer getUserCount(Integer status);
+
+    List<Admin> getUserListByIds(List<String> idList);
 }

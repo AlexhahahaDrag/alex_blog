@@ -19,7 +19,6 @@ import com.alex.blog.xo.service.blog.CommentService;
 import com.alex.blog.xo.utils.WebUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
@@ -164,7 +163,7 @@ public class CommentServiceImp extends SuperServiceImpl<CommentMapper, Comment> 
     }
 
     @Override
-    public String batchDeleteComment(List<String> ids) {
+    public String deleteBatchComment(List<String> ids) {
         if (ids == null || ids.isEmpty()) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
