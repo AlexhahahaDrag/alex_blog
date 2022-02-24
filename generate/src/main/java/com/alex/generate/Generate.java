@@ -8,17 +8,18 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.IFill;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
-import com.baomidou.mybatisplus.generator.config.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.querys.MySqlQuery;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.baomidou.mybatisplus.generator.engine.BeetlTemplateEngine;
 import com.baomidou.mybatisplus.generator.fill.Column;
 import com.baomidou.mybatisplus.generator.keywords.MySqlKeyWordsHandler;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Generate {
@@ -27,7 +28,8 @@ public class Generate {
         String fileName = "blog";
         String moduleName = "alex_xo";
         String javaFileName = "com/alex/blog/xo";
-        String tableName = "t_feedback";
+        // TODO: 2022/2/24 添加多表信息
+        String tableName = "t_subject_item";
 
         List<IFill> list = new ArrayList<>();
         list.add(new Column("create_time", FieldFill.INSERT));
@@ -48,30 +50,34 @@ public class Generate {
         pathMap.put(OutputFile.mapper, javaPath + separator + "mapper" + separator + fileName);
         pathMap.put(OutputFile.entity, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/entity", separator) + separator + fileName);
         pathMap.put(OutputFile.other, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/vo", separator) + separator + fileName);
+        pathMap.put(OutputFile.controller, basePath + getPath("alex_admin/src/main/java/com/alex/blog/admin/restApi", separator) + separator + fileName);
+        Map<String, Object> map = new HashMap<>();
+        map.put("time", new SimpleDateFormat("HH:mm").format(new Date()));
         FastAutoGenerator.create(dataSourceConfig)
                 .globalConfig(builder -> {
-                    builder.fileOverride()
+                    builder.disableOpenDir()
+                            .fileOverride()
                             .outputDir(projectPath + "\\java")
                             .author("alex")
-//                            .enableKotlin()
                             .enableSwagger()
                             .dateType(DateType.TIME_PACK)
                             .commentDate("yyyy-MM-dd HH:mm:ss")
                     ;
                 })
                 .packageConfig(builder -> {
-                    builder.parent("com.alex.blog.xo") // 设置父包名
-                            .moduleName(fileName) // 设置父包模块名
-                            .entity("entity")
-                            .service("service")
-                            .serviceImpl("service.impl")
-                            .mapper("mapper")
-                            .other("vo")
+                    builder.parent("com.alex.blog") // 设置父包名
+                            .entity("common.entity." + fileName)
+                            .service("xo.service."+ fileName)
+                            .serviceImpl("xo.service."+ fileName + ".impl")
+                            .mapper("xo.mapper."+ fileName)
+                            .other("common.vo." + fileName)
+                            .controller("admin.restApi." + fileName)
                             .pathInfo(pathMap); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
                     builder.addInclude(tableName)
                             .addTablePrefix("t_")
+                            //配置entity
                             .entityBuilder()
                             .superClass(BaseEntity.class)
 ////                            .disableSerialVersionUID()
@@ -111,18 +117,20 @@ public class Generate {
                             .build()
                     ; // 设置过滤表前缀
                 })
-                .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
-                .execute();
-        new InjectionConfig.Builder()
-                .beforeOutputFile((tableInfo, objectMap) -> {
-                    System.out.println("tableInfo: " + tableInfo.getEntityName() + " objectMap: " + objectMap.size());
+                .injectionConfig(builder -> {
+                    builder.beforeOutputFile((tableInfo, objectMap) -> {
+                                System.out.println("tableInfo: " + tableInfo.getEntityName() + " objectMap: " + objectMap.size());
+                                ConfigBuilder config = (ConfigBuilder) objectMap.get("config");
+                                Map<String, String> customFile = config.getInjectionConfig().getCustomFile();
+                                customFile.put(tableInfo.getEntityName() + "Vo.java", "/templates/vo.java.btl");
+                                Map<String, Object> customMap = config.getInjectionConfig().getCustomMap();
+//                                customMap.put(tableInfo.getEntityName() + "Vo.java", config.getPackageConfig());
+                            })
+                            .customMap(Collections.singletonMap("vo", "aaaVo"))
+                            .build();
                 })
-                .customFile(Collections.singletonMap("mapper.xml", "/templates/mapper.xml.btl"))
-                .customFile(Collections.singletonMap("bean.java", "/templates/bean.java.btl"))
-                .customFile(Collections.singletonMap("service.java", "/templates/service.java.btl"))
-                .customFile(Collections.singletonMap("serviceImpl.java", "/templates/serviceImpl.java.btl"))
-                .customFile(Collections.singletonMap("mapper.java", "/templates/mapper.java.btl"))
-                .build();
+                .templateEngine(new BeetlTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
+                .execute();
     }
 
     private static String getPath(String add, String separator) {

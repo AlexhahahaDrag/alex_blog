@@ -64,6 +64,12 @@
             <artifactId>velocity</artifactId>
             <version>1.7</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>beetl</artifactId>
+            <version>3.9.3.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>
