@@ -1,6 +1,6 @@
 package com.alex.blog.admin.restApi.blog;
 
-import com.alex.blog.common.vo.blog.SubjectItem.SubjectItemVo;
+import com.alex.blog.common.vo.blog.Subject.SubjectVo;
 import com.alex.blog.admin.annotion.authorityVerify.AuthorityVerify;
 import com.alex.blog.admin.annotion.avoidRepeatableCommit.AvoidRepeatableCommit;
 import com.alex.blog.admin.annotion.operationLogger.OperationLogger;
@@ -19,56 +19,56 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.alex.blog.xo.service.blog.SubjectItemService;
+import com.alex.blog.xo.service.blog.SubjectService;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @description:  专题Item表restApi
+ * @description:  专题表restApi
  * @author:       alex
  * @createDate:   2021/1/20 20:14
  * @version:      1.0.0
  */
-@Api(value = "专题Item表相关接口", tags = {"专题Item表相关接口"})
+@Api(value = "专题表相关接口", tags = {"专题表相关接口"})
 @RestController
-@RequestMapping("/subject-item")
-public class SubjectItemRestApi {
+@RequestMapping("/subject")
+public class SubjectRestApi {
 
     @Autowired
-    private SubjectItemService subjectItemService;
+    private SubjectService subjectService;
 
     @AuthorityVerify
-    @ApiOperation(value = "获取专题Item表列表", notes = "获取专题Item表列表", response = String.class)
+    @ApiOperation(value = "获取专题表列表", notes = "获取专题表列表", response = String.class)
     @PostMapping(value = "/getList")
-    public String getList(@Validated({GetList.class}) @RequestBody SubjectItemVo subjectItemVo) {
-        return ResultUtil.resultSuccessWithData(subjectItemService.getPageList(subjectItemVo));
+    public String getList(@Validated({GetList.class}) @RequestBody SubjectVo subjectVo) {
+        return ResultUtil.resultSuccessWithData(subjectService.getPageList(subjectVo));
     }
 
     @AvoidRepeatableCommit
     @AuthorityVerify
-    @ApiOperation(value = "新增专题Item表", notes = "新增专题Item表", response = String.class)
+    @ApiOperation(value = "新增专题表", notes = "新增专题表", response = String.class)
     @PutMapping(value = "/add")
-    @OperationLogger(value = "新增专题Item表")
-    public String addSubjectItem(@Validated({Insert.class}) @RequestBody SubjectItemVo subjectItemVo, BindingResult result) {
+    @OperationLogger(value = "新增专题表")
+    public String addSubject(@Validated({Insert.class}) @RequestBody SubjectVo subjectVo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
-        return subjectItemService.addSubjectItem(subjectItemVo);
+        return subjectService.addSubject(subjectVo);
     }
 
     @AuthorityVerify
-    @ApiOperation(value = "修改专题Item表", notes = "修改专题Item表", response = String.class)
+    @ApiOperation(value = "修改专题表", notes = "修改专题表", response = String.class)
     @PutMapping(value = "/edit")
-    @OperationLogger(value = "修改专题Item表")
-    public String editSubjectItem(@Validated({Update.class}) @RequestBody SubjectItemVo subjectItemVo, BindingResult result) {
+    @OperationLogger(value = "修改专题表")
+    public String editSubject(@Validated({Update.class}) @RequestBody SubjectVo subjectVo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
-        return subjectItemService.editSubjectItem(subjectItemVo);
+        return subjectService.editSubject(subjectVo);
     }
 
     @AuthorityVerify
-    @ApiOperation(value = "删除专题Item表", notes = "删除专题Item表", response = String.class)
+    @ApiOperation(value = "删除专题表", notes = "删除专题表", response = String.class)
     @DeleteMapping(value = "/deleteBatch")
-    @OperationLogger(value = "删除专题Item表")
+    @OperationLogger(value = "删除专题表")
     public String deleteBatch(@Validated({Delete.class})
-                              @ApiParam(value = "ids", name = "专题Item表ids", required = true)
+                              @ApiParam(value = "ids", name = "专题表ids", required = true)
                               @RequestParam(value = "ids") List<String> ids) {
-        return subjectItemService.deleteBatchSubjectItem(ids);
+        return subjectService.deleteBatchSubject(ids);
     }
 }

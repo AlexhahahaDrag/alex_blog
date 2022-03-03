@@ -28,7 +28,7 @@
     </modules>
     <properties>
         <alibaba.version>2.2.3.RELEASE</alibaba.version>
-        <swagger.version>2.10.5</swagger.version>
+<!--        <swagger.version>2.10.5</swagger.version>-->
         <mybatisplus.version>3.4.0</mybatisplus.version>
         <druid.version>1.2.2</druid.version>
         <lombok.version>1.18.16</lombok.version>
@@ -49,6 +49,7 @@
         <qiniu.version>7.8.0</qiniu.version>
         <feign-version>3.0.3</feign-version>
         <minio.version>8.3.0</minio.version>
+        <knife4j.version>3.0.3</knife4j.version>
     </properties>
     <dependencyManagement>
         <dependencies>

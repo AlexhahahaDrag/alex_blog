@@ -51,8 +51,6 @@ public class Generate {
         pathMap.put(OutputFile.entity, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/entity", separator) + separator + fileName);
         pathMap.put(OutputFile.other, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/vo", separator) + separator + fileName);
         pathMap.put(OutputFile.controller, basePath + getPath("alex_admin/src/main/java/com/alex/blog/admin/restApi", separator) + separator + fileName);
-        Map<String, Object> map = new HashMap<>();
-        map.put("time", new SimpleDateFormat("HH:mm").format(new Date()));
         FastAutoGenerator.create(dataSourceConfig)
                 .globalConfig(builder -> {
                     builder.disableOpenDir()
@@ -137,10 +135,10 @@ public class Generate {
         if (StringUtils.isEmpty(add)) {
             return "";
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String[] split = add.split("/");
-        for (int i = 0; i < split.length; i++) {
-            sb.append(separator).append(split[i]);
+        for (String s : split) {
+            sb.append(separator).append(s);
         }
         return sb.toString();
     }

@@ -14,45 +14,45 @@ import com.alex.blog.common.global.SysConf;
 import org.springframework.beans.BeanUtils;
 import java.util.List;
 import com.alex.blog.base.enums.EStatus;
-
+import com.alex.blog.common.vo.blog.Subject.SubjectVo;
 /**
  * <p>
  * @description:  专题表服务实现类
  * @author:       alex
- * @createDate:   2022-02-24 15:46:25
+ * @createDate:   2022-03-03 21:32:04
  * @version:      1.0.0
  */
 @Service
 public class SubjectServiceImp extends SuperServiceImpl<SubjectMapper, Subject> implements SubjectService {
 
     @Override
-    public IPage<Subject> getPageList(FeedbackVo feedbackVo) {
+    public IPage<Subject> getPageList(SubjectVo subjectVo) {
         QueryWrapper<Subject> query = getQuery();
         Page<Subject> page = new Page<>();
-        page.setCurrent(feedbackVo.getCurrentPage());
-        page.setSize(feedbackVo.getPageSize());
-        Page<Subject> feedbackPage = this.page(page, query);
-        return feedbackPage;
+        page.setCurrent(subjectVo.getCurrentPage());
+        page.setSize(subjectVo.getPageSize());
+        Page<Subject> subjectPage = this.page(page, query);
+        return subjectPage;
     }
 
     @Override
-    public String addSubject(FeedbackVo feedbackVo) {
-        Subject feedback = new Subject();
-        BeanUtils.copyProperties(feedbackVo, feedback);
-        feedback.insert();
+    public String addSubject(SubjectVo subjectVo) {
+        Subject subject = new Subject();
+        BeanUtils.copyProperties(subjectVo, subject);
+        subject.insert();
         return ResultUtil.resultSuccessWithMessage(MessageConf.INSERT_SUCCESS);
     }
 
     @Override
-    public String editSubject(FeedbackVo feedbackVo) {
+    public String editSubject(SubjectVo subjectVo) {
         QueryWrapper<Subject> query = getQuery();
-        query.eq(SysConf.ID, feedbackVo.getId());
-        Subject feedback = this.getOne(query);
-        if (feedback == null) {
+        query.eq(SysConf.ID, subjectVo.getId());
+        Subject subject = this.getOne(query);
+        if (subject == null) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
-        BeanUtils.copyProperties(feedbackVo, feedback);
-        feedback.updateById();
+        BeanUtils.copyProperties(subjectVo, subject);
+        subject.updateById();
         return ResultUtil.resultSuccessWithMessage(MessageConf.UPDATE_SUCCESS);
     }
 

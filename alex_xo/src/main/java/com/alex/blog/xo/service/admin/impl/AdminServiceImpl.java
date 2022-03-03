@@ -417,6 +417,11 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
         return this.count(query);
     }
 
+    @Override
+    public List<Admin> getUserListByIds(List<String> idList) {
+        return null;
+    }
+
     /**
      * @param ids
      * @description: 获取图片list

@@ -2,6 +2,7 @@ package com.alex.blog.common.vo.blog;
 
 import com.alex.blog.base.vo.BaseVo;
 import com.alex.blog.common.entity.blog.BlogSort;
+import com.alex.blog.common.entity.blog.Tag;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -20,7 +21,7 @@ import java.util.List;
 @Getter
 @Setter
 @ApiModel(value = "Blog对象", description = "博客表")
-public class BlogVo extends BaseVo {
+public class BlogVo extends BaseVo<BlogVo> {
 
     private static final long serialVersionUID = 1L;
 
@@ -78,7 +79,7 @@ public class BlogVo extends BaseVo {
     private Boolean openComment;
 
     @ApiModelProperty("类型【0 博客， 1：推广】")
-    private Boolean type;
+    private String type;
 
     @ApiModelProperty("外链【如果是推广，那么将跳转到外链】")
     private String outsideLink;
@@ -98,4 +99,10 @@ public class BlogVo extends BaseVo {
 
     @ApiModelProperty("博客标题图")
     private String photoUrl;
+
+    @ApiModelProperty("博客等级关键字")
+    private String levelKeyword;
+
+    @ApiModelProperty("是否使用排序，1使用，0不适用，默认0")
+    private Integer useSort;
 }

@@ -28,7 +28,7 @@ import java.util.List;
 @Profile({"test", "dev"})
 public class SwaggerConfig {
 
-    @Bean
+    @Bean(value = "defaultApi2")
     public Docket buildDocket() {
         //添加head参数配置start
         ParameterBuilder tokenPar = new ParameterBuilder();

@@ -57,7 +57,7 @@ public class ${table.controllerName} {
     private ${table.serviceName} ${strutil.toLowerCase(strutil.subStringTo(table.serviceName, 0, 1)) + strutil.subString (table.serviceName, 1)};
 
     @AuthorityVerify
-    @ApiOperation(value = "获取反馈列表", notes = "获取反馈列表", response = String.class)
+    @ApiOperation(value = "获取${table.comment!}列表", notes = "获取${table.comment!}列表", response = String.class)
     @PostMapping(value = "/getList")
     public String getList(@Validated({GetList.class}) @RequestBody ${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo) {
         return ResultUtil.resultSuccessWithData(${strutil.toLowerCase(strutil.subStringTo(table.serviceName, 0, 1)) + strutil.subString (table.serviceName, 1)}.getPageList(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo));
@@ -65,29 +65,29 @@ public class ${table.controllerName} {
 
     @AvoidRepeatableCommit
     @AuthorityVerify
-    @ApiOperation(value = "新增反馈", notes = "新增反馈", response = String.class)
+    @ApiOperation(value = "新增${table.comment!}", notes = "新增${table.comment!}", response = String.class)
     @PutMapping(value = "/add")
-    @OperationLogger(value = "新增反馈")
+    @OperationLogger(value = "新增${table.comment!}")
     public String add${entity}(@Validated({Insert.class}) @RequestBody ${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
         return ${strutil.toLowerCase(strutil.subStringTo(table.serviceName, 0, 1)) + strutil.subString (table.serviceName, 1)}.add${entity}(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo);
     }
 
     @AuthorityVerify
-    @ApiOperation(value = "修改反馈", notes = "修改反馈", response = String.class)
+    @ApiOperation(value = "修改${table.comment!}", notes = "修改${table.comment!}", response = String.class)
     @PutMapping(value = "/edit")
-    @OperationLogger(value = "修改反馈")
+    @OperationLogger(value = "修改${table.comment!}")
     public String edit${entity}(@Validated({Update.class}) @RequestBody ${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
         return ${strutil.toLowerCase(strutil.subStringTo(table.serviceName, 0, 1)) + strutil.subString (table.serviceName, 1)}.edit${entity}(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo);
     }
 
     @AuthorityVerify
-    @ApiOperation(value = "删除反馈", notes = "删除反馈", response = String.class)
+    @ApiOperation(value = "删除${table.comment!}", notes = "删除${table.comment!}", response = String.class)
     @DeleteMapping(value = "/deleteBatch")
-    @OperationLogger(value = "删除反馈")
+    @OperationLogger(value = "删除${table.comment!}")
     public String deleteBatch(@Validated({Delete.class})
-                              @ApiParam(value = "ids", name = "反馈ids", required = true)
+                              @ApiParam(value = "ids", name = "${table.comment!}ids", required = true)
                               @RequestParam(value = "ids") List<String> ids) {
         return ${strutil.toLowerCase(strutil.subStringTo(table.serviceName, 0, 1)) + strutil.subString (table.serviceName, 1)}.deleteBatch${entity}(ids);
     }

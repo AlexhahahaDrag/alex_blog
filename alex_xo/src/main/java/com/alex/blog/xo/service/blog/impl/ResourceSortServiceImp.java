@@ -1,56 +1,68 @@
 package com.alex.blog.xo.service.blog.impl;
 
-import com.alex.blog.base.enums.EStatus;
-import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.blog.ResourceSort;
-import com.alex.blog.common.global.MessageConf;
-import com.alex.blog.common.global.SysConf;
-import com.alex.blog.common.vo.blog.ResourceSortVo;
-import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.xo.mapper.blog.ResourceSortMapper;
 import com.alex.blog.xo.service.blog.ResourceSortService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.alex.blog.base.service.impl.SuperServiceImpl;
 import org.springframework.stereotype.Service;
-
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.alex.blog.utils.utils.ResultUtil;
+import com.alex.blog.common.global.MessageConf;
+import com.alex.blog.common.global.SysConf;
+import org.springframework.beans.BeanUtils;
 import java.util.List;
-
+import com.alex.blog.base.enums.EStatus;
+import com.alex.blog.common.vo.blog.ResourceSort.ResourceSortVo;
 /**
  * <p>
- * 资源分类表 服务实现类
- * </p>
- *
- * @author alex
- * @since 2022-02-15 09:59:56
+ * @description:  资源分类表服务实现类
+ * @author:       alex
+ * @createDate:   2022-03-03 21:31:12
+ * @version:      1.0.0
  */
 @Service
 public class ResourceSortServiceImp extends SuperServiceImpl<ResourceSortMapper, ResourceSort> implements ResourceSortService {
 
     @Override
     public IPage<ResourceSort> getPageList(ResourceSortVo resourceSortVo) {
-        return null;
+        QueryWrapper<ResourceSort> query = getQuery();
+        Page<ResourceSort> page = new Page<>();
+        page.setCurrent(resourceSortVo.getCurrentPage());
+        page.setSize(resourceSortVo.getPageSize());
+        Page<ResourceSort> resourceSortPage = this.page(page, query);
+        return resourceSortPage;
     }
 
     @Override
     public String addResourceSort(ResourceSortVo resourceSortVo) {
-        //判断文件资源分类是否存在
-        QueryWrapper<ResourceSort> query = getQuery();
-        query.eq(SysConf.SORT_NAME, resourceSortVo.getSortName());
-        ResourceSort one = this.getOne(query);
-        if (one != null) {
-            return ResultUtil.resultErrorWithMessage(MessageConf.ENTITY_EXIST);
-        }
-        return null;
+        ResourceSort resourceSort = new ResourceSort();
+        BeanUtils.copyProperties(resourceSortVo, resourceSort);
+        resourceSort.insert();
+        return ResultUtil.resultSuccessWithMessage(MessageConf.INSERT_SUCCESS);
     }
 
     @Override
     public String editResourceSort(ResourceSortVo resourceSortVo) {
-        return null;
+        QueryWrapper<ResourceSort> query = getQuery();
+        query.eq(SysConf.ID, resourceSortVo.getId());
+        ResourceSort resourceSort = this.getOne(query);
+        if (resourceSort == null) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
+        }
+        BeanUtils.copyProperties(resourceSortVo, resourceSort);
+        resourceSort.updateById();
+        return ResultUtil.resultSuccessWithMessage(MessageConf.UPDATE_SUCCESS);
     }
 
     @Override
     public String deleteBatchResourceSort(List<String> ids) {
-        return null;
+        if (ids == null || ids.isEmpty()) {
+            return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
+        }
+        this.baseMapper.deleteBatchIds(ids);
+        return ResultUtil.resultSuccessWithMessage(MessageConf.DELETE_SUCCESS);
     }
 
     @Override

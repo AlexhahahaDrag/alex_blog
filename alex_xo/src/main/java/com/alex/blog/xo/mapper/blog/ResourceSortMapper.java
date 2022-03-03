@@ -1,16 +1,14 @@
 package com.alex.blog.xo.mapper.blog;
 
-import com.alex.blog.base.mapper.SuperMapper;
 import com.alex.blog.common.entity.blog.ResourceSort;
+import com.alex.blog.base.mapper.SuperMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * <p>
- * 资源分类表 Mapper 接口
- * </p>
- *
- * @author alex
- * @since 2022-02-15 09:59:56
+ * @description:  资源分类表 mapper
+ * @author:       alex
+ * @createDate:   2021/1/20 20:14
+ * @version:      1.0.0
  */
 @Mapper
 public interface ResourceSortMapper extends SuperMapper<ResourceSort> {
