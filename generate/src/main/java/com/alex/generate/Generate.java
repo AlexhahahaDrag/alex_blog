@@ -19,7 +19,6 @@ import com.baomidou.mybatisplus.generator.fill.Column;
 import com.baomidou.mybatisplus.generator.keywords.MySqlKeyWordsHandler;
 import org.apache.commons.lang3.StringUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Generate {
@@ -27,15 +26,22 @@ public class Generate {
     public static void main(String[] args) {
         String fileName = "blog";
         String moduleName = "alex_xo";
-        String javaFileName = "com/alex/blog/xo";
-        // TODO: 2022/2/24 添加多表信息
-        String tableName = "t_subject_item";
+        String javaFileNames = "com/alex/blog/xo";
+        String[] tableNames = {"t_web_navbar"};
+        String dbConfig = "jdbc:mysql://localhost:3306/alex_blog";
+        String dbUser = "root";
+        String dbPassword = "mysql";
+        for(String tableName : tableNames) {
+            executeGenerate(tableName, moduleName, javaFileNames, fileName, dbConfig, dbUser, dbPassword);
+        }
+    }
 
+    private static void executeGenerate(String tableName, String moduleName, String javaFileName, String fileName, String dbConfig, String dbUser, String dbPassword) {
         List<IFill> list = new ArrayList<>();
         list.add(new Column("create_time", FieldFill.INSERT));
         list.add(new Column("update_time", FieldFill.UPDATE));
         list.add(new Column("operate_time", FieldFill.INSERT_UPDATE));
-        DataSourceConfig.Builder dataSourceConfig = new DataSourceConfig.Builder("jdbc:mysql://localhost:3306/alex_blog", "root", "mysql")
+        DataSourceConfig.Builder dataSourceConfig = new DataSourceConfig.Builder(dbConfig, dbUser, dbPassword)
                 .dbQuery(new MySqlQuery())
                 .typeConvert(new MySqlTypeConvert())
                 .keyWordsHandler(new MySqlKeyWordsHandler());
@@ -50,6 +56,7 @@ public class Generate {
         pathMap.put(OutputFile.mapper, javaPath + separator + "mapper" + separator + fileName);
         pathMap.put(OutputFile.entity, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/entity", separator) + separator + fileName);
         pathMap.put(OutputFile.other, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/vo", separator) + separator + fileName);
+        pathMap.put(OutputFile.feign, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/feign", separator) + separator + fileName);
         pathMap.put(OutputFile.controller, basePath + getPath("alex_admin/src/main/java/com/alex/blog/admin/restApi", separator) + separator + fileName);
         FastAutoGenerator.create(dataSourceConfig)
                 .globalConfig(builder -> {
@@ -117,12 +124,13 @@ public class Generate {
                 })
                 .injectionConfig(builder -> {
                     builder.beforeOutputFile((tableInfo, objectMap) -> {
-                        System.out.println("tableInfo: " + tableInfo.getEntityName() + " objectMap: " + objectMap.size());
-                        ConfigBuilder config = (ConfigBuilder) objectMap.get("config");
-                        //配置other模板及类名
-                        Map<String, String> customFile = Objects.requireNonNull(config.getInjectionConfig()).getCustomFile();
-                        customFile.put(tableInfo.getEntityName() + "Vo.java", "/templates/vo.java.btl");
-                    })
+                                System.out.println("tableInfo: " + tableInfo.getEntityName() + " objectMap: " + objectMap.size());
+                                ConfigBuilder config = (ConfigBuilder) objectMap.get("config");
+                                //配置other模板及类名
+                                Map<String, String> customFile = Objects.requireNonNull(config.getInjectionConfig()).getCustomFile();
+                                customFile.put(tableInfo.getEntityName() + "Vo.java", "/templates/vo.java.btl");
+                                customFile.put(tableInfo.getEntityName() + "FeignClient.java", "/templates/feignClient.java.btl");
+                            })
                             //配置全局变量
                             .customMap(Collections.singletonMap("vo11", "aaaVo"))
                             .build();

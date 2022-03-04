@@ -1,0 +1,116 @@
+package ${package.Other}.${entity};
+
+import com.alex.blog.base.vo.BaseVo;
+<% if(swagger){ %>
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+<% } %>
+<% if(entityLombokModel){ %>
+import lombok.Getter;
+import lombok.Setter;
+<% if(chainModel){ %>
+import lombok.experimental.Accessors;
+<% } %>
+<% } %>
+
+/**
+ * @description:  ${table.comment!}类
+ * @author:       ${author}
+ * @createDate:   2021/1/20 20:14
+ * @version:      1.0.0
+ */
+<% if(entityLombokModel){ %>
+@Getter
+@Setter
+    <% if(chainModel){ %>
+@Accessors(chain = true)
+    <% } %>
+<% } %>
+<% if(swagger){ %>
+@ApiModel(value = "${entity}对象", description = "${table.comment!''}")
+<% } %>
+
+public class ${entity}Vo extends BaseVo<${entity}Vo>{
+<% if(entitySerialVersionUID){ %>
+    private static final long serialVersionUID = 1L;
+<% } %>
+<% /** -----------BEGIN 字段循环遍历----------- **/ %>
+<% for(field in table.fields){ %>
+    <%
+    if(field.keyFlag){
+        var keyPropertyName = field.propertyName;
+    }
+    %>
+
+    <% if(isNotEmpty(field.comment)){ %>
+        <% if(swagger){ %>
+    @ApiModelProperty(value = "${field.comment}")
+        <% }else{ %>
+    /**
+     * ${field.comment}
+     */
+        <% } %>
+    <% } %>
+    private ${field.propertyType} ${field.propertyName};
+<% } %>
+<% /** -----------END 字段循环遍历----------- **/ %>
+
+<% if(!entityLombokModel){ %>
+    <% for(field in table.fields){ %>
+        <%
+        var getprefix ='';
+        if(field.propertyType=='boolean'){
+            getprefix='is';
+        }else{
+            getprefix='get';
+        }
+        %>
+    public ${field.propertyType} ${getprefix}${field.capitalName}() {
+        return ${field.propertyName};
+    }
+
+        <% if(chainModel){ %>
+    public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+        <% }else{ %>
+    public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+        <% } %>
+        this.${field.propertyName} = ${field.propertyName};
+        <% if(chainModel){ %>
+        return this;
+        <% } %>
+    }
+
+    <% } %>
+<% } %>
+<% if(entityColumnConstant){ %>
+   <% for(field in table.fields){ %>
+    public static final String ${strutil.toUpperCase(field.name)} = "${field.name}";
+
+   <% } %>
+<% } %>
+<% if(activeRecord){ %>
+    @Override
+    public Serializable pkVal() {
+    <% if(isNotEmpty(keyPropertyName)){ %>
+        return this.${keyPropertyName};
+    <% }else{ %>
+        return null;
+    <% } %>
+    }
+
+<% } %>
+<% if(!entityLombokModel){ %>
+    @Override
+    public String toString() {
+        return "${entity}{" +
+    <% for(field in table.fields){ %>
+       <% if(fieldLP.index==0){ %>
+        "${field.propertyName}=" + ${field.propertyName} +
+       <% }else{ %>
+        ", ${field.propertyName}=" + ${field.propertyName} +
+       <% } %>
+    <% } %>
+        "}";
+    }
+<% } %>
+}
