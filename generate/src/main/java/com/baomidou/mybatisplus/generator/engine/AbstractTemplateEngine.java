@@ -125,6 +125,32 @@ public abstract class AbstractTemplateEngine {
 
     }
 
+    protected void outputVo(@NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
+        String entityName = tableInfo.getEntityName();
+        String voPath = this.getPathInfo(OutputFile.vo);
+        if (StringUtils.isNotBlank(entityName) && StringUtils.isNotBlank(voPath)) {
+            this.getTemplateFilePath((template) -> {
+                return template.getEntity(this.getConfigBuilder().getGlobalConfig().isKotlin());
+            }).ifPresent((entity) -> {
+                String entityFile = String.format(voPath + File.separator + "%s" + this.suffixJavaOrKt(), entityName);
+                this.outputFile(new File(entityFile), objectMap, entity);
+            });
+        }
+
+    }
+
+    protected void outputClient(@NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
+        String clientPath = this.getPathInfo(OutputFile.client);
+        if (StringUtils.isNotBlank(tableInfo.getClientName()) && StringUtils.isNotBlank(clientPath)) {
+            this.getTemplateFilePath(TemplateConfig::getController).ifPresent((controller) -> {
+                String entityName = tableInfo.getEntityName();
+                String clientFile = String.format(clientPath + File.separator + tableInfo.getClientName() + this.suffixJavaOrKt(), entityName);
+                this.outputFile(new File(clientFile), objectMap, controller);
+            });
+        }
+
+    }
+
     protected void outputFile(@NotNull File file, @NotNull Map<String, Object> objectMap, @NotNull String templatePath) {
         if (this.isCreate(file)) {
             try {
@@ -169,6 +195,8 @@ public abstract class AbstractTemplateEngine {
                 this.outputMapper(tableInfo, objectMap);
                 this.outputService(tableInfo, objectMap);
                 this.outputController(tableInfo, objectMap);
+                this.outputVo(tableInfo, objectMap);
+                this.outputClient(tableInfo, objectMap);
             });
             return this;
         } catch (Exception var3) {

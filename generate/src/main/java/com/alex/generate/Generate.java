@@ -4,6 +4,7 @@ import com.alex.blog.base.entity.BaseEntity;
 import com.alex.blog.base.mapper.SuperMapper;
 import com.alex.blog.base.service.SuperService;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
+import com.alex.blog.base.vo.BaseVo;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.IFill;
@@ -55,8 +56,8 @@ public class Generate {
         pathMap.put(OutputFile.serviceImpl, javaPath + separator + "service" + separator + fileName + separator + "impl");
         pathMap.put(OutputFile.mapper, javaPath + separator + "mapper" + separator + fileName);
         pathMap.put(OutputFile.entity, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/entity", separator) + separator + fileName);
-        pathMap.put(OutputFile.other, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/vo", separator) + separator + fileName);
-        pathMap.put(OutputFile.feign, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/feign", separator) + separator + fileName);
+        pathMap.put(OutputFile.vo, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/vo", separator) + separator + fileName);
+        pathMap.put(OutputFile.client, basePath + getPath("alex_admin/src/main/java/com/alex/blog/admin/client", separator) + separator + fileName);
         pathMap.put(OutputFile.controller, basePath + getPath("alex_admin/src/main/java/com/alex/blog/admin/restApi", separator) + separator + fileName);
         FastAutoGenerator.create(dataSourceConfig)
                 .globalConfig(builder -> {
@@ -77,6 +78,8 @@ public class Generate {
                             .mapper("xo.mapper."+ fileName)
                             .other("common.vo." + fileName)
                             .controller("admin.restApi." + fileName)
+                            .vo("common.vo." + fileName)
+                            .client("admin.client." + fileName)
                             .pathInfo(pathMap); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
@@ -119,6 +122,16 @@ public class Generate {
                             .enableBaseColumnList()
                             .formatMapperFileName("%sMapper")
                             .formatXmlFileName("%sMapper")
+                            .voBuilder()
+                            .superClass(BaseVo.class)
+                            .enableChainModel()
+                            .enableLombok()
+                            .enableTableFieldAnnotation()
+                            .columnNaming(NamingStrategy.underline_to_camel)
+                            .addSuperVoColumns("id", "creator", "create_time", "updater", "update_time",
+                                    "deleter", "delete_time", "`status`", "operator", "operate_time")
+////                            .addIgnoreColumns("age")
+                            .addTableFills(list)
                             .build()
                     ; // 设置过滤表前缀
                 })
@@ -126,10 +139,10 @@ public class Generate {
                     builder.beforeOutputFile((tableInfo, objectMap) -> {
                                 System.out.println("tableInfo: " + tableInfo.getEntityName() + " objectMap: " + objectMap.size());
                                 ConfigBuilder config = (ConfigBuilder) objectMap.get("config");
-                                //配置other模板及类名
-                                Map<String, String> customFile = Objects.requireNonNull(config.getInjectionConfig()).getCustomFile();
-                                customFile.put(tableInfo.getEntityName() + "Vo.java", "/templates/vo.java.btl");
-                                customFile.put(tableInfo.getEntityName() + "FeignClient.java", "/templates/feignClient.java.btl");
+//                                //配置other模板及类名
+//                                Map<String, String> customFile = Objects.requireNonNull(config.getInjectionConfig()).getCustomFile();
+//                                customFile.put(tableInfo.getEntityName() + "Vo.java", "/templates/vo.java.btl");
+//                                customFile.put(tableInfo.getEntityName() + "FeignClient.java", "/templates/feignClient.java.btl");
                             })
                             //配置全局变量
                             .customMap(Collections.singletonMap("vo11", "aaaVo"))

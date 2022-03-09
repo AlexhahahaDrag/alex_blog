@@ -1,6 +1,6 @@
 package com.alex.blog.admin.restApi.blog;
 
-import com.alex.blog.common.vo.blog.Subject.SubjectVo;
+import com.alex.blog.common.vo.blog.SubjectVo;
 import com.alex.blog.admin.annotion.authorityVerify.AuthorityVerify;
 import com.alex.blog.admin.annotion.avoidRepeatableCommit.AvoidRepeatableCommit;
 import com.alex.blog.admin.annotion.operationLogger.OperationLogger;

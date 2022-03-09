@@ -3,7 +3,7 @@ package com.alex.blog.xo.service.blog;
 import com.alex.blog.common.entity.blog.Subject;
 import com.alex.blog.base.service.SuperService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.alex.blog.common.vo.blog.Subject.SubjectVo;
+import com.alex.blog.common.vo.blog.SubjectVo;
 import java.util.List;
 /**
  * 专题表 服务类

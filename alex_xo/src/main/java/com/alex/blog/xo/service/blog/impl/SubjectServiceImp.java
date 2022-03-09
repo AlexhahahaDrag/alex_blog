@@ -14,7 +14,7 @@ import com.alex.blog.common.global.SysConf;
 import org.springframework.beans.BeanUtils;
 import java.util.List;
 import com.alex.blog.base.enums.EStatus;
-import com.alex.blog.common.vo.blog.Subject.SubjectVo;
+import com.alex.blog.common.vo.blog.SubjectVo;
 /**
  * <p>
  * @description:  专题表服务实现类

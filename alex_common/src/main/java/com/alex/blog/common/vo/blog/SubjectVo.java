@@ -1,4 +1,4 @@
-package com.alex.blog.common.vo.blog.Subject;
+package com.alex.blog.common.vo.blog;
 
 import com.alex.blog.base.vo.BaseVo;
 import io.swagger.annotations.ApiModel;
