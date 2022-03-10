@@ -44,19 +44,6 @@ public abstract class AbstractTemplateEngine {
             String fileName = String.format(feignPath + File.separator + File.separator + "%s", key);
             this.outputFile(new File(fileName), objectMap, value);
         });
-//        String otherPath = this.getPathInfo(OutputFile.other);
-//        String feignPath = this.getPathInfo(OutputFile.feign);
-//        final int[] index = {0};
-//        customFile.forEach((key, value) -> {
-//            if (index[0] == 0) {
-//                String fileName = String.format(otherPath + File.separator + "%s", key);
-//                this.outputFile(new File(fileName), new HashMap<String, Object>(objectMap.keySet(), objectMap.get(index[0])), value);
-//            } else {
-//                String fileName = String.format(feignPath + File.separator + "%s", key);
-//                this.outputFile(new File(fileName), objectMap, value);
-//            }
-//            index[0]++;
-//        });
     }
 
     protected void outputEntity(@NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
@@ -126,14 +113,14 @@ public abstract class AbstractTemplateEngine {
     }
 
     protected void outputVo(@NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
-        String entityName = tableInfo.getEntityName();
+        String voName = tableInfo.getVoName();
         String voPath = this.getPathInfo(OutputFile.vo);
-        if (StringUtils.isNotBlank(entityName) && StringUtils.isNotBlank(voPath)) {
+        if (StringUtils.isNotBlank(voName) && StringUtils.isNotBlank(voPath)) {
             this.getTemplateFilePath((template) -> {
-                return template.getEntity(this.getConfigBuilder().getGlobalConfig().isKotlin());
+                return template.getVo();
             }).ifPresent((entity) -> {
-                String entityFile = String.format(voPath + File.separator + "%s" + this.suffixJavaOrKt(), entityName);
-                this.outputFile(new File(entityFile), objectMap, entity);
+                String voFile = String.format(voPath + File.separator + "%s" + this.suffixJavaOrKt(), voName);
+                this.outputFile(new File(voFile), objectMap, entity);
             });
         }
 
@@ -142,10 +129,10 @@ public abstract class AbstractTemplateEngine {
     protected void outputClient(@NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
         String clientPath = this.getPathInfo(OutputFile.client);
         if (StringUtils.isNotBlank(tableInfo.getClientName()) && StringUtils.isNotBlank(clientPath)) {
-            this.getTemplateFilePath(TemplateConfig::getController).ifPresent((controller) -> {
-                String entityName = tableInfo.getEntityName();
-                String clientFile = String.format(clientPath + File.separator + tableInfo.getClientName() + this.suffixJavaOrKt(), entityName);
-                this.outputFile(new File(clientFile), objectMap, controller);
+            this.getTemplateFilePath(TemplateConfig::getClient).ifPresent((client) -> {
+                String clientName = tableInfo.getClientName();
+                String clientFile = String.format(clientPath + File.separator + tableInfo.getClientName() + this.suffixJavaOrKt(), clientName);
+                this.outputFile(new File(clientFile), objectMap, client);
             });
         }
 
@@ -250,6 +237,10 @@ public abstract class AbstractTemplateEngine {
         objectMap.putAll(serviceData);
         Map<String, Object> entityData = strategyConfig.entity().renderData(tableInfo);
         objectMap.putAll(entityData);
+        Map<String, Object> voData = strategyConfig.vo().renderData(tableInfo);
+        objectMap.putAll(voData);
+        Map<String, Object> clientData = strategyConfig.client().renderData(tableInfo);
+        objectMap.putAll(clientData);
         objectMap.put("config", config);
         objectMap.put("package", config.getPackageConfig().getPackageInfo());
         GlobalConfig globalConfig = config.getGlobalConfig();

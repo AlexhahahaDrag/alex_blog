@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class Vo implements ITemplate {
     private static final Logger LOGGER = LoggerFactory.getLogger(Vo.class);
     private INameConvert nameConvert;
-    private String superClass;
+    private String superVoClass;
     private final Set<String> superVoColumns;
     private final Set<String> ignoreColumns;
     private boolean serialVersionUID;
@@ -104,8 +104,8 @@ public class Vo implements ITemplate {
     }
 
     @Nullable
-    public String getSuperClass() {
-        return this.superClass;
+    public String getSuperVoClass() {
+        return this.superVoClass;
     }
 
     public Set<String> getSuperVoColumns() {
@@ -193,7 +193,7 @@ public class Vo implements ITemplate {
         data.put("chainModel", this.chain);
         data.put("voLombokModel", this.lombok);
         data.put("voBooleanColumnRemoveIsPrefix", this.booleanColumnRemoveIsPrefix);
-        data.put("superVoClass", ClassUtils.getSimpleName(this.superClass));
+        data.put("superVoClass", ClassUtils.getSimpleName(this.superVoClass));
         return data;
     }
 
@@ -210,12 +210,12 @@ public class Vo implements ITemplate {
             return this;
         }
 
-        public Vo.Builder superClass(@NotNull Class<?> clazz) {
-            return this.superClass(clazz.getName());
+        public Vo.Builder superVoClass(@NotNull Class<?> clazz) {
+            return this.superVoClass(clazz.getName());
         }
 
-        public Vo.Builder superClass(String superVoClass) {
-            this.vo.superClass = superVoClass;
+        public Vo.Builder superVoClass(String superVoClass) {
+            this.vo.superVoClass = superVoClass;
             return this;
         }
 
@@ -314,16 +314,17 @@ public class Vo implements ITemplate {
             return this;
         }
 
-        public Vo.Builder formatFileName(String format) {
-            return this.convertFileName((VoName) -> {
-                return String.format(format, VoName);
+        public Vo.Builder formatVoFileName(String format) {
+            return this.convertFileName((voName) -> {
+                System.out.println("voName" + voName);
+                return String.format(format, voName);
             });
         }
 
         public Vo get() {
-            String superClass = this.vo.superClass;
-            if (StringUtils.isNotBlank(superClass)) {
-                Optional var10000 = this.tryLoadClass(superClass);
+            String superVoClass = this.vo.superVoClass;
+            if (StringUtils.isNotBlank(superVoClass)) {
+                Optional var10000 = this.tryLoadClass(superVoClass);
                 Vo var10001 = this.vo;
                 var10000.ifPresent(var10001::convertSuperVoColumns);
             } else if (!this.vo.superVoColumns.isEmpty()) {

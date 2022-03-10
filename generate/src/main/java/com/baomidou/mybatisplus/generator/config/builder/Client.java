@@ -25,7 +25,7 @@ public class Client implements ITemplate {
 
     private Client() {
         this.converterFileName = (entityName) -> {
-            return entityName + "Client";
+            return entityName + "FeignClient";
         };
     }
 
@@ -50,16 +50,16 @@ public class Client implements ITemplate {
     @NotNull
     public Map<String, Object> renderData(@NotNull TableInfo tableInfo) {
         Map<String, Object> data = new HashMap();
-        data.put("ClientMappingHyphen", StringUtils.camelToHyphen(tableInfo.getEntityPath()));
-        data.put("ClientMappingHyphenStyle", this.hyphenStyle);
-        data.put("restClientStyle", this.restStyle);
-        data.put("superClientClassPackage", StringUtils.isBlank(this.superClass) ? null : this.superClass);
-        data.put("superClientClass", ClassUtils.getSimpleName(this.superClass));
+        data.put("controllerMappingHyphen", StringUtils.camelToHyphen(tableInfo.getEntityPath()));
+        data.put("controllerMappingHyphenStyle", this.hyphenStyle);
+        data.put("restControllerStyle", this.restStyle);
+        data.put("superControllerClassPackage", StringUtils.isBlank(this.superClass) ? null : this.superClass);
+        data.put("superControllerClass", ClassUtils.getSimpleName(this.superClass));
         return data;
     }
 
     public static class Builder extends BaseBuilder {
-        private final Client Client = new Client();
+        private final Client client = new Client();
 
         public Builder(@NotNull StrategyConfig strategyConfig) {
             super(strategyConfig);
@@ -70,26 +70,26 @@ public class Client implements ITemplate {
         }
 
         public Client.Builder superClass(@NotNull String superClass) {
-            this.Client.superClass = superClass;
+            this.client.superClass = superClass;
             return this;
         }
 
         public Client.Builder enableHyphenStyle() {
-            this.Client.hyphenStyle = true;
+            this.client.hyphenStyle = true;
             return this;
         }
 
         public Client.Builder enableRestStyle() {
-            this.Client.restStyle = true;
+            this.client.restStyle = true;
             return this;
         }
 
         public Client.Builder convertFileName(@NotNull ConverterFileName converter) {
-            this.Client.converterFileName = converter;
+            this.client.converterFileName = converter;
             return this;
         }
 
-        public Client.Builder formatFileName(@NotNull String format) {
+        public Client.Builder formatClientFileName(@NotNull String format) {
             return this.convertFileName((entityName) -> {
                 return String.format(format, entityName);
             });
@@ -97,7 +97,7 @@ public class Client implements ITemplate {
 
         @NotNull
         public Client get() {
-            return this.Client;
+            return this.client;
         }
     }
 }

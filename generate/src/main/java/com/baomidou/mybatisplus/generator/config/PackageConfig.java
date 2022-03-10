@@ -109,11 +109,11 @@ public class PackageConfig {
     }
 
     public String getVo() {
-        return vo;
+        return this.vo;
     }
 
     public String getClient() {
-        return client;
+        return this.client;
     }
 
     public Map<OutputFile, String> getPathInfo() {

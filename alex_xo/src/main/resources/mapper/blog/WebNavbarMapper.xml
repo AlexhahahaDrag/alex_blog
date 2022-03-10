@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alex.blog.xo.mapper.blog.WebNavbarMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.alex.blog.common.entity.blog.WebNavbar">
+        <result column="id" property="id" />
+        <result column="status" property="status" />
+        <result column="creator" property="creator" />
+        <result column="create_time" property="createTime" />
+        <result column="updater" property="updater" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleter" property="deleter" />
+        <result column="delete_time" property="deleteTime" />
+        <result column="is_delete" property="isDelete" />
+        <result column="operator" property="operator" />
+        <result column="operate_time" property="operateTime" />
+        <result column="name" property="name" />
+        <result column="navbar_level" property="navbarLevel" />
+        <result column="summary" property="summary" />
+        <result column="parent_uid" property="parentUid" />
+        <result column="url" property="url" />
+        <result column="icon" property="icon" />
+        <result column="is_show" property="isShow" />
+        <result column="is_jump_external_url" property="isJumpExternalUrl" />
+        <result column="sort" property="sort" />
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        `status`,
+        creator,
+        create_time,
+        updater,
+        update_time,
+        deleter,
+        delete_time,
+        is_delete,
+        operator,
+        operate_time,
+        `name`, navbar_level, summary, parent_uid, url, icon, is_show, is_jump_external_url, sort
+    </sql>
+
+</mapper>

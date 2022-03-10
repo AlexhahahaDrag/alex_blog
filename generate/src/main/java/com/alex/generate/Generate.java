@@ -10,7 +10,6 @@ import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.IFill;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
-import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.querys.MySqlQuery;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
@@ -76,7 +75,7 @@ public class Generate {
                             .service("xo.service."+ fileName)
                             .serviceImpl("xo.service."+ fileName + ".impl")
                             .mapper("xo.mapper."+ fileName)
-                            .other("common.vo." + fileName)
+//                            .other("common.vo." + fileName)
                             .controller("admin.restApi." + fileName)
                             .vo("common.vo." + fileName)
                             .client("admin.client." + fileName)
@@ -88,12 +87,12 @@ public class Generate {
                             //配置entity
                             .entityBuilder()
                             .superClass(BaseEntity.class)
-////                            .disableSerialVersionUID()
+                            .disableSerialVersionUID()
                             .enableChainModel()
                             .enableLombok()
 //                            .enableRemoveIsPrefix()
                             .enableTableFieldAnnotation()
-//                            .enableActiveRecord()
+                            .enableActiveRecord()
 //                            .versionColumnName("version")
 //                            .versionPropertyName("version")
                             .logicDeleteColumnName("is_delete")
@@ -123,29 +122,36 @@ public class Generate {
                             .formatMapperFileName("%sMapper")
                             .formatXmlFileName("%sMapper")
                             .voBuilder()
-                            .superClass(BaseVo.class)
+                            .formatVoFileName("%sVo")
+                            .superVoClass(BaseVo.class)
                             .enableChainModel()
                             .enableLombok()
+                            .disableSerialVersionUID()
                             .enableTableFieldAnnotation()
                             .columnNaming(NamingStrategy.underline_to_camel)
                             .addSuperVoColumns("id", "creator", "create_time", "updater", "update_time",
                                     "deleter", "delete_time", "`status`", "operator", "operate_time")
 ////                            .addIgnoreColumns("age")
                             .addTableFills(list)
+                            .enableActiveRecord()
+                            //配置client
+                            .clientBuilder()
+                            .formatClientFileName("%sFeignClient")
+                            .enableRestStyle()
                             .build()
                     ; // 设置过滤表前缀
                 })
                 .injectionConfig(builder -> {
                     builder.beforeOutputFile((tableInfo, objectMap) -> {
                                 System.out.println("tableInfo: " + tableInfo.getEntityName() + " objectMap: " + objectMap.size());
-                                ConfigBuilder config = (ConfigBuilder) objectMap.get("config");
+//                                ConfigBuilder config = (ConfigBuilder) objectMap.get("config");
 //                                //配置other模板及类名
 //                                Map<String, String> customFile = Objects.requireNonNull(config.getInjectionConfig()).getCustomFile();
 //                                customFile.put(tableInfo.getEntityName() + "Vo.java", "/templates/vo.java.btl");
 //                                customFile.put(tableInfo.getEntityName() + "FeignClient.java", "/templates/feignClient.java.btl");
                             })
                             //配置全局变量
-                            .customMap(Collections.singletonMap("vo11", "aaaVo"))
+//                            .customMap(Collections.singletonMap("vo11", "aaaVo"))
                             .build();
                 })
                 .templateEngine(new BeetlTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

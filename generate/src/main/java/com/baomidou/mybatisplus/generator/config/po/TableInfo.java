@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.builder.Entity;
+import com.baomidou.mybatisplus.generator.config.builder.Vo;
 import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +24,7 @@ public class TableInfo {
     private final StrategyConfig strategyConfig;
     private final GlobalConfig globalConfig;
     private final Set<String> importPackages = new TreeSet();
+    private final Set<String> importVoPackages = new TreeSet();
     private boolean convert;
     private String name;
     private String comment;
@@ -39,11 +41,13 @@ public class TableInfo {
     private String voName;
     private String clientName;
     private final Entity entity;
+    private final Vo vo;
 
     public TableInfo(@NotNull ConfigBuilder configBuilder, @NotNull String name) {
         this.strategyConfig = configBuilder.getStrategyConfig();
         this.globalConfig = configBuilder.getGlobalConfig();
         this.entity = configBuilder.getStrategyConfig().entity();
+        this.vo = configBuilder.getStrategyConfig().vo();
         this.name = name;
     }
 
@@ -79,7 +83,9 @@ public class TableInfo {
     }
 
     public TableInfo addImportPackages(@NotNull String... pkgs) {
-        this.importPackages.addAll(Arrays.asList(pkgs));
+        List<String> arr = Arrays.asList(pkgs);
+        this.importVoPackages.addAll(arr);
+        this.importPackages.addAll(arr);
         return this;
     }
 
@@ -147,6 +153,53 @@ public class TableInfo {
         });
     }
 
+    public void importVoPackage() {
+        String superVoClass = this.vo.getSuperVoClass();
+        if (StringUtils.isNotBlank(superVoClass)) {
+            this.importVoPackages.add(superVoClass);
+        } else if (this.entity.isActiveRecord()) {
+            this.importVoPackages.add(Model.class.getCanonicalName());
+        }
+
+        if (this.entity.isSerialVersionUID()) {
+            this.importVoPackages.add(Serializable.class.getCanonicalName());
+        }
+
+        IdType idType = this.entity.getIdType();
+        if (null != idType && this.isHavePrimaryKey()) {
+            this.importVoPackages.add(IdType.class.getCanonicalName());
+            this.importVoPackages.add(TableId.class.getCanonicalName());
+        }
+
+        this.fields.forEach((field) -> {
+            IColumnType columnType = field.getColumnType();
+            if (null != columnType && null != columnType.getPkg()) {
+                this.importVoPackages.add(columnType.getPkg());
+            }
+
+            if (field.isKeyFlag()) {
+                if (field.isConvert() || field.isKeyIdentityFlag()) {
+                    this.importVoPackages.add(TableId.class.getCanonicalName());
+                }
+
+                if (field.isKeyIdentityFlag()) {
+                    this.importVoPackages.add(IdType.class.getCanonicalName());
+                }
+            } else if (field.isConvert()) {
+                this.importVoPackages.add(com.baomidou.mybatisplus.annotation.TableField.class.getCanonicalName());
+            }
+
+            if (null != field.getFill()) {
+                this.importVoPackages.add(com.baomidou.mybatisplus.annotation.TableField.class.getCanonicalName());
+                this.importVoPackages.add(FieldFill.class.getCanonicalName());
+            }
+
+            if (field.isVersionField()) {
+                this.importVoPackages.add(Version.class.getCanonicalName());
+            }
+        });
+    }
+
     public void processTable() {
         String entityName = this.entity.getNameConvert().entityNameConvert(this);
         this.setEntityName(this.entity.getConverterFileName().convert(entityName));
@@ -155,7 +208,10 @@ public class TableInfo {
         this.serviceName = this.strategyConfig.service().getConverterServiceFileName().convert(entityName);
         this.serviceImplName = this.strategyConfig.service().getConverterServiceImplFileName().convert(entityName);
         this.controllerName = this.strategyConfig.controller().getConverterFileName().convert(entityName);
+        this.voName = this.strategyConfig.vo().getConverterFileName().convert(entityName);
+        this.clientName = this.strategyConfig.client().getConverterFileName().convert(entityName);
         this.importPackage();
+        this.importVoPackage();
     }
 
     public TableInfo setComment(String comment) {
@@ -171,6 +227,11 @@ public class TableInfo {
     @NotNull
     public Set<String> getImportPackages() {
         return this.importPackages;
+    }
+
+    @NotNull
+    public Set<String> getImportVoPackages() {
+        return this.importVoPackages;
     }
 
     public boolean isConvert() {

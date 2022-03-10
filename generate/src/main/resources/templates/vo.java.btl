@@ -1,11 +1,12 @@
-package ${package.Other}.${entity};
+package ${package.Vo};
 
-import com.alex.blog.base.vo.BaseVo;
+<% for(pkg in table.importVoPackages){ %>
+import ${pkg};
+<% } %>
 <% if(swagger){ %>
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 <% } %>
-<% if(entityLombokModel){ %>
+<% if(voLombokModel){ %>
 import lombok.Getter;
 import lombok.Setter;
 <% if(chainModel){ %>
@@ -14,12 +15,12 @@ import lombok.experimental.Accessors;
 <% } %>
 
 /**
- * @description:  ${table.comment!}类
+ * @description:  ${table.comment!}Vo
  * @author:       ${author}
- * @createDate:   2021/1/20 20:14
+ * @createDate:   ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
  * @version:      1.0.0
  */
-<% if(entityLombokModel){ %>
+<% if(voLombokModel){ %>
 @Getter
 @Setter
     <% if(chainModel){ %>
@@ -27,11 +28,19 @@ import lombok.experimental.Accessors;
     <% } %>
 <% } %>
 <% if(swagger){ %>
-@ApiModel(value = "${entity}对象", description = "${table.comment!''}")
+@ApiModel(value = "${table.voName}", description = "${table.comment!''}Vo")
 <% } %>
+<% if(isNotEmpty(superVoClass)){ %>
+public class ${table.voName} extends ${superVoClass}<% if(activeRecord){ %><${table.voName}><%}%>{
+<% }else if(activeRecord){ %>
+public class ${table.voName} extends Model<${table.voName}> {
+<% }else if(voSerialVersionUID){ %>
+public class ${table.voName} implements Serializable {
+<% }else{ %>
+public class ${table.voName} {
+<% } %>
+<% if(voSerialVersionUID){ %>
 
-public class ${entity}Vo extends BaseVo<${entity}Vo>{
-<% if(entitySerialVersionUID){ %>
     private static final long serialVersionUID = 1L;
 <% } %>
 <% /** -----------BEGIN 字段循环遍历----------- **/ %>
@@ -51,11 +60,46 @@ public class ${entity}Vo extends BaseVo<${entity}Vo>{
      */
         <% } %>
     <% } %>
+    <% if(field.keyFlag){ %>
+    <%
+    /*主键*/
+    %>
+        <% if(field.keyIdVoFlag){ %>
+    @TableId(value = "${field.annotationColumnName}", type = IdType.AUTO)
+        <% }else if(isNotEmpty(idType)){ %>
+    @TableId(value = "${field.annotationColumnName}", type = IdType.${idType})
+        <% }else if(field.convert){ %>
+    @TableId("${field.annotationColumnName}")
+         <% } %>
+    <%
+    /*普通字段*/
+    %>
+    <% }else if(isNotEmpty(field.fill)){ %>
+        <% if(field.convert){ %>
+    @TableField(value = "${field.annotationColumnName}", fill = FieldFill.${field.fill})
+        <% }else{ %>
+    @TableField(fill = FieldFill.${field.fill})
+        <% } %>
+    <% }else if(field.convert){ %>
+    @TableField("${field.annotationColumnName}")
+    <% } %>
+    <%
+    /*乐观锁注解*/
+    %>
+    <% if(field.versionField){ %>
+    @Version
+    <% } %>
+    <%
+    /*逻辑删除注解*/
+    %>
+    <% if(field.logicDeleteField){ %>
+    @TableLogic
+    <% } %>
     private ${field.propertyType} ${field.propertyName};
 <% } %>
 <% /** -----------END 字段循环遍历----------- **/ %>
 
-<% if(!entityLombokModel){ %>
+<% if(!voLombokModel){ %>
     <% for(field in table.fields){ %>
         <%
         var getprefix ='';
@@ -70,7 +114,7 @@ public class ${entity}Vo extends BaseVo<${entity}Vo>{
     }
 
         <% if(chainModel){ %>
-    public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${vo} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
         <% }else{ %>
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
         <% } %>
@@ -82,27 +126,16 @@ public class ${entity}Vo extends BaseVo<${entity}Vo>{
 
     <% } %>
 <% } %>
-<% if(entityColumnConstant){ %>
+<% if(voColumnConstant){ %>
    <% for(field in table.fields){ %>
     public static final String ${strutil.toUpperCase(field.name)} = "${field.name}";
 
    <% } %>
 <% } %>
-<% if(activeRecord){ %>
-    @Override
-    public Serializable pkVal() {
-    <% if(isNotEmpty(keyPropertyName)){ %>
-        return this.${keyPropertyName};
-    <% }else{ %>
-        return null;
-    <% } %>
-    }
-
-<% } %>
-<% if(!entityLombokModel){ %>
+<% if(!voLombokModel){ %>
     @Override
     public String toString() {
-        return "${entity}{" +
+        return "${vo}{" +
     <% for(field in table.fields){ %>
        <% if(fieldLP.index==0){ %>
         "${field.propertyName}=" + ${field.propertyName} +
