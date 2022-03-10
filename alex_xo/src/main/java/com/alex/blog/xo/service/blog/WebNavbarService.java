@@ -8,7 +8,7 @@ import java.util.List;
 /**
  *  服务类
  * @author: alex
- * @createDate: 2022-03-10 14:15:42
+ * @createDate: 2022-03-10 17:11:03
  * @description: 我是由代码生成器生成
  * version: 1.0.0
  */
@@ -18,7 +18,7 @@ public interface WebNavbarService extends SuperService<WebNavbar> {
      * @param: webNavbarVo
      * @description: 获取列表
      * @author:      alex
-     * @createDate:  2022-03-10 14:15:42
+     * @createDate:  2022-03-10 17:11:03
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.WebNavbar>
      */
     IPage<WebNavbar> getPageList(WebNavbarVo webNavbarVo);
@@ -27,7 +27,7 @@ public interface WebNavbarService extends SuperService<WebNavbar> {
      * @param: webNavbarVo
      * @description: 新增
      * @author:      alex
-     * @createDate:  2022-03-10 14:15:42
+     * @createDate:  2022-03-10 17:11:03
      * @return:      java.lang.String
      */
     String addWebNavbar(WebNavbarVo webNavbarVo);
@@ -36,7 +36,7 @@ public interface WebNavbarService extends SuperService<WebNavbar> {
      * @param: webNavbarVo
      * @description: 编辑
      * @author:      alex
-     * @createDate:  2022-03-10 14:15:42
+     * @createDate:  2022-03-10 17:11:03
      * @return:      java.lang.String
      */
     String editWebNavbar(WebNavbarVo webNavbarVo);
@@ -45,7 +45,7 @@ public interface WebNavbarService extends SuperService<WebNavbar> {
      * @param ids
      * @description: 批量删除
      * @author:      alex
-     * @createDate:  2022-03-10 14:15:42
+     * @createDate:  2022-03-10 17:11:03
      * @return:      java.lang.String
      */
     String deleteBatchWebNavbar(List<String> ids);

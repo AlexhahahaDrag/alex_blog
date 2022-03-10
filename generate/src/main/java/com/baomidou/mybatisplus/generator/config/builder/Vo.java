@@ -316,7 +316,6 @@ public class Vo implements ITemplate {
 
         public Vo.Builder formatVoFileName(String format) {
             return this.convertFileName((voName) -> {
-                System.out.println("voName" + voName);
                 return String.format(format, voName);
             });
         }

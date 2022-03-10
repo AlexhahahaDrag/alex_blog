@@ -26,8 +26,4 @@ public class MD5Util {
     public static String encrypt(String username, String password) {
         return new SimpleHash(ALGORITHM_NAME, password, ByteSource.Util.bytes(username.toLowerCase() + password), HASH_ITERATIONS).toHex();
     }
-
-    public static void main(String[] args) {
-        System.out.println(MD5Util.encrypt("alex", "123456"));
-    }
 }

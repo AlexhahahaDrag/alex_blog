@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.alex.blog.xo.service.blog.WebNavbarService;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
 /**
  * @description:  restApi
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version:      1.0.0
  */
 @Api(value = "相关接口", tags = {"相关接口"})
-@RestController
+@Controller
 @RequestMapping("/web-navbar")
 public class WebNavbarRestApi {
 

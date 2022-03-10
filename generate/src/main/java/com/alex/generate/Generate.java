@@ -56,7 +56,7 @@ public class Generate {
         pathMap.put(OutputFile.mapper, javaPath + separator + "mapper" + separator + fileName);
         pathMap.put(OutputFile.entity, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/entity", separator) + separator + fileName);
         pathMap.put(OutputFile.vo, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/vo", separator) + separator + fileName);
-        pathMap.put(OutputFile.client, basePath + getPath("alex_admin/src/main/java/com/alex/blog/admin/client", separator) + separator + fileName);
+//        pathMap.put(OutputFile.client, basePath + getPath("alex_admin/src/main/java/com/alex/blog/admin/client", separator) + separator + fileName);
         pathMap.put(OutputFile.controller, basePath + getPath("alex_admin/src/main/java/com/alex/blog/admin/restApi", separator) + separator + fileName);
         FastAutoGenerator.create(dataSourceConfig)
                 .globalConfig(builder -> {
@@ -135,9 +135,9 @@ public class Generate {
                             .addTableFills(list)
                             .enableActiveRecord()
                             //配置client
-                            .clientBuilder()
-                            .formatClientFileName("%sFeignClient")
-                            .enableRestStyle()
+//                            .clientBuilder()
+//                            .formatClientFileName("%sFeignClient")
+//                            .enableRestStyle()
                             .build()
                     ; // 设置过滤表前缀
                 })
