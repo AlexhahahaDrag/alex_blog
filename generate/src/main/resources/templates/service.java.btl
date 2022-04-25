@@ -3,7 +3,7 @@ package ${package.Service};
 import ${package.Entity}.${entity};
 import ${superServiceClassPackage};
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import ${package.Other}.${entity}.${entity}Vo;
+import ${package.Vo}.${table.voName};
 import java.util.List;
 /**
  * ${table.comment!} 服务类
@@ -18,31 +18,31 @@ interface ${table.serviceName} : ${superServiceClass}<${entity}>
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
     /**
-     * @param: ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo
+     * @param: ${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}
      * @description: 获取${table.comment!}列表
      * @author:      ${author}
      * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<${package.Entity}.${entity}>
      */
-    IPage<${entity}> getPageList(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo);
+    IPage<${entity}> getPageList(${table.voName} ${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)});
 
     /**
-     * @param: ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo
+     * @param: ${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}
      * @description: 新增${table.comment!}
      * @author:      ${author}
      * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
      * @return:      java.lang.String
      */
-    String add${entity}(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo);
+    String add${entity}(${table.voName} ${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)});
 
     /**
-     * @param: ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo
+     * @param: ${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}
      * @description: 编辑${table.comment!}
      * @author:      ${author}
      * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
      * @return:      java.lang.String
      */
-    String edit${entity}(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo);
+    String edit${entity}(${table.voName} ${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)});
 
     /**
      * @param ids

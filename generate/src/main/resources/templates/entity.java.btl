@@ -5,7 +5,6 @@ import ${pkg};
 <% } %>
 <% if(swagger){ %>
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 <% } %>
 <% if(entityLombokModel){ %>
 import lombok.Getter;
@@ -135,17 +134,6 @@ public class ${entity} {
     public static final String ${strutil.toUpperCase(field.name)} = "${field.name}";
 
    <% } %>
-<% } %>
-<% if(activeRecord){ %>
-    @Override
-    public Serializable pkVal() {
-    <% if(isNotEmpty(keyPropertyName)){ %>
-        return this.${keyPropertyName};
-    <% }else{ %>
-        return null;
-    <% } %>
-    }
-
 <% } %>
 <% if(!entityLombokModel){ %>
     @Override

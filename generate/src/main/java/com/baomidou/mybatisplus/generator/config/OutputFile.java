@@ -7,6 +7,8 @@ public enum OutputFile {
     mapper,
     mapperXml,
     controller,
+    vo,
+    client,
     other,
     feign;
 

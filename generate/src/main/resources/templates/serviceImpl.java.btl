@@ -14,7 +14,7 @@ import com.alex.blog.common.global.SysConf;
 import org.springframework.beans.BeanUtils;
 import java.util.List;
 import com.alex.blog.base.enums.EStatus;
-import ${package.Other}.${entity}.${entity}Vo;
+import ${package.Vo}.${table.voName};
 /**
  * <p>
  * @description:  ${table.comment!}服务实现类
@@ -31,32 +31,32 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
 
     @Override
-    public IPage<${entity}> getPageList(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo) {
+    public IPage<${entity}> getPageList(${table.voName} ${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}) {
         QueryWrapper<${entity}> query = getQuery();
         Page<${entity}> page = new Page<>();
-        page.setCurrent(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo.getCurrentPage());
-        page.setSize(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo.getPageSize());
+        page.setCurrent(${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}.getCurrentPage());
+        page.setSize(${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}.getPageSize());
         Page<${entity}> ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Page = this.page(page, query);
         return ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Page;
     }
 
     @Override
-    public String add${entity}(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo) {
+    public String add${entity}(${table.voName} ${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}) {
         ${entity} ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)} = new ${entity}();
-        BeanUtils.copyProperties(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo, ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)});
+        BeanUtils.copyProperties(${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}, ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)});
         ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}.insert();
         return ResultUtil.resultSuccessWithMessage(MessageConf.INSERT_SUCCESS);
     }
 
     @Override
-    public String edit${entity}(${entity}Vo ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo) {
+    public String edit${entity}(${table.voName} ${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}) {
         QueryWrapper<${entity}> query = getQuery();
-        query.eq(SysConf.ID, ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo.getId());
+        query.eq(SysConf.ID, ${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}.getId());
         ${entity} ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)} = this.getOne(query);
         if (${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)} == null) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
-        BeanUtils.copyProperties(${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}Vo, ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)});
+        BeanUtils.copyProperties(${strutil.toLowerCase(strutil.subStringTo(table.voName, 0, 1)) + strutil.subString (table.voName, 1)}, ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)});
         ${strutil.toLowerCase(strutil.subStringTo(entity, 0, 1)) + strutil.subString (entity, 1)}.updateById();
         return ResultUtil.resultSuccessWithMessage(MessageConf.UPDATE_SUCCESS);
     }
