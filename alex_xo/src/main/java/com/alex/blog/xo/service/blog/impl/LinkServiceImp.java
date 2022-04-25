@@ -151,7 +151,9 @@ public class LinkServiceImp extends SuperServiceImpl<LinkMapper, Link> implement
         if (ids == null || ids.isEmpty()) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
-        linkMapper.deleteBatchIds(ids);
+        Link link = new Link();
+        link.setId(ids.get(0));
+        linkMapper.deleteByIdWithFill(link);
         //删除redis中的博客连接
         deleteRedisBlogLinkList();
         return ResultUtil.resultSuccessWithMessage(MessageConf.DELETE_SUCCESS);

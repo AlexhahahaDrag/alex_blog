@@ -87,7 +87,7 @@ public class ${table.controllerName} {
     @DeleteMapping(value = "/deleteBatch")
     @OperationLogger(value = "删除${table.comment!}")
     public String deleteBatch(@Validated({Delete.class})
-                              @ApiParam(value = "ids", name = "${table.comment!}ids", required = true)
+                              @ApiParam(value = "${table.comment!}ids", name = "ids", required = true)
                               @RequestParam(value = "ids") List<String> ids) {
         return ${strutil.toLowerCase(strutil.subStringTo(table.serviceName, 0, 1)) + strutil.subString (table.serviceName, 1)}.deleteBatch${entity}(ids);
     }

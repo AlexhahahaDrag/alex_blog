@@ -45,11 +45,11 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
      private LocalDateTime updateTime;
 
      @ApiModelProperty(value = "deleter", name = "删除人")
-     @TableField(value = "deleter")
+     @TableField(value = "deleter", fill = FieldFill.UPDATE)
      private String deleter;
 
      @ApiModelProperty(value = "deleteTime", name = "删除时间")
-     @TableField(value = "delete_time")
+     @TableField(value = "delete_time", fill = FieldFill.UPDATE)
      private LocalDateTime deleteTime;
 
      @TableLogic
