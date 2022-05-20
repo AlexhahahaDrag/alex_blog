@@ -39,7 +39,7 @@ CREATE TABLE `alex_blog`.`t_blog`  (
 DROP TABLE IF EXISTS `t_tag`;
 
 CREATE TABLE `t_tag` (
- `id` varchar(32) AUTO_INCREMENT COMMENT '唯一id',
+ `id` varchar(32)  COMMENT '唯一id',
  `content` varchar(1000) DEFAULT NULL COMMENT '标签内容',
  `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态',
  `click_count` int DEFAULT '0' COMMENT '点击次数',
@@ -59,7 +59,7 @@ CREATE TABLE `t_tag` (
 DROP TABLE IF EXISTS `t_blog_sort`;
 
 CREATE TABLE `t_blog_sort` (
-`id` varchar(32) NOT NULL AUTO_INCREMENT COMMENT '唯一id',
+`id` varchar(32) NOT NULL COMMENT '唯一id',
 `sort_name` varchar(255) DEFAULT NULL COMMENT '分类内容',
 `content` varchar(255) DEFAULT NULL COMMENT '分类简介',
 `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态',
@@ -73,7 +73,7 @@ CREATE TABLE `t_blog_sort` (
 `delete_time` timestamp COMMENT '删除时间',
 `is_delete` tinyint(4) NULL DEFAULT NULL COMMENT '是否删除',
 `operator` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '操作人',
-`operate_time` timestamp NOT NULL COMMENT '操作时间'
+`operate_time` timestamp NOT NULL COMMENT '操作时间',
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='博客分类表';
 

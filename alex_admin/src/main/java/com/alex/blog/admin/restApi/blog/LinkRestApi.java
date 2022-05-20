@@ -69,7 +69,7 @@ public class LinkRestApi {
     @DeleteMapping(value = "/deleteBatch")
     @OperationLogger(value = "删除友情链接")
     public String deleteBatch(@Validated({Delete.class})
-                              @ApiParam(value = "ids", name = "友情链接ids", required = true)
+                              @ApiParam(value = "友情链接ids", name = "ids", required = true)
                               @RequestParam(value = "ids") List<String> ids) {
         return linkService.deleteBatchLink(ids);
     }

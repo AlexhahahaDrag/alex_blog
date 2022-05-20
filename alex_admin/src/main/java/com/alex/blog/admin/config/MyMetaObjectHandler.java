@@ -24,33 +24,53 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         log.info("start insert fill ....");
         LocalDateTime now = LocalDateTime.now();
-        this.strictInsertFill(metaObject, "status", Integer.class, EStatus.ENABLE.getCode());
-        this.strictInsertFill(metaObject, "isDelete", Integer.class,0);
-        this.strictInsertFill(metaObject, "createTime", LocalDateTime.class, now);
-        metaObject.setValue("operateTime", null);
-        this.strictInsertFill(metaObject, "operateTime", LocalDateTime.class,  now);
+        if (metaObject.hasSetter("status")) {
+            this.strictInsertFill(metaObject, "status", Integer.class, EStatus.ENABLE.getCode());
+        }
+        if (metaObject.hasSetter("isDelete")) {
+            this.strictInsertFill(metaObject, "isDelete", Integer.class, 0);
+        }
+        if (metaObject.hasSetter("createTime")) {
+            this.strictInsertFill(metaObject, "createTime", LocalDateTime.class, now);
+        }
+        if (metaObject.hasSetter("operateTime")) {
+            metaObject.setValue("operateTime", null);
+            this.strictInsertFill(metaObject, "operateTime", LocalDateTime.class, now);
+        }
         if (UserUtil.getLoginUser() != null && StringUtils.isNotEmpty(UserUtil.getLoginUser().getId())) {
             String id = UserUtil.getLoginUser().getId();
-            this.strictInsertFill(metaObject, "creator", String.class, id);
-            this.strictInsertFill(metaObject, "operator", String.class, id);
+            if (metaObject.hasSetter("creator")) {
+                this.strictInsertFill(metaObject, "creator", String.class, id);
+            }
+            if (metaObject.hasSetter("operator")) {
+                this.strictInsertFill(metaObject, "operator", String.class, id);
+            }
         }
     }
 
+    // TODO: 2022/4/25 配置删除自动填充 
     @Override
     public void updateFill(MetaObject metaObject) {
         log.info("start update fill ....");
         LocalDateTime now = LocalDateTime.now();
-        metaObject.setValue("operateTime", null);
-        metaObject.setValue("updateTime", null);
-        this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class,  now);
-        this.strictUpdateFill(metaObject, "operateTime", LocalDateTime.class,  now);
+        if (metaObject.hasSetter("operateTime")) {
+            metaObject.setValue("operateTime", null);
+            this.strictUpdateFill(metaObject, "operateTime", LocalDateTime.class,  now);
+        }
+        if (metaObject.hasSetter("updateTime")) {
+            metaObject.setValue("updateTime", null);
+            this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class,  now);
+        }
         if (UserUtil.getLoginUser() != null && StringUtils.isNotEmpty(UserUtil.getLoginUser().getId())) {
             String id = UserUtil.getLoginUser().getId();
-            metaObject.setValue("updater", null);
-            metaObject.setValue("operator", null);
-            this.strictUpdateFill(metaObject, "updater", String.class, id);
-            this.strictUpdateFill(metaObject, "operator", String.class, id);
+            if (metaObject.hasSetter("updater")) {
+                metaObject.setValue("updater", null);
+                this.strictUpdateFill(metaObject, "updater", String.class, id);
+            }
+            if (metaObject.hasSetter("operator")) {
+                metaObject.setValue("operator", null);
+                this.strictUpdateFill(metaObject, "operator", String.class, id);
+            }
         }
-
     }
 }

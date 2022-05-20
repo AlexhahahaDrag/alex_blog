@@ -24,7 +24,7 @@ import java.util.List;
 @Accessors(chain = true)
 @TableName("t_link")
 @ApiModel(value = "Link对象", description = "友情链接表")
-public class Link extends BaseEntity {
+public class Link extends BaseEntity<Link> {
 
     private static final long serialVersionUID = 1L;
 

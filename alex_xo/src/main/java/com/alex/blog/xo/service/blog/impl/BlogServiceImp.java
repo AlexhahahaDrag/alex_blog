@@ -103,14 +103,14 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
 
     @Override
     public List<Blog> setTagAndSortByBlogList(List<Blog> list) {
-        List<Long> sortIds = new ArrayList<>();
-        List<Long> tagIds = new ArrayList<>();
+        List<String> sortIds = new ArrayList<>();
+        List<String> tagIds = new ArrayList<>();
         list.forEach(item -> {
             if (StringUtils.isNotEmpty(item.getTagId())) {
-                tagIds.addAll(StringUtils.splitLongByCode(item.getTagId(), SysConf.FILE_SEGMENTATION));
+                tagIds.addAll(StringUtils.splitStringByCode(item.getTagId(), SysConf.FILE_SEGMENTATION));
             }
             if (StringUtils.isNotEmpty(item.getBlogSortId())) {
-                sortIds.addAll(StringUtils.splitLongByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION));
+                sortIds.addAll(StringUtils.splitStringByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION));
             }
         });
         List<Tag> tags = null;
@@ -155,18 +155,18 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         if (list == null || list.isEmpty()) {
             return list;
         }
-        List<Long> sortIds = new ArrayList<>();
-        List<Long> tagIds = new ArrayList<>();
-        Set<Long> fileIdSet = new HashSet<>();
+        List<String> sortIds = new ArrayList<>();
+        List<String> tagIds = new ArrayList<>();
+        Set<String> fileIdSet = new HashSet<>();
         list.forEach(item -> {
             if (StringUtils.isNotEmpty(item.getTagId())) {
-                tagIds.addAll(StringUtils.splitLongByCode(item.getTagId(), SysConf.FILE_SEGMENTATION));
+                tagIds.addAll(StringUtils.splitStringByCode(item.getTagId(), SysConf.FILE_SEGMENTATION));
             }
             if (StringUtils.isNotEmpty(item.getBlogSortId())) {
-                sortIds.addAll(StringUtils.splitLongByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION));
+                sortIds.addAll(StringUtils.splitStringByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION));
             }
             if (StringUtils.isNotEmpty(item.getFileId())) {
-                fileIdSet.addAll(StringUtils.splitLongByCode(item.getFileId(), SysConf.FILE_SEGMENTATION));
+                fileIdSet.addAll(StringUtils.splitStringByCode(item.getFileId(), SysConf.FILE_SEGMENTATION));
             }
         });
         List<Tag> tags = null;
@@ -432,7 +432,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             likeMap.put(SysConf.BLOG_SORT_ID, blogVo.getBlogSortId());
         }
         List<String> orderList = null;
-        if (blogVo.getUseSort() == 1){
+        if (blogVo.getUseSort() != null && blogVo.getUseSort() == 1){
             orderList = new ArrayList<>();
             orderList.add(SysConf.SORT);
         }
@@ -975,7 +975,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         page.setSize(currentPageSize == null ? 10 : currentPageSize);
         //设置查询条件
         QueryWrapper<Blog> query = new QueryWrapper<>();
-        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).eq(SysConf.IS_PUBLISH, EPublish.PUBLISH.getCode())
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode())
                 .select(Blog.class, i -> !i.getProperty().equals(SysConf.CONTENT));
         //当传tag_id和blog_sort_id的时候，需要用in，因为这两个都是多标签、多分类的情况
         if (eqMap != null && !eqMap.isEmpty()) {

@@ -9,4 +9,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  *version:      1.0.0
  */
 public interface SuperMapper<T> extends BaseMapper<T> {
+
+    int deleteByIdWithFill(T entity);
 }
