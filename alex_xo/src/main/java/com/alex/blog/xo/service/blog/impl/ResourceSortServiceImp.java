@@ -1,6 +1,7 @@
 package com.alex.blog.xo.service.blog.impl;
 
 import com.alex.blog.common.entity.blog.ResourceSort;
+import com.alex.blog.common.vo.blog.ResourceSortVo;
 import com.alex.blog.xo.mapper.blog.ResourceSortMapper;
 import com.alex.blog.xo.service.blog.ResourceSortService;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
@@ -14,7 +15,6 @@ import com.alex.blog.common.global.SysConf;
 import org.springframework.beans.BeanUtils;
 import java.util.List;
 import com.alex.blog.base.enums.EStatus;
-import com.alex.blog.common.vo.blog.ResourceSort.ResourceSortVo;
 /**
  * <p>
  * @description:  资源分类表服务实现类

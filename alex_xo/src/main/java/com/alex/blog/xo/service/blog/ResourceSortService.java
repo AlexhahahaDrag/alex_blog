@@ -2,8 +2,8 @@ package com.alex.blog.xo.service.blog;
 
 import com.alex.blog.common.entity.blog.ResourceSort;
 import com.alex.blog.base.service.SuperService;
+import com.alex.blog.common.vo.blog.ResourceSortVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.alex.blog.common.vo.blog.ResourceSort.ResourceSortVo;
 import java.util.List;
 /**
  * 资源分类表 服务类

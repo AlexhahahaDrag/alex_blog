@@ -1,5 +1,6 @@
 package com.alex.blog.utils.utils;
 
+import com.alex.blog.utils.adapter.LocalDateAdapter;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -13,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,24 +22,29 @@ import java.util.Map;
 
 
 /**
- *description:  json解析工具类
+ * description:  json解析工具类
  * Gson 是 Google 提供的用来在 Java 对象和 JSON 数据之间进行映射的 Java 类库。可以将一个 JSON 字符串转成一个 Java 对象，或者反过来。
- *author:       alex
- *createDate:   2021/1/25 21:23
- *version:      1.0.0
+ * author:       alex
+ * createDate:   2021/1/25 21:23
+ * version:      1.0.0
  */
 public class JsonUtils {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     public static Logger log = LoggerFactory.getLogger(JsonUtils.class);
 
-    /**ma
+    /**
+     * ma
      *
      * @param obj
      * @return
      */
     public static String objectToJson(Object obj) {
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter()).create();
+
         String json = null;
         try {
             json = gson.toJson(obj);
@@ -49,13 +56,16 @@ public class JsonUtils {
 
     /**
      * @param obj
-     * @description:  将object转换成map
-     * @author:       alex
-     * @return:       java.util.Map<java.lang.String,java.lang.Object>
+     * @description: 将object转换成map
+     * @author: alex
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
      */
     public static Map<String, Object> objectToMap(Object obj) {
         try {
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                    .setPrettyPrinting()
+                    .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter()).create();
             String json = gson.toJson(obj);
             return jsonToMap(json);
         } catch (Exception e) {
@@ -67,12 +77,15 @@ public class JsonUtils {
     /**
      * @param jsonString
      * @param clazz
-     * @description:  将json字符串转化成对象
-     * @author:       alex
-     * @return:       java.lang.Object
+     * @description: 将json字符串转化成对象
+     * @author: alex
+     * @return: java.lang.Object
      */
     public static Object jsonToObject(String jsonString, Class<?> clazz) {
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter()).create();
         Object obj = null;
         try {
             obj = gson.fromJson(jsonString, clazz);
@@ -84,12 +97,15 @@ public class JsonUtils {
 
     /**
      * @param jsonArray
-     * @description:  将json转换成arrayList
-     * @author:       alex
-     * @return:       java.util.ArrayList<?>
+     * @description: 将json转换成arrayList
+     * @author: alex
+     * @return: java.util.ArrayList<?>
      */
     public static <T> List<T> jsonToArrayList(String jsonArray) {
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
                 //设置导出空值
                 .serializeNulls()
                 //忽略策略
@@ -97,7 +113,8 @@ public class JsonUtils {
                 .create();
         List<T> list = null;
         try {
-            Type type = new TypeToken<ArrayList<T>>() {}.getType();
+            Type type = new TypeToken<ArrayList<T>>() {
+            }.getType();
             list = gson.fromJson(jsonArray, type);
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,12 +124,15 @@ public class JsonUtils {
 
     /**
      * @param jsonArray
-     * @description:  将json转换成arrayList
-     * @author:       alex
-     * @return:       java.util.ArrayList<?>
+     * @description: 将json转换成arrayList
+     * @author: alex
+     * @return: java.util.ArrayList<?>
      */
     public static <T> List<T> jsonToArrayList(String jsonArray, Class<T> clazz) {
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
                 //设置导出空值
                 .serializeNulls()
                 //忽略策略
@@ -120,7 +140,8 @@ public class JsonUtils {
                 .create();
         List<T> list = null;
         try {
-            Type type = new TypeToken<ArrayList<T>>() {}.getType();
+            Type type = new TypeToken<ArrayList<T>>() {
+            }.getType();
             list = gson.fromJson(jsonArray, type);
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,14 +151,16 @@ public class JsonUtils {
 
     /**
      * @param json
-     * @description:  将json转化成map<String, Object>
-     * @author:       alex
-     * @return:       java.util.Map<java.lang.String,java.lang.Object>
+     * @description: 将json转化成map<String, Object>
+     * @author: alex
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
      */
     public static Map<String, Object> jsonToMap(String json) {
         Gson gson = new GsonBuilder()
-                .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
+                .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                 .serializeNulls()
                 .create();
         Map<String, Object> map = null;
@@ -152,14 +175,16 @@ public class JsonUtils {
 
     /**
      * @param json
-     * @description:  将json转化成map<String, Object>
-     * @author:       alex
-     * @return:       java.util.Map<java.lang.String,java.lang.Object>
+     * @description: 将json转化成map<String, Object>
+     * @author: alex
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
      */
     public static <T> Map<String, T> jsonToMap(String json, Type typeOfT) {
         Gson gson = new GsonBuilder()
-                .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
+                .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                 .serializeNulls()
                 .create();
         Map<String, T> map = null;
@@ -174,14 +199,16 @@ public class JsonUtils {
     /**
      * @param map
      * @param beanType
-     * @description:  将map转化成pojo
-     * @author:       alex
-     * @return:       T
+     * @description: 将map转化成pojo
+     * @author: alex
+     * @return: T
      */
     public static <T> T mapToPojo(Map<String, Object> map, Class<T> beanType) {
         Gson gson = new GsonBuilder()
-                .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
+                .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                 .serializeNulls()
                 .create();
         T pojo = null;
@@ -198,9 +225,9 @@ public class JsonUtils {
     /**
      * @param jsonData
      * @param beanType
-     * @description:  将json转化成对象
-     * @author:       alex
-     * @return:       T
+     * @description: 将json转化成对象
+     * @author: alex
+     * @return: T
      */
     public static <T> T jsonToPojo(String jsonData, Class<T> beanType) {
         T t = null;
@@ -215,10 +242,10 @@ public class JsonUtils {
     /**
      * @param jsonData
      * @param beanType
-     * @description:  将json数据转化成pojo的list
-     * @author:       alex
-     * @return:       java.util.List<T>
-    */
+     * @description: 将json数据转化成pojo的list
+     * @author: alex
+     * @return: java.util.List<T>
+     */
     public static <T> List<T> jsonToList(String jsonData, Class<T> beanType) {
         JavaType javaType = MAPPER.getTypeFactory().constructParametricType(List.class, beanType);
         List<T> list = null;
