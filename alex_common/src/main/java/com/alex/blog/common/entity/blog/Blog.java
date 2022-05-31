@@ -24,7 +24,7 @@ import java.util.List;
 @Accessors(chain = true)
 @TableName("t_blog")
 @ApiModel(value = "Blog对象", description = "博客表")
-public class Blog extends BaseEntity {
+public class Blog extends BaseEntity<Blog> {
 
     private static final long serialVersionUID = 1L;
 
@@ -125,4 +125,8 @@ public class Blog extends BaseEntity {
     @ApiModelProperty("博客标题图")
     @TableField(exist = false)
     private String photoUrl;
+
+    @ApiModelProperty("分类名")
+    @TableField(exist = false)
+    private String tagName;
 }

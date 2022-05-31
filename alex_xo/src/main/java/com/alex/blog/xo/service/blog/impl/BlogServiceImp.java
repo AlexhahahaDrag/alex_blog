@@ -202,13 +202,21 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         list.forEach(item -> {
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
-                item.setTagList(StringUtils.splitStringByCode(item.getTagId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(finalTagMap::get).collect(Collectors.toList()));
+                List<Tag> tagList = StringUtils.splitStringByCode(item.getTagId(), SysConf.FILE_SEGMENTATION).
+                        stream().map(finalTagMap::get).collect(Collectors.toList());
+                item.setTagList(tagList);
+                if (!tagList.isEmpty() && (tagList.get(0) != null && tagList.get(0).getId() != null)) {
+                    item.setTagName(tagList.stream().map(Tag::getContent).collect(Collectors.joining(",")));
+                }
             }
             //设置分类信息
             if (StringUtils.isNotEmpty(item.getBlogSortId())) {
-                item.setBlogSortList(StringUtils.splitStringByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
-                        stream().map(finalBlogSortMap::get).collect(Collectors.toList()));
+                List<BlogSort> blogSortList = StringUtils.splitStringByCode(item.getBlogSortId(), SysConf.FILE_SEGMENTATION).
+                        stream().map(finalBlogSortMap::get).collect(Collectors.toList());
+                item.setBlogSortList(blogSortList);
+                if (!blogSortList.isEmpty() && blogSortList.get(0) != null) {
+                    item.setBlogSortName(blogSortList.stream().map(BlogSort::getSortName).collect(Collectors.joining(",")));
+                }
             }
             //设置图片信息
             if (StringUtils.isNotEmpty(item.getFileId())) {
@@ -430,6 +438,9 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         }
         if (!StringUtils.isEmpty(blogVo.getBlogSortId())) {
             likeMap.put(SysConf.BLOG_SORT_ID, blogVo.getBlogSortId());
+        }
+        if (blogVo.getLevel() != null) {
+            eqMap.put(SQLConf.LEVEL, blogVo.getLevel());
         }
         List<String> orderList = null;
         if (blogVo.getUseSort() != null && blogVo.getUseSort() == 1){

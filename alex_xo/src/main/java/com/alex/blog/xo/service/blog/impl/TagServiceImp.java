@@ -4,9 +4,11 @@ import com.alex.blog.base.enums.EStatus;
 import com.alex.blog.base.global.RedisConf;
 import com.alex.blog.base.service.impl.SuperServiceImpl;
 import com.alex.blog.common.entity.blog.Blog;
+import com.alex.blog.common.entity.blog.BlogSort;
 import com.alex.blog.common.entity.blog.Tag;
 import com.alex.blog.common.enums.EPublish;
 import com.alex.blog.common.global.MessageConf;
+import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.blog.TagVo;
 import com.alex.blog.utils.utils.RedisUtils;
@@ -17,6 +19,7 @@ import com.alex.blog.xo.service.blog.BlogService;
 import com.alex.blog.xo.service.blog.TagService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,7 +48,21 @@ public class TagServiceImp extends SuperServiceImpl<TagMapper, Tag> implements T
 
     @Override
     public IPage<Tag> getPageList(TagVo tagVo) {
-        return null;
+        QueryWrapper<Tag> query = new QueryWrapper<>();
+        if (StringUtils.isNotEmpty(tagVo.getKeyword()) && StringUtils.isNotEmpty(tagVo.getKeyword().trim()) ) {
+            query.like(SQLConf.SORT_NAME, tagVo.getKeyword());
+        }
+        long currentPage = 1L;
+        if (tagVo.getCurrentPage() != null) {
+            currentPage = tagVo.getCurrentPage();
+        }
+        Long pageSize = 10L;
+        if (tagVo.getCurrentPage() != null) {
+            pageSize = tagVo.getPageSize();
+        }
+        Page<Tag> page = new Page<>(currentPage, pageSize);
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).orderByDesc(SysConf.SORT);
+        return this.page(page, query);
     }
 
     @Override

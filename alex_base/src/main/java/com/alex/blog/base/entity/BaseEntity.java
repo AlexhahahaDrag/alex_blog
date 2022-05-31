@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -63,6 +64,8 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
 
      @ApiModelProperty(value = "operateTime", name = "操作时间")
      @TableField(value = "operate_time", fill = FieldFill.INSERT_UPDATE, updateStrategy = FieldStrategy.DEFAULT)
+     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
      private LocalDateTime operateTime;
 
      @ApiModelProperty(value = "status", name="状态", example = "0：失效  1：生效")

@@ -8,6 +8,7 @@ import com.alex.blog.common.entity.blog.BlogSort;
 import com.alex.blog.common.entity.blog.BlogSort;
 import com.alex.blog.common.enums.EPublish;
 import com.alex.blog.common.global.MessageConf;
+import com.alex.blog.common.global.SQLConf;
 import com.alex.blog.common.global.SysConf;
 import com.alex.blog.common.vo.blog.BlogSortVo;
 import com.alex.blog.utils.utils.RedisUtils;
@@ -18,6 +19,7 @@ import com.alex.blog.xo.service.blog.BlogService;
 import com.alex.blog.xo.service.blog.BlogSortService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,8 +47,22 @@ public class BlogSortServiceImp extends SuperServiceImpl<BlogSortMapper, BlogSor
     private BlogService blogService;
 
     @Override
-    public IPage<BlogSort> getPageList(BlogSortVo BlogSortVo) {
-        return null;
+    public IPage<BlogSort> getPageList(BlogSortVo blogSortVo) {
+        QueryWrapper<BlogSort> query = new QueryWrapper<>();
+        if (StringUtils.isNotEmpty(blogSortVo.getKeyword()) && StringUtils.isNotEmpty(blogSortVo.getKeyword().trim()) ) {
+            query.like(SQLConf.SORT_NAME, blogSortVo.getKeyword());
+        }
+        long currentPage = 1L;
+        if (blogSortVo.getCurrentPage() != null) {
+            currentPage = blogSortVo.getCurrentPage();
+        }
+        Long pageSize = 10L;
+        if (blogSortVo.getCurrentPage() != null) {
+            pageSize = blogSortVo.getPageSize();
+        }
+        Page<BlogSort> page = new Page<>(currentPage, pageSize);
+        query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).orderByDesc(SysConf.SORT);
+        return this.page(page, query);
     }
 
     @Override
@@ -57,15 +73,15 @@ public class BlogSortServiceImp extends SuperServiceImpl<BlogSortMapper, BlogSor
     }
 
     @Override
-    public String addBlogSort(BlogSortVo BlogSortVo) {
+    public String addBlogSort(BlogSortVo blogSortVo) {
         QueryWrapper<BlogSort> query = getQuery();
-        query.eq(SysConf.SORT_NAME, BlogSortVo.getSortName());
+        query.eq(SysConf.SORT_NAME, blogSortVo.getSortName());
         BlogSort one = this.getOne(query);
         if (one != null) {
             return ResultUtil.resultErrorWithMessage(MessageConf.ENTITY_EXIST);
         }
         BlogSort blogSort = new BlogSort();
-        BeanUtils.copyProperties(BlogSortVo, blogSort);
+        BeanUtils.copyProperties(blogSortVo, blogSort);
         //默认新增的分类是有效的
         blogSort.setStatus(EStatus.ENABLE.getCode());
         blogSort.insert();
@@ -73,21 +89,21 @@ public class BlogSortServiceImp extends SuperServiceImpl<BlogSortMapper, BlogSor
     }
 
     @Override
-    public String editBlogSort(BlogSortVo BlogSortVo) {
-        BlogSort one = this.getById(BlogSortVo.getId());
+    public String editBlogSort(BlogSortVo blogSortVo) {
+        BlogSort one = this.getById(blogSortVo.getId());
         if (one == null) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
         //如果名称不一致校验名称是否重复
-        if (!one.getSortName().equals(BlogSortVo.getSortName())) {
+        if (!one.getSortName().equals(blogSortVo.getSortName())) {
             QueryWrapper<BlogSort> query = getQuery();
-            query.eq(SysConf.SORT_NAME, BlogSortVo.getSortName());
+            query.eq(SysConf.SORT_NAME, blogSortVo.getSortName());
             BlogSort one1 = this.getOne(query);
             if (one1 != null) {
                 return ResultUtil.resultErrorWithMessage("博客分类名称已存在!");
             }
         }
-        BeanUtils.copyProperties(BlogSortVo, one);
+        BeanUtils.copyProperties(blogSortVo, one);
         one.updateById();
         // 删除和博客相关的Redis缓存
         blogService.deleteRedisByBlogSort();
@@ -111,22 +127,22 @@ public class BlogSortServiceImp extends SuperServiceImpl<BlogSortMapper, BlogSor
     }
 
     @Override
-    public String stickBlogSort(BlogSortVo BlogSortVo) {
-        BlogSort BlogSort = this.getById(BlogSortVo.getId());
+    public String stickBlogSort(BlogSortVo blogSortVo) {
+        BlogSort BlogSort = this.getById(blogSortVo.getId());
         if (BlogSort == null) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
         QueryWrapper<BlogSort> query = getQuery();
         query.orderByDesc(SysConf.SORT).last(SysConf.LIMIT_ONE);
         BlogSort one = this.getOne(query);
-        int maxSort = one.getSort() + (one.getId().equals(BlogSortVo.getId()) ? 0 : 1);
+        int maxSort = one.getSort() + (one.getId().equals(blogSortVo.getId()) ? 0 : 1);
         BlogSort.setSort(maxSort);
         BlogSort.updateById();
         return ResultUtil.resultSuccessWithMessage(MessageConf.OPERATION_SUCCESS);
     }
 
     @Override
-    public String BlogSortSortByClickCount() {
+    public String blogSortSortByClickCount() {
         QueryWrapper<BlogSort> query = getQuery();
         query.orderByDesc(SysConf.CLICK_COUNT);
         List<BlogSort> BlogSortList = this.list(query);
@@ -139,7 +155,7 @@ public class BlogSortServiceImp extends SuperServiceImpl<BlogSortMapper, BlogSor
     }
 
     @Override
-    public String BlogSortSortByCite() {
+    public String blogSortSortByCite() {
         QueryWrapper<BlogSort> BlogSortQuery = getQuery();
         List<BlogSort> BlogSortList = this.list(BlogSortQuery);
         QueryWrapper<Blog> blogQuery = new QueryWrapper<>();

@@ -140,6 +140,7 @@ public class LoginService {
         admin.setRole(roles.get(0));
         //添加在线用户到redis中，设置过期时间
         adminService.addOnLineAdmin(admin, expiration);
+        result.put(SysConf.ADMIN, admin);
         return ResultUtil.result(SysConf.SUCCESS, result);
     }
 

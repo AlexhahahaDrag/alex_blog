@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("t_tag")
 @ApiModel(value = "Tag对象", description = "标签表")
-public class Tag extends BaseEntity {
+public class Tag extends BaseEntity<Tag> {
 
     private static final long serialVersionUID = 1L;
 

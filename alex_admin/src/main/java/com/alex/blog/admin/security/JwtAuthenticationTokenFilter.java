@@ -108,7 +108,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     // 生成一个新的Token
                     String newToken = tokenHead + jwtTokenUtil.refreshToken(token, base64Secret, expiresSecond * 1000);
                     // 生成新的token，发送到客户端
-//                    CookieUtils.setCookie("Admin-Token", newToken, expiresSecond.intValue());
                     OnlineAdmin newOnlineAdmin = JsonUtils.jsonToPojo(onlineAdmin, OnlineAdmin.class);
                     // 获取旧的TokenUid
                     String oldTokenUid = newOnlineAdmin.getTokenId();
@@ -119,13 +118,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     newOnlineAdmin.setExpireTime(DateUtils.addTime(LocalDateTime.now(), expiresSecond, ChronoUnit.SECONDS));
                     newOnlineAdmin.setLoginTime(DateUtils.getNowDate());
                     // 移除原来的旧Token和TokenUid
-                    redisUtils.delete(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + authHeader);
-                    redisUtils.delete(RedisConf.LOGIN_ID_KEY + RedisConf.SEGMENTATION + oldTokenUid);
+//                    redisUtils.delete(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + authHeader);
+//                    redisUtils.delete(RedisConf.LOGIN_ID_KEY + RedisConf.SEGMENTATION + oldTokenUid);
                     // 将新token赋值，用于后续使用
                     authHeader = newToken;
-
                     // 将新的Token存入Redis中
-                    redisUtils.setEx(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + newToken, JsonUtils.objectToJson(newOnlineAdmin), expiresSecond, TimeUnit.SECONDS);
+                    redisUtils.setEx(RedisConf.LOGIN_TOKEN_KEY + RedisConf.SEGMENTATION + token, JsonUtils.objectToJson(newOnlineAdmin), expiresSecond, TimeUnit.SECONDS);
                     // 维护 uuid - token 互相转换的Redis集合【主要用于在线用户管理】
                     redisUtils.setEx(RedisConf.LOGIN_ID_KEY + RedisConf.SEGMENTATION + tokenUid, newToken, expiresSecond, TimeUnit.SECONDS);
                 }

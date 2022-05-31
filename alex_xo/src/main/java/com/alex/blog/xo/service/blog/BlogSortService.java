@@ -18,13 +18,13 @@ import java.util.List;
 public interface BlogSortService extends SuperService<BlogSort> {
 
     /**
-     * @param BlogSortVo
+     * @param blogSortVo
      * @description: 获取博客分类列表
      * @author:      alex
      * @createDate:  2022/2/11 10:27
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.BlogSort>
      */
-    IPage<BlogSort> getPageList(BlogSortVo BlogSortVo);
+    IPage<BlogSort> getPageList(BlogSortVo blogSortVo);
 
     /**
      * @description: 获取全部博客分类列表
@@ -35,22 +35,22 @@ public interface BlogSortService extends SuperService<BlogSort> {
     List<BlogSort> getList();
 
     /**
-     * @param BlogSortVo
+     * @param blogSortVo
      * @description: 新增博客分类
      * @author:      alex
      * @createDate:  2022/2/11 10:28
      * @return:      java.lang.String
      */
-    String addBlogSort(BlogSortVo BlogSortVo);
+    String addBlogSort(BlogSortVo blogSortVo);
 
     /**
-     * @param BlogSortVo
+     * @param blogSortVo
      * @description: 编辑博客分类
      * @author:      alex
      * @createDate:  2022/2/11 10:28
      * @return:      java.lang.String
      */
-    String editBlogSort(BlogSortVo BlogSortVo);
+    String editBlogSort(BlogSortVo blogSortVo);
 
     /**
      * @param ids
@@ -62,13 +62,13 @@ public interface BlogSortService extends SuperService<BlogSort> {
     String deleteBatchBlogSort(List<String> ids);
 
     /**
-     * @param BlogSortVo
+     * @param blogSortVo
      * @description: 置顶博客分类
      * @author:      alex
      * @createDate:  2022/2/11 10:30
      * @return:      java.lang.String
      */
-    String stickBlogSort(BlogSortVo BlogSortVo);
+    String stickBlogSort(BlogSortVo blogSortVo);
 
     /**
      * @description: 通过点击量排序博客分类
@@ -76,7 +76,7 @@ public interface BlogSortService extends SuperService<BlogSort> {
      * @createDate:  2022/2/11 10:31
      * @return:      java.lang.String
      */
-    String BlogSortSortByClickCount();
+    String blogSortSortByClickCount();
 
     /**
      * @description: 通过引用量排序博客
@@ -84,7 +84,7 @@ public interface BlogSortService extends SuperService<BlogSort> {
      * @createDate:  2022/2/14 15:16
      * @return:      java.lang.String
      */
-    String BlogSortSortByCite();
+    String blogSortSortByCite();
 
     /**
      * @description: 获取排序最高的博客分类

@@ -230,13 +230,12 @@ public class JsonUtils {
      * @return: T
      */
     public static <T> T jsonToPojo(String jsonData, Class<T> beanType) {
-        T t = null;
-        try {
-            t = MAPPER.readValue(jsonData, beanType);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return t;
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .serializeNulls()
+                .create();
+        return  gson.fromJson(jsonData, beanType);
     }
 
     /**

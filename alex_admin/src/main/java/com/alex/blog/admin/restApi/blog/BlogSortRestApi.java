@@ -41,8 +41,8 @@ public class BlogSortRestApi {
     @AuthorityVerify
     @ApiOperation(value = "获取博客分类列表", notes = "获取博客分类列表", response = String.class)
     @PostMapping(value = "/getList")
-    public String getList(@Validated({GetList.class}) @RequestBody BlogSortVo BlogSortVo) {
-        return ResultUtil.resultSuccessWithData(blogSortService.getPageList(BlogSortVo));
+    public String getList(@Validated({GetList.class}) @RequestBody BlogSortVo blogSortVo) {
+        return ResultUtil.resultSuccessWithData(blogSortService.getPageList(blogSortVo));
     }
 
     @AvoidRepeatableCommit
@@ -50,18 +50,18 @@ public class BlogSortRestApi {
     @ApiOperation(value = "新增博客分类", notes = "新增博客分类", response = String.class)
     @PutMapping(value = "/add")
     @OperationLogger(value = "新增博客分类")
-    public String addBlogSort(@Validated({Insert.class}) @RequestBody BlogSortVo BlogSortVo, BindingResult result) {
+    public String addBlogSort(@Validated({Insert.class}) @RequestBody BlogSortVo blogSortVo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
-        return blogSortService.addBlogSort(BlogSortVo);
+        return blogSortService.addBlogSort(blogSortVo);
     }
 
     @AuthorityVerify
     @ApiOperation(value = "修改博客分类", notes = "修改博客分类", response = String.class)
     @PutMapping(value = "/edit")
     @OperationLogger(value = "修改博客分类")
-    public String editBlogSort(@Validated({Update.class}) @RequestBody BlogSortVo BlogSortVo, BindingResult result) {
+    public String editBlogSort(@Validated({Update.class}) @RequestBody BlogSortVo blogSortVo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
-        return blogSortService.editBlogSort(BlogSortVo);
+        return blogSortService.editBlogSort(blogSortVo);
     }
 
     @AuthorityVerify
@@ -78,25 +78,25 @@ public class BlogSortRestApi {
     @ApiOperation(value = "置顶博客分类", notes = "置顶博客分类", response = String.class)
     @PutMapping(value = "/stick")
     @OperationLogger(value = "置顶博客分类")
-    public String stickBlogSort(@Validated({Update.class}) @RequestBody BlogSortVo BlogSortVo, BindingResult result) {
+    public String stickBlogSort(@Validated({Update.class}) @RequestBody BlogSortVo blogSortVo, BindingResult result) {
         ThrowableUtils.checkParamArgument(result);
-        return blogSortService.stickBlogSort(BlogSortVo);
+        return blogSortService.stickBlogSort(blogSortVo);
     }
 
     @AuthorityVerify
     @ApiOperation(value = "通过点击量排序博客分类", notes = "通过点击量排序博客分类", response = String.class)
-    @GetMapping(value = "/BlogSortSortByClickCount")
+    @GetMapping(value = "/blogSortSortByClickCount")
     @OperationLogger(value = "通过点击量排序博客分类")
-    public String BlogSortSortByClickCount() {
-        return blogSortService.BlogSortSortByClickCount();
+    public String blogSortSortByClickCount() {
+        return blogSortService.blogSortSortByClickCount();
     }
 
     @AuthorityVerify
     @ApiOperation(value = "通过引用量排序博客分类", notes = "通过引用量排序博客分类", response = String.class)
-    @GetMapping(value = "/BlogSortSortByCite")
+    @GetMapping(value = "/blogSortSortByCite")
     @OperationLogger(value = "通过引用量排序博客分类")
-    public String BlogSortSortByCite() {
-        return blogSortService.BlogSortSortByCite();
+    public String blogSortSortByCite() {
+        return blogSortService.blogSortSortByCite();
     }
 }
 
