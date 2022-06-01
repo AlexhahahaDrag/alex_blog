@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * @description:  ${table.comment!} mapper
  * @author:       ${author}
- * @createDate:   2021/1/20 20:14
+ * @createDate: ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
  * @version:      1.0.0
  */
 <% if(mapperAnnotation){ %>
