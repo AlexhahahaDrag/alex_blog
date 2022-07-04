@@ -1,0 +1,8 @@
+server:
+  port: 30011
+spring:
+  application:
+    name: id-service
+codingapi:
+  leaf-properties:
+    leaf-url: http://localhost:8080/

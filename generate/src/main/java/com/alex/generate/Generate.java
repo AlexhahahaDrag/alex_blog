@@ -24,19 +24,30 @@ import java.util.*;
 public class Generate {
 
     public static void main(String[] args) {
-        String fileName = "blog";
-        String moduleName = "alex_xo";
-        String javaFileNames = "com/alex/blog/xo";
-        String[] tableNames = {"t_web_navbar"};
-        String dbConfig = "jdbc:mysql://localhost:3306/alex_blog";
+
+        String moduleName = "alex-miaosha";
+        String javaFileNames = "";
+        String fileName = "";
+//        String moduleName = "alex_xo";
+//        String javaFileNames = "com/alex/blog/xo";
+//        String fileName = "blog";
+//        String voPath = "alex_common/src/main/java/com/alex/blog/common/vo";
+//        String controllerPath = "alex_admin/src/main/java/com/alex/blog/admin/restApi";
+//        String entityPath = "alex_common/src/main/java/com/alex/blog/common/entity";
+        String voPath = javaFileNames + "/src/main/java/com/alex/blog/miaosha/vo";
+        String controllerPath = javaFileNames + "/src/main/java/com/alex/blog/miaosha/restApi";
+        String entityPath = javaFileNames + "/src/main/java/com/alex/blog/miaosha/entity";
+        String[] tableNames = {"goods", "miaosha_goods", "order_info"};
+        String dbConfig = "jdbc:mysql://localhost:3306/miaosha";
         String dbUser = "root";
         String dbPassword = "mysql";
         for(String tableName : tableNames) {
-            executeGenerate(tableName, moduleName, javaFileNames, fileName, dbConfig, dbUser, dbPassword);
+            executeGenerate(tableName, moduleName, javaFileNames, fileName, dbConfig, dbUser, dbPassword, voPath, controllerPath, entityPath);
         }
     }
 
-    private static void executeGenerate(String tableName, String moduleName, String javaFileName, String fileName, String dbConfig, String dbUser, String dbPassword) {
+    private static void executeGenerate(String tableName, String moduleName, String javaFileName, String fileName, String dbConfig, String dbUser,
+                                        String dbPassword, String voPath, String controllerPath, String entityPath) {
         List<IFill> list = new ArrayList<>();
         list.add(new Column("create_time", FieldFill.INSERT));
         list.add(new Column("update_time", FieldFill.UPDATE));
@@ -54,10 +65,10 @@ public class Generate {
         pathMap.put(OutputFile.service, javaPath + separator + "service" + separator + fileName);
         pathMap.put(OutputFile.serviceImpl, javaPath + separator + "service" + separator + fileName + separator + "impl");
         pathMap.put(OutputFile.mapper, javaPath + separator + "mapper" + separator + fileName);
-        pathMap.put(OutputFile.entity, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/entity", separator) + separator + fileName);
-        pathMap.put(OutputFile.vo, basePath + getPath("alex_common/src/main/java/com/alex/blog/common/vo", separator) + separator + fileName);
+        pathMap.put(OutputFile.entity, basePath + getPath(entityPath, separator) + separator + fileName);
+        pathMap.put(OutputFile.vo, basePath + getPath(voPath, separator) + separator + fileName);
 //        pathMap.put(OutputFile.client, basePath + getPath("alex_admin/src/main/java/com/alex/blog/admin/client", separator) + separator + fileName);
-        pathMap.put(OutputFile.controller, basePath + getPath("alex_admin/src/main/java/com/alex/blog/admin/restApi", separator) + separator + fileName);
+        pathMap.put(OutputFile.controller, basePath + getPath(controllerPath, separator) + separator + fileName);
         FastAutoGenerator.create(dataSourceConfig)
                 .globalConfig(builder -> {
                     builder.disableOpenDir()

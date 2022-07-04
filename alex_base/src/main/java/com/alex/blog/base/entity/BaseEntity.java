@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 public class BaseEntity<T extends Model<T>> extends Model<T> {
 
      @ApiModelProperty(value = "id", name="id")
-     @TableId(type = IdType.ASSIGN_UUID)
+     @TableId(type = IdType.ASSIGN_ID)
      private String id;
 
      @ApiModelProperty(value = "creator", name = "创建人")
