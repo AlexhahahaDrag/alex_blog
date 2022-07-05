@@ -27,6 +27,7 @@
         <module>alex_search</module>
         <module>alex-miaosha</module>
         <module>alex_id</module>
+        <module>alex-miaosha-common</module>
     </modules>
     <properties>
         <alibaba.version>2.2.3.RELEASE</alibaba.version>
