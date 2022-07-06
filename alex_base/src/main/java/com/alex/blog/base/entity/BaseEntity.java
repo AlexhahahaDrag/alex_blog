@@ -26,11 +26,11 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
 
      @ApiModelProperty(value = "id", name="id")
      @TableId(type = IdType.ASSIGN_ID)
-     private String id;
+     private Long id;
 
      @ApiModelProperty(value = "creator", name = "创建人")
      @TableField(value = "creator", fill = FieldFill.INSERT)
-     private String creator;
+     private Long creator;
 
      @ApiModelProperty(value = "createTime", name = "创建时间")
      @TableField(value = "create_time", fill = FieldFill.INSERT, keepGlobalFormat=true)
@@ -39,7 +39,7 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
 
      @ApiModelProperty(value = "updater", name = "修改人")
      @TableField(value = "updater", fill = FieldFill.UPDATE)
-     private String updater;
+     private Long updater;
 
      @ApiModelProperty(value = "updateTime", name = "更新时间")
      @TableField(value = "update_time", fill = FieldFill.UPDATE)
@@ -47,7 +47,7 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
 
      @ApiModelProperty(value = "deleter", name = "删除人")
      @TableField(value = "deleter", fill = FieldFill.UPDATE)
-     private String deleter;
+     private Long deleter;
 
      @ApiModelProperty(value = "deleteTime", name = "删除时间")
      @TableField(value = "delete_time", fill = FieldFill.UPDATE)
@@ -60,7 +60,7 @@ public class BaseEntity<T extends Model<T>> extends Model<T> {
 
      @ApiModelProperty(value = "operator", name = "操作人")
      @TableField(value = "operator", fill = FieldFill.INSERT_UPDATE)
-     private String operator;
+     private Long operator;
 
      @ApiModelProperty(value = "operateTime", name = "操作时间")
      @TableField(value = "operate_time", fill = FieldFill.INSERT_UPDATE, updateStrategy = FieldStrategy.DEFAULT)

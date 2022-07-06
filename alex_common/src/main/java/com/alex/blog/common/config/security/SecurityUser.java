@@ -18,7 +18,7 @@ public class SecurityUser implements UserDetails {
      */
     private static final long serialVersionUID = 1L;
 
-    private final String id;
+    private final Long id;
 
     private final String username;
 
@@ -28,7 +28,7 @@ public class SecurityUser implements UserDetails {
 
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public SecurityUser(String id, String username, String password, boolean enabled, Collection<? extends GrantedAuthority> authorities) {
+    public SecurityUser(Long id, String username, String password, boolean enabled, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -75,7 +75,7 @@ public class SecurityUser implements UserDetails {
         return enabled;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 }

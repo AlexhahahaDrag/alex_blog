@@ -62,7 +62,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     }
 
     @Override
-    public String deleteBatch${entity}(List<String> ids) {
+    public String deleteBatch${entity}(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }

@@ -51,6 +51,6 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
      * @createDate:  ${strutil.formatDate(date(), 'yyyy-MM-dd HH:mm:ss')}
      * @return:      java.lang.String
      */
-    String deleteBatch${entity}(List<String> ids);
+    String deleteBatch${entity}(List<Long> ids);
 }
 <% } %>

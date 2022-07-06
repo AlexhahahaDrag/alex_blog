@@ -124,17 +124,17 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
             blogSorts = blogSortService.listByIds(sortIds);
         }
         //将标签信息按id做成map
-        Map<String, Tag> tagMap = new HashMap<>();
+        Map<Long, Tag> tagMap = new HashMap<>();
         if (tags != null && !tags.isEmpty()) {
             tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
         }
         //将分类信息按id做成map
-        Map<String, BlogSort> blogSortMap = new HashMap<>();
+        Map<Long, BlogSort> blogSortMap = new HashMap<>();
         if (blogSorts != null &&!blogSorts.isEmpty()) {
             blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
         }
-        Map<String, Tag> finalTagMap = tagMap;
-        Map<String, BlogSort> finalBlogSortMap = blogSortMap;
+        Map<Long, Tag> finalTagMap = tagMap;
+        Map<Long, BlogSort> finalBlogSortMap = blogSortMap;
         list.forEach(item -> {
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
@@ -182,23 +182,23 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         List<Map<String, Object>> picList = new ArrayList<>();
 
         //将标签信息按id做成map
-        Map<String, Tag> tagMap = new HashMap<>();
+        Map<Long, Tag> tagMap = new HashMap<>();
         if (tags != null && !tags.isEmpty()) {
             tagMap = tags.stream().collect(Collectors.toMap(Tag::getId, item -> item));
         }
         //将分类信息按id做成map
-        Map<String, BlogSort> blogSortMap = new HashMap<>();
+        Map<Long, BlogSort> blogSortMap = new HashMap<>();
         if (blogSorts != null && !blogSorts.isEmpty()) {
             blogSortMap = blogSorts.stream().collect(Collectors.toMap(BlogSort::getId, item -> item));
         }
         //将图片信息按id做成map
-        Map<String, String> picMap = new HashMap<>();
+        Map<Long, String> picMap = new HashMap<>();
         if (picList != null && !picList.isEmpty()) {
-            picMap = picList.stream().collect(Collectors.toMap(item -> (String)item.get(SysConf.ID), item -> item.get(SysConf.URL).toString()));
+            picMap = picList.stream().collect(Collectors.toMap(item -> (Long)item.get(SysConf.ID), item -> item.get(SysConf.URL).toString()));
         }
-        Map<String, Tag> finalTagMap = tagMap;
-        Map<String, BlogSort> finalBlogSortMap = blogSortMap;
-        Map<String, String> finalPicMap = picMap;
+        Map<Long, Tag> finalTagMap = tagMap;
+        Map<Long, BlogSort> finalBlogSortMap = blogSortMap;
+        Map<Long, String> finalPicMap = picMap;
         list.forEach(item -> {
             //设置标签信息
             if (StringUtils.isNotEmpty(item.getTagId())) {
@@ -319,7 +319,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         }
         //查询标签信息
         List<Tag> tagList = tagService.listByIds(tagCountMap.keySet());
-        Map<String, String> tagMap = tagList.parallelStream().collect(Collectors.toMap(Tag::getId, Tag::getContent));
+        Map<Long, String> tagMap = tagList.parallelStream().collect(Collectors.toMap(Tag::getId, Tag::getContent));
         List<Map<String, Object>> resultList = new ArrayList<>();
         Map<String, Object> map;
         for (Map.Entry<String, Long> entry: tagCountMap.entrySet()) {
@@ -361,7 +361,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         }
         //查询标签信息
         List<BlogSort> blogSortList = blogSortService.listByIds(blogSortCountMap.keySet());
-        Map<String, String> blogSortMap = new HashMap<>();
+        Map<Long, String> blogSortMap = new HashMap<>();
         if (blogSortList != null && !blogSortList.isEmpty()) {
             blogSortMap = blogSortList.parallelStream().collect(Collectors.toMap(BlogSort::getId, BlogSort::getSortName));
         }
@@ -860,7 +860,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
                 item.setSummary(getHitCode(item.getSummary(), finalKeywords1));
             }
         });
-        Map<String, String> blogSortMap = null;
+        Map<Long, String> blogSortMap = null;
         if (blogSortIdList.size() > 0) {
             List<BlogSort> blogSortList = blogSortService.listByIds(blogSortIdList);
             blogSortMap = blogSortList.stream().collect(Collectors.toMap(BlogSort::getId, BlogSort::getSortName));
@@ -873,7 +873,7 @@ public class BlogServiceImp extends SuperServiceImpl<BlogMapper, Blog> implement
         Map<String, String> pictureMap = picList.stream().collect(Collectors.toMap(item -> item.get(SysConf.ID).toString(), item -> item.get(SysConf.URL).toString()));
         //设置博客分类和图片
         if (blogSortMap != null || pictureMap != null) {
-            Map<String, String> finalBlogSortMap = blogSortMap;
+            Map<Long, String> finalBlogSortMap = blogSortMap;
             blogList.forEach(item -> {
                 //设置分类信息
                 if (StringUtils.isNotEmpty(item.getBlogSortId())) {
