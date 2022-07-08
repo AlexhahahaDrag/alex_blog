@@ -37,13 +37,13 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
             metaObject.setValue("operateTime", null);
             this.strictInsertFill(metaObject, "operateTime", LocalDateTime.class, now);
         }
-        if (UserUtil.getLoginUser() != null && StringUtils.isNotEmpty(UserUtil.getLoginUser().getId())) {
-            String id = UserUtil.getLoginUser().getId();
+        if (UserUtil.getLoginUser() != null && UserUtil.getLoginUser().getId() != null) {
+            Long id = UserUtil.getLoginUser().getId();
             if (metaObject.hasSetter("creator")) {
-                this.strictInsertFill(metaObject, "creator", String.class, id);
+                this.strictInsertFill(metaObject, "creator", Long.class, id);
             }
             if (metaObject.hasSetter("operator")) {
-                this.strictInsertFill(metaObject, "operator", String.class, id);
+                this.strictInsertFill(metaObject, "operator", Long.class, id);
             }
         }
     }
@@ -61,15 +61,15 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
             metaObject.setValue("updateTime", null);
             this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class,  now);
         }
-        if (UserUtil.getLoginUser() != null && StringUtils.isNotEmpty(UserUtil.getLoginUser().getId())) {
-            String id = UserUtil.getLoginUser().getId();
+        if (UserUtil.getLoginUser() != null && UserUtil.getLoginUser().getId() != null) {
+            Long id = UserUtil.getLoginUser().getId();
             if (metaObject.hasSetter("updater")) {
                 metaObject.setValue("updater", null);
-                this.strictUpdateFill(metaObject, "updater", String.class, id);
+                this.strictUpdateFill(metaObject, "updater", Long.class, id);
             }
             if (metaObject.hasSetter("operator")) {
                 metaObject.setValue("operator", null);
-                this.strictUpdateFill(metaObject, "operator", String.class, id);
+                this.strictUpdateFill(metaObject, "operator", Long.class, id);
             }
         }
     }

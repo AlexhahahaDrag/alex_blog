@@ -49,7 +49,7 @@ public class Feedback extends BaseEntity {
 
     @ApiModelProperty("管理员id")
     @TableField("admin_id")
-    private String adminId;
+    private Long adminId;
 
     @ApiModelProperty("用户信息")
     @TableField(exist = false)

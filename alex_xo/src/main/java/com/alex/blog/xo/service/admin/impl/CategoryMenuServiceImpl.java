@@ -46,10 +46,10 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
 
     /**
      * @param categoryMenuVo
-     * @description:    
+     * @description:
      * @author:       alex
      * @return:       java.util.Map<java.lang.String,java.lang.Object>
-    */
+     */
     @Override
     public Map<String, Object> getPageList(CategoryMenuVo categoryMenuVo) {
         Map<String, Object> resultMap = new HashMap<>();
@@ -68,14 +68,14 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
         Page<CategoryMenu> pageList = categoryMenuService.page(page, query);
         List<CategoryMenu> records = pageList.getRecords();
         //获取父级id
-        List<String> pIds = records.stream().filter(item -> item.getPid() != null).map(CategoryMenu::getPid).collect(Collectors.toList());
+        List<Long> pIds = records.stream().filter(item -> item.getPid() != null).map(CategoryMenu::getPid).collect(Collectors.toList());
         //如果父级id不为空，这查询父级id,并设置父级
         if (pIds.size() > 0) {
             List<CategoryMenu> pList = categoryMenuService.listByIds(pIds);
             resultMap.put(SysConf.OTHER_DATA, pList);
-            Map<String, CategoryMenu> map = pList.stream().collect(Collectors.toMap(BaseEntity::getId, CategoryMenu -> CategoryMenu));
+            Map<Long, CategoryMenu> map = pList.stream().collect(Collectors.toMap(BaseEntity::getId, CategoryMenu -> CategoryMenu));
             records.forEach(item -> {
-                if (StringUtils.isNotEmpty(item.getPid())) {
+                if (item.getPid() != null) {
                     item.setParentCategoryMenu(map.get(item.getPid()));
                 }
             });
@@ -90,7 +90,7 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
      * @description:  获取该菜单下所有菜单
      * @author:       alex
      * @return:       java.util.List<com.alex.blog.common.entity.admin.CategoryMenu>
-    */
+     */
     @Override
     public List<CategoryMenu> getAllList(String id) {
         QueryWrapper<CategoryMenu> query = new QueryWrapper<>();
@@ -140,7 +140,7 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
      * @description:  删除菜单，如果该菜单有子菜单则不可以删除
      * @author:       alex
      * @return:       java.lang.String
-    */
+     */
     @Override
     public String deleteCategoryMenu(String id) {
         QueryWrapper<CategoryMenu> query = new QueryWrapper<>();
@@ -162,7 +162,7 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
      * @description:  置顶菜单
      * @author:       alex
      * @return:       java.lang.String
-    */
+     */
     @Override
     public String stickCategoryMenu(CategoryMenuVo categoryMenuVo) {
         CategoryMenu categoryMenu = categoryMenuService.getById(categoryMenuVo.getId());
@@ -186,7 +186,7 @@ public class CategoryMenuServiceImpl extends SuperServiceImpl<CategoryMenuMapper
      * @description:  删除redis中管理员的所有访问路径
      * @author:       alex
      * @return:       void
-    */
+     */
     private void deleteAdminVisitUrl(){
         Set<String> keys = redisUtils.keys(RedisConf.ADMIN_VISIT_MENU + "*");
         redisUtils.delete(keys);

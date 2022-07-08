@@ -108,7 +108,7 @@ public class Blog extends BaseEntity<Blog> {
 
     @ApiModelProperty("唯一oid")
 //    @TableId(value = "oid", type = IdType.AUTO)
-    private Integer oid;
+    private Long oid;
 
     @TableField(exist = false)
     @ApiModelProperty("标签列表")

@@ -332,9 +332,8 @@ public class AdminServiceImpl extends SuperServiceImpl<AdminMapper, Admin> imple
      * @return:       java.lang.String
      */
     @Override
-    public String deleteBatchAdmin(List<String> ids) {
-        boolean res = StringUtils.checkIdList(ids);
-        if (!res) {
+    public String deleteBatchAdmin(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
             return ResultUtil.result(SysConf.ERROR, "id为空!");
         }
         // TODO: 2021/9/13 上帝管理员不能被删除

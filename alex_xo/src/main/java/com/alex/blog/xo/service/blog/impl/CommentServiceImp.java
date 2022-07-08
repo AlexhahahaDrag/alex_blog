@@ -80,7 +80,7 @@ public class CommentServiceImp extends SuperServiceImpl<CommentMapper, Comment> 
             QueryWrapper<Admin> userQuery = new QueryWrapper<>();
             userQuery.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).like(SysConf.NICK_NAME, commentVo.getUsername());
             List<Admin> adminList = adminService.list(userQuery);
-            List<String> adminIdList = adminList.stream().map(Admin::getId).collect(Collectors.toList());
+            List<Long> adminIdList = adminList.stream().map(Admin::getId).collect(Collectors.toList());
             query.in(SysConf.USER_ID, adminIdList);
         }
         query.eq(SysConf.STATUS, EStatus.ENABLE.getCode()).orderByDesc(SysConf.OPERATE_TIME);
@@ -103,7 +103,7 @@ public class CommentServiceImp extends SuperServiceImpl<CommentMapper, Comment> 
             }
         });
         //获取博客信息
-        Map<String, Blog> blogMap = new HashMap<>();
+        Map<Long, Blog> blogMap = new HashMap<>();
         if (!blogIdSet.isEmpty()) {
             QueryWrapper<Blog> blogQuery = new QueryWrapper<>();
             query.select(i -> !i.getProperty().equals(SysConf.CONTENT)).eq(SysConf.STATUS, EStatus.ENABLE.getCode())
@@ -112,7 +112,7 @@ public class CommentServiceImp extends SuperServiceImpl<CommentMapper, Comment> 
             blogMap = blogList.stream().collect(Collectors.toMap(Blog::getId, blog -> blog));
         }
         //获取头像信息
-        Map<String, Admin> adminMap = new HashMap<>();
+        Map<Long, Admin> adminMap = new HashMap<>();
         if(!userIdSet.isEmpty()) {
             List<Admin> adminList = adminService.listByIds(userIdSet);
             String pictureIdList = adminList.stream().map(Admin::getAvatar).collect(Collectors.joining(SysConf.FILE_SEGMENTATION));

@@ -52,7 +52,7 @@ public class JwtTokenUtil {
      * @author:       alex
      * @return:       java.lang.String
     */
-    public String createJwt(String username, String adminId, String roleName,
+    public String createJwt(String username, Long adminId, String roleName,
                             String audience, String issuer, long TTLMillis, String base64Security) {
         //HS256是一种对称算法，双方之间仅共享一个密钥
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -154,7 +154,7 @@ public class JwtTokenUtil {
         if (!isExpiration(token, base64Security)) {
             try {
                 Claims claims = parseJwt(token, base64Security);
-                refreshedToken = createJwt(claims.getSubject(), claims.get(SysConf.ADMIN_ID, String.class),
+                refreshedToken = createJwt(claims.getSubject(), claims.get(SysConf.ADMIN_ID, Long.class),
                         claims.get(SysConf.ROLE, String.class),
                         claims.getAudience(), claims.getIssuer(), TTLMillis, base64Security);
             } catch (Exception e) {

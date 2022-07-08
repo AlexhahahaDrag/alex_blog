@@ -51,7 +51,7 @@ public class CategoryMenu extends BaseEntity<CategoryMenu> implements Comparable
 
     @ApiModelProperty(value = "pid", example = "3", name = "父级id")
     @TableField(value = "pid")
-    private String pid;
+    private Long pid;
 
     @ApiModelProperty(value = "url", example = "ww.baidu.com", name = "地址")
     @TableField(value = "url")

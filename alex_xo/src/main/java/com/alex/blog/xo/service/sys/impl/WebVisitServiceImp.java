@@ -177,7 +177,7 @@ public class WebVisitServiceImp extends SuperServiceImpl<WebVisitMapper, WebVisi
                         break;
                 }
             });
-            Map<String, String> contentMap = new HashMap<>();
+            Map<Long, String> contentMap = new HashMap<>();
             if (blogIds.size() > 0) {
                 List<Blog> blogList = blogService.listByIds(blogIds);
                 blogList.forEach(item -> {
@@ -189,7 +189,7 @@ public class WebVisitServiceImp extends SuperServiceImpl<WebVisitMapper, WebVisi
                 queryBlog.in(SysConf.OID, blogOids);
                 List<Blog> blogList = blogService.list(queryBlog);
                 blogList.forEach(item -> {
-                    contentMap.put(item.getOid() + "",  item.getTitle());
+                    contentMap.put(item.getOid(),  item.getTitle());
                 });
             }
             if (tagIds.size() > 0) {

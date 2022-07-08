@@ -29,7 +29,7 @@ public class SysLog extends BaseEntity<SysLog> {
     private String username;
 
     //操作人id
-    private String adminId;
+    private Long adminId;
 
     //请求ip
     private String ip;

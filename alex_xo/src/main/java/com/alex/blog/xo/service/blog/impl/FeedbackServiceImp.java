@@ -55,7 +55,7 @@ public class FeedbackServiceImp extends SuperServiceImpl<FeedbackMapper, com.ale
         List<Feedback> records = feedbackPage.getRecords();
         List<String> userIdList = records.stream().map(Feedback::getUserId).filter(item -> StringUtils.isNotEmpty(item)).collect(Collectors.toList());
         List<Admin> userList = adminService.getUserListByIds(userIdList);
-        Map<String, Admin> adminMap = userList.stream().map(item -> {
+        Map<Long, Admin> adminMap = userList.stream().map(item -> {
             item.setPassword(null);
             return item;
         }).collect(Collectors.toMap(Admin::getId, item -> item));
@@ -73,7 +73,7 @@ public class FeedbackServiceImp extends SuperServiceImpl<FeedbackMapper, com.ale
     public String addFeedback(FeedbackVo feedbackVo) {
         Feedback feedback = new Feedback();
         BeanUtils.copyProperties(feedbackVo, feedback);
-        feedback.setAdminId(UserUtil.getLoginUser().getId());
+        feedback.setAdminId(UserUtil.getLoginUser() == null ? null : UserUtil.getLoginUser().getId());
         feedback.insert();
         return ResultUtil.resultSuccessWithMessage(MessageConf.INSERT_SUCCESS);
     }
