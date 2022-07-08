@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>alex_utils</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
     <dependencies>
 
@@ -23,32 +24,27 @@
         <dependency>
             <groupId>io.protostuff</groupId>
             <artifactId>protostuff-core</artifactId>
-            <version>${protostuff.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.protostuff</groupId>
             <artifactId>protostuff-runtime</artifactId>
-            <version>${protostuff.version}</version>
         </dependency>
 
         <!-- 引入lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
         </dependency>
 
         <!-- 格式化对象，方便输出日志 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>${alibaba.fastjson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jackson.mapper.asl.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -63,7 +59,6 @@
         <dependency>
             <groupId>org.lionsoul</groupId>
             <artifactId>ip2region</artifactId>
-            <version>${ip2region.version}</version>
         </dependency>
 
         <!--web-->
@@ -88,13 +83,11 @@
         <dependency>
             <groupId>com.alex</groupId>
             <artifactId>alex_common</artifactId>
-            <version>${alex_common.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
-            <version>${qiniu.version}</version>
         </dependency>
     </dependencies>
 

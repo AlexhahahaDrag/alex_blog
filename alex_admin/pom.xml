@@ -18,7 +18,6 @@
         <dependency>
             <groupId>com.alex</groupId>
             <artifactId>alex_xo</artifactId>
-            <version>${alex_xo.version}</version>
         </dependency>
 
         <dependency>

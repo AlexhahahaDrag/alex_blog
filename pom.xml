@@ -27,32 +27,50 @@
         <module>alex_search</module>
         <module>alex-miaosha</module>
         <module>alex_id</module>
-        <module>alex-miaosha-common</module>
+         <module>generate</module>
     </modules>
     <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+
+        <java.version>1.8</java.version>
         <alibaba.version>2.2.3.RELEASE</alibaba.version>
-<!--        <swagger.version>2.10.5</swagger.version>-->
+         <shiro-spring.version>1.7.0</shiro-spring.version>
+        <java-jwt.version>3.11.0</java-jwt.version>
+        <jjwt.version>0.9.1</jjwt.version>
+
+        <spring_mock.version>2.0.8</spring_mock.version>
+        <qiniu.version>7.8.0</qiniu.version>
+        <minio.version>8.3.0</minio.version>
+
+        <spring-web.version>5.2.10.RELEASE</spring-web.version>
+        <spring-boot.version>2.3.5.RELEASE</spring-boot.version>
+
+        <beetl.version>3.9.3.RELEASE</beetl.version>
+        <velocity.version>1.7</velocity.version>
+
         <mybatisplus.version>3.4.0</mybatisplus.version>
         <druid.version>1.2.2</druid.version>
-        <lombok.version>1.18.16</lombok.version>
-        <alex_base.version>1.0-SNAPSHOT</alex_base.version>
+         <mysql.version>8.0.27</mysql.version>
+        <mybatis-plus-generrator>3.5.2</mybatis-plus-generrator>
+
+         <alex_base.version>1.0-SNAPSHOT</alex_base.version>
         <alex_common.version>1.0-SNAPSHOT</alex_common.version>
         <alex_utils.version>1.0-SNAPSHOT</alex_utils.version>
-        <shiro-spring.version>1.7.0</shiro-spring.version>
-        <java-jwt.version>3.11.0</java-jwt.version>
+        <alex_xo.version>1.0-SNAPSHOT</alex_xo.version>
+         <alex-miaosha-common.version>1.0-SNAPSHOT</alex-miaosha-common.version>
+        <alex-miaosha-xo.version>1.0-SNAPSHOT</alex-miaosha-xo.version>
+
+        <feign-version>3.0.3</feign-version>
+        <knife4j.version>3.0.3</knife4j.version>
+
+        <lombok.version>1.18.16</lombok.version>
         <alibaba.fastjson.version>1.2.73</alibaba.fastjson.version>
         <jackson.mapper.asl.version>1.9.13</jackson.mapper.asl.version>
         <protostuff.version>1.7.4</protostuff.version>
-        <alex_xo.version>1.0-SNAPSHOT</alex_xo.version>
         <hutool.version>5.7.3</hutool.version>
         <ip2region.version>1.7.2</ip2region.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
-        <jjwt.version>0.9.1</jjwt.version>
-        <spring_mock.version>2.0.8</spring_mock.version>
-        <qiniu.version>7.8.0</qiniu.version>
-        <feign-version>3.0.3</feign-version>
-        <minio.version>8.3.0</minio.version>
-        <knife4j.version>3.0.3</knife4j.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -69,6 +87,205 @@
                 <version>${alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!--alibaba nacos discovery-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>${alibaba.version}</version>
+            </dependency>
+
+            <!--alibaba nacos config-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>${alibaba.version}</version>
+            </dependency>
+
+            <!--knife4j-->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+
+            <!--web-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <!--mybatis-plus-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatisplus.version}</version>
+            </dependency>
+
+            <!--mybatis-plus-generator-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybatis-plus-generrator}</version>
+            </dependency>
+
+            <!--druid-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <!--mysql-connector-java-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+
+            <!-- shiro-spring -->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring</artifactId>
+                <version>${shiro-spring.version}</version>
+            </dependency>
+            <!-- jwt -->
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>${java-jwt.version}</version>
+            </dependency>
+            <!--jwt-->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <!--feign-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${feign-version}</version>
+            </dependency>
+
+            <!-- 引入lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <!--胡涂包-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <!--spring-web-->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring-web.version}</version>
+            </dependency>
+
+            <!--      alex_base      -->
+            <dependency>
+                <groupId>com.alex</groupId>
+                <artifactId>alex_base</artifactId>
+                <version>${alex_base.version}</version>
+            </dependency>
+
+            <!-- alex_utils -->
+            <dependency>
+                <groupId>com.alex</groupId>
+                <artifactId>alex_utils</artifactId>
+                <version>${alex_utils.version}</version>
+            </dependency>
+
+            <!-- alex-common -->
+            <dependency>
+                <groupId>com.alex</groupId>
+                <artifactId>alex_common</artifactId>
+                <version>${alex_common.version}</version>
+            </dependency>
+
+            <!-- alex-xo -->
+            <dependency>
+                <groupId>com.alex</groupId>
+                <artifactId>alex_xo</artifactId>
+                <version>${alex_xo.version}</version>
+            </dependency>
+
+            <!-- alex-miaosha-common -->
+            <dependency>
+                <groupId>com.alex</groupId>
+                <artifactId>alex-miaosha-common</artifactId>
+                <version>${alex-miaosha-common.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>${velocity.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.ibeetl</groupId>
+                <artifactId>beetl</artifactId>
+                <version>${beetl.version}</version>
+            </dependency>
+
+            <!--序列化-->
+            <dependency>
+                <groupId>io.protostuff</groupId>
+                <artifactId>protostuff-core</artifactId>
+                <version>${protostuff.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.protostuff</groupId>
+                <artifactId>protostuff-runtime</artifactId>
+                <version>${protostuff.version}</version>
+            </dependency>
+
+            <!-- 格式化对象，方便输出日志 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${alibaba.fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>${jackson.mapper.asl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.11.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.9.0</version>
+            </dependency>
+
+            <!--ip 2 region-->
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>${ip2region.version}</version>
+            </dependency>
+
+            <!--     qiniu cloud       -->
+            <dependency>
+                <groupId>com.qiniu</groupId>
+                <artifactId>qiniu-java-sdk</artifactId>
+                <version>${qiniu.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

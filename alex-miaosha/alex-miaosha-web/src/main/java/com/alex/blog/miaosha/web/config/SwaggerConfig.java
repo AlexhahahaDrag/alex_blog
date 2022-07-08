@@ -38,7 +38,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.alex.blog.admin.restApi"))
+                .apis(RequestHandlerSelectors.basePackage("com.alex.blog.miaosha.web.restApi"))
                 .paths(PathSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
@@ -47,7 +47,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("alex blog document")
+                .title("alex blog miaosha document")
                 .description("ha ha ha ! be happy")
                 .termsOfServiceUrl("www.baidu.com")
                 .version("1.0.0-SNAPSHOT")
