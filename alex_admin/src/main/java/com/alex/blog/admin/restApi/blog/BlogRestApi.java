@@ -88,7 +88,7 @@ public class BlogRestApi {
     @OperationLogger(value = "删除博客")
     @ApiOperation(value = "删除博客", notes = "删除博客", response = String.class)
     @DeleteMapping(value = "/delete")
-    public String deleteBlog(@ApiParam(value = "id", required =true) @RequestParam(value = "id") String id) {
+    public String deleteBlog(@ApiParam(value = "id", required =true) @RequestParam(value = "id") Long id) {
         return blogService.deleteBlog(id);
     }
 
@@ -96,13 +96,13 @@ public class BlogRestApi {
     @OperationLogger(value = "批量删除博客")
     @ApiOperation(value = "批量删除博客", notes = "批量删除博客", response = String.class)
     @PostMapping(value = "/deleteBatch")
-    public String deleteBlogBatch(@RequestBody List<String> blogIds) {
+    public String deleteBlogBatch(@RequestBody List<Long> blogIds) {
         return blogService.deleteBatchBlog(blogIds);
     }
 
     @ApiOperation(value = "查询博客", notes = "查询博客", response = String.class)
     @GetMapping(value = "/getBlogById")
-    public Blog getBlogById(@ApiParam(value = "id", required = true) @RequestParam(value = "id") String id) {
+    public Blog getBlogById(@ApiParam(value = "id", required = true) @RequestParam(value = "id") Long id) {
         return blogService.getBlogById(id);
     }
 

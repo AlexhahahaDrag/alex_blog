@@ -20,6 +20,7 @@ import com.alex.blog.xo.service.blog.TagService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,13 +39,12 @@ import java.util.Set;
  * @since 2021-11-26 13:44:48
  */
 @Service
+@RequiredArgsConstructor
 public class TagServiceImp extends SuperServiceImpl<TagMapper, Tag> implements TagService {
 
-    @Autowired
-    private RedisUtils redisUtils;
+    private final RedisUtils redisUtils;
 
-    @Autowired
-    private BlogService blogService;
+    private final BlogService blogService;
 
     @Override
     public IPage<Tag> getPageList(TagVo tagVo) {

@@ -68,5 +68,5 @@ public interface CommentService extends SuperService<Comment> {
      * @author:      alex
      * @return:      boolean
     */
-    String deleteBatchCommentByBlogIds(List<String> blogIds);
+    String deleteBatchCommentByBlogIds(List<Long> blogIds);
 }

@@ -98,7 +98,7 @@ public class SystemConfigServiceImpl extends SuperServiceImpl<SystemConfigMapper
         if (EOpenStatus.OPEN.getCode().equals(systemConfigVo.getStartEmailNotification()) && StringUtils.isEmpty(systemConfigVo.getEmail())) {
             return ResultUtil.result(SysConf.ERROR, MessageConf.MUST_BE_SET_EMAIL);
         }
-        if (StringUtils.isEmpty(systemConfigVo.getId())) {
+        if (systemConfigVo.getId() != null) {
             SystemConfig systemConfig = new SystemConfig();
             BeanUtils.copyProperties(systemConfigVo, systemConfig);;
             systemConfig.insert();

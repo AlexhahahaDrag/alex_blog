@@ -114,7 +114,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      com.alex.blog.common.entity.blog.Blog
     */
-    Blog getBlogById(String id);
+    Blog getBlogById(Long id);
 
     /**
      * @param id
@@ -122,7 +122,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.util.List<com.alex.blog.common.entity.blog.Blog>
     */
-    List<Blog> getSameBlogById(String id);
+    List<Blog> getSameBlogById(Long id);
 
     /**
      * @param top
@@ -170,7 +170,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.lang.String
     */
-    String deleteBlog(String id);
+    String deleteBlog(Long id);
 
     /**
      * @param blogIds
@@ -178,7 +178,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.lang.String
     */
-    String deleteBatchBlog(List<String> blogIds);
+    String deleteBatchBlog(List<Long> blogIds);
 
     /**
      * @param blogInfo
@@ -268,7 +268,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      java.lang.String
     */
-    String praiseBlogById(String id);
+    String praiseBlogById(Long id);
 
     /**
      * @param tagId
@@ -276,7 +276,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
     */
-    IPage<Blog> getSameBlogByTagId(Integer tagId);
+    IPage<Blog> getSameBlogByTagId(Long tagId);
 
     /**
      * @param blogSortId
@@ -286,7 +286,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
     */
-    IPage<Blog> getBlogListBySortId(Integer blogSortId, Long currentPage, Long currentPageSize);
+    IPage<Blog> getBlogListBySortId(Long blogSortId, Long currentPage, Long currentPageSize);
 
     /**
      * @param keyword
@@ -306,7 +306,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
     */
-    IPage<Blog> searchBlogByTag(Integer blogTagId, Long currentPage, Long currentPageSize);
+    IPage<Blog> searchBlogByTag(Long blogTagId, Long currentPage, Long currentPageSize);
 
     /**
      * @param blogSortId
@@ -316,7 +316,7 @@ public interface BlogService extends SuperService<Blog> {
      * @author:      alex
      * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity.blog.Blog>
     */
-    IPage<Blog> searchBlogByBlogSort(Integer blogSortId, Long currentPage, Long currentPageSize);
+    IPage<Blog> searchBlogByBlogSort(Long blogSortId, Long currentPage, Long currentPageSize);
 
     /**
      * @param author

@@ -89,16 +89,16 @@ public class CommentServiceImp extends SuperServiceImpl<CommentMapper, Comment> 
         page.setCurrent(commentVo.getCurrentPage());
         Page<Comment> pageList = this.page(page, query);
         List<Comment> records = pageList.getRecords();
-        Set<String> userIdSet = new HashSet<>();
-        Set<String> blogIdSet = new HashSet<>();
+        Set<Long> userIdSet = new HashSet<>();
+        Set<Long> blogIdSet = new HashSet<>();
         records.forEach(item -> {
-            if(StringUtils.isNotEmpty(item.getUserId())) {
+            if(item.getUserId() != null) {
                 userIdSet.add(item.getUserId());
             }
-            if(StringUtils.isNotEmpty(item.getToUserId())) {
+            if(item.getToUserId() != null) {
                 userIdSet.add(item.getToUserId());
             }
-            if(StringUtils.isNotEmpty(item.getBlogId())) {
+            if(item.getBlogId() != null) {
                 blogIdSet.add(item.getBlogId());
             }
         });
@@ -129,13 +129,13 @@ public class CommentServiceImp extends SuperServiceImpl<CommentMapper, Comment> 
         //给评论附相关用户信息和博客信息
         for (Comment comment : records) {
             comment.setSourceName(ECommentSource.valueOf(comment.getSource()).getValue());
-            if (StringUtils.isNotEmpty(comment.getUserId())) {
+            if (comment.getUserId() != null) {
                 comment.setUser(adminMap.get(comment.getUserId()));
             }
-            if (StringUtils.isNotEmpty(comment.getToUserId())) {
+            if (comment.getToUserId() != null) {
                 comment.setToUser(adminMap.get(comment.getToUserId()));
             }
-            if (StringUtils.isNotEmpty(comment.getBlogId())) {
+            if (comment.getBlogId() != null) {
                 comment.setBlog(blogMap.get(comment.getBlogId()));
             }
         }
@@ -153,7 +153,7 @@ public class CommentServiceImp extends SuperServiceImpl<CommentMapper, Comment> 
 
     @Override
     public String editComment(CommentVo commentVo) {
-        if (StringUtils.isEmpty(commentVo.getId())) {
+        if (commentVo.getId() != null) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }
         Comment comment = new Comment();
@@ -172,7 +172,7 @@ public class CommentServiceImp extends SuperServiceImpl<CommentMapper, Comment> 
     }
 
     @Override
-    public String deleteBatchCommentByBlogIds(List<String> blogIds) {
+    public String deleteBatchCommentByBlogIds(List<Long> blogIds) {
         if (blogIds == null || blogIds.isEmpty()) {
             return ResultUtil.resultErrorWithMessage(MessageConf.PARAM_INCORRECT);
         }

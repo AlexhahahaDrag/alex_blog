@@ -29,7 +29,7 @@ public class Comment extends BaseEntity {
 
     @ApiModelProperty("用户id")
     @TableField("user_id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty("回复某条评论的id")
     @TableField("to_id")
@@ -37,7 +37,7 @@ public class Comment extends BaseEntity {
 
     @ApiModelProperty("回复某个人的id")
     @TableField("to_user_id")
-    private String toUserId;
+    private Long toUserId;
 
     @ApiModelProperty("评论内容")
     @TableField("content")
@@ -45,7 +45,7 @@ public class Comment extends BaseEntity {
 
     @ApiModelProperty("博客id")
     @TableField("blog_id")
-    private String blogId;
+    private Long blogId;
 
     @ApiModelProperty("评论来源： MESSAGE_BOARD，ABOUT，BLOG_INFO 等")
     @TableField("source")

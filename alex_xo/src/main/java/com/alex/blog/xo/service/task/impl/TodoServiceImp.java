@@ -68,7 +68,7 @@ public class TodoServiceImp extends SuperServiceImpl<TodoMapper, Todo> implement
 
     @Override
     public String editTodo(TodoVo todoVo) {
-        if (StringUtils.isEmpty(todoVo.getId())) {
+        if (todoVo.getId() != null) {
             return ResultUtil.resultSuccessWithMessage("id不能为空");
         }
         Todo todo = new Todo();

@@ -133,7 +133,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             }
 
             String username = jwtTokenUtil.getUsername(token, base64Secret);
-            String adminId = jwtTokenUtil.getUserId(token, base64Secret);
+            Long adminId = jwtTokenUtil.getUserId(token, base64Secret);
             //把adminUid存储到request中
             request.setAttribute(SysConf.ADMIN_ID, adminId);
             request.setAttribute(SysConf.USERNAME, username);

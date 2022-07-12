@@ -184,7 +184,7 @@ public class WebConfigServiceImpl extends SuperServiceImpl<WebConfigMapper, WebC
     */
     @Override
     public String addOrEditWebConfig(WebConfigVo webConfigVo) {
-        if (StringUtils.isEmpty(webConfigVo.getId())) {
+        if (webConfigVo.getId() != null) {
             WebConfig webConfig = new WebConfig();
             BeanUtils.copyProperties(webConfigVo, webConfig);
             webConfigService.save(webConfig);

@@ -137,8 +137,8 @@ public class JwtTokenUtil {
      * @author:       alex
      * @return:       java.lang.String
      */
-    public String getUserId(String token, String base64Security) {
-        return parseJwt(token, base64Security).get(SysConf.ADMIN_ID, String.class);
+    public Long getUserId(String token, String base64Security) {
+        return parseJwt(token, base64Security).get(SysConf.ADMIN_ID, Long.class);
     }
 
     /**

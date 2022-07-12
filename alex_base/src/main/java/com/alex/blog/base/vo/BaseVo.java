@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 public class BaseVo<T> extends PageInfo<T> {
 
     @IdValid(groups = {Update.class, Delete.class})
-    private String id;
+    private Long id;
 
     private Integer status;
 }
