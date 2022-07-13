@@ -15,6 +15,7 @@
         <module>alex-miaosha-common</module>
         <module>alex-miaosha-xo</module>
         <module>alex-miaosha-web</module>
+        <module>alex-mission</module>
     </modules>
 
     <properties>

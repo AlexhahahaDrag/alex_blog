@@ -19,39 +19,4 @@ public interface OrderInfoService extends IService<OrderInfo> {
      * @return:      com.alex.blog.miaosha.entity.OrderInfo
     */
     OrderInfo getOrderById(long orderId);
-//    /**
-//     * @param: orderInfoVo
-//     * @description: 获取列表
-//     * @author:      alex
-//     * @createDate:  2022-07-04 18:03:45
-//     * @return:      com.baomidou.mybatisplus.core.metadata.IPage<com.alex.blog.common.entity..OrderInfo>
-//     */
-//    IPage<OrderInfo> getPageList(OrderInfoVo orderInfoVo);
-//
-//    /**
-//     * @param: orderInfoVo
-//     * @description: 新增
-//     * @author:      alex
-//     * @createDate:  2022-07-04 18:03:45
-//     * @return:      java.lang.String
-//     */
-//    String addOrderInfo(OrderInfoVo orderInfoVo);
-//
-//    /**
-//     * @param: orderInfoVo
-//     * @description: 编辑
-//     * @author:      alex
-//     * @createDate:  2022-07-04 18:03:45
-//     * @return:      java.lang.String
-//     */
-//    String editOrderInfo(OrderInfoVo orderInfoVo);
-//
-//    /**
-//     * @param ids
-//     * @description: 批量删除
-//     * @author:      alex
-//     * @createDate:  2022-07-04 18:03:45
-//     * @return:      java.lang.String
-//     */
-//    String deleteBatchOrderInfo(List<String> ids);
 }

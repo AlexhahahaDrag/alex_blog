@@ -28,7 +28,7 @@ public class MiaoshaGoods {
 
     @ApiModelProperty(value = "id")
     @TableId(type = IdType.ASSIGN_ID)
-    private long id;
+    private Long id;
 
     @ApiModelProperty(value = "商品Id")
     @TableField("goods_id")

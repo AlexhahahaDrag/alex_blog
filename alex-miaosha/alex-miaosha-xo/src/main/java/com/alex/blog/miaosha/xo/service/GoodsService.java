@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface GoodsService extends IService<Goods> {
 
     GoodsVo getGoodsVoByGoodsId(long goodsId);
+
+//    Result<GoodsVoOrder> listGoodsVo();
 }
