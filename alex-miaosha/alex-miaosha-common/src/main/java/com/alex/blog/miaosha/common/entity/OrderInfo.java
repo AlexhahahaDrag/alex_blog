@@ -28,7 +28,7 @@ public class OrderInfo {
 
     @ApiModelProperty(value = "id")
     @TableId(type = IdType.ASSIGN_ID)
-    private long id;
+    private Long id;
 
     @ApiModelProperty(value = "用户ID")
     @TableField("user_id")

@@ -18,7 +18,7 @@
     </properties>
 
     <dependencies>
-        <!-- alex-miaosha-common -->
+        <!-- alex-miaosha-xo -->
         <dependency>
             <groupId>com.alex</groupId>
             <artifactId>alex-miaosha-xo</artifactId>
@@ -45,6 +45,12 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!--feign-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
     </dependencies>
 </project>

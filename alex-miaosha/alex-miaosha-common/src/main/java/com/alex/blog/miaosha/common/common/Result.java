@@ -16,11 +16,11 @@ public class Result<T> {
 
     private String message;
 
-    private static final String success = ResultEnum.SUCCESS.getCode();
+    private static final String SUCCESS = ResultEnum.SUCCESS.getCode();
 
-    private static final String param_fail = ResultEnum.PARAM_FAIL.getCode();
+    private static final String PARAM_ERROR_CODE = ResultEnum.PARAM_ERROR.getCode();
 
-    private static final String system_fail = ResultEnum.SYSTEM_FAIL.getCode();
+    private static final String SYSTEM_ERROR_CODE = ResultEnum.SYSTEM_ERROR.getCode();
 
     private T data;
 
@@ -29,14 +29,14 @@ public class Result<T> {
 
     public static<T> Result<T> success(String message) {
         Result<T> result = new Result<>();
-        result.setCode(success);
+        result.setCode(SUCCESS);
         result.setMessage(message);
         return result;
     }
 
     public static<T> Result<T> success(String message, T data) {
         Result<T> result = new Result<>();
-        result.setCode(success);
+        result.setCode(SUCCESS);
         result.setMessage(message);
         result.setData(data);
         return result;
@@ -44,7 +44,7 @@ public class Result<T> {
 
     public static<T> Result<T> success(T data) {
         Result<T> result = new Result<>();
-        result.setCode(success);
+        result.setCode(SUCCESS);
         result.setMessage("成功");
         result.setData(data);
         return result;
@@ -52,21 +52,21 @@ public class Result<T> {
 
     public static<T> Result<T> paramError(String message) {
         Result<T> result = new Result<>();
-        result.setCode(param_fail);
+        result.setCode(PARAM_ERROR_CODE);
         result.setMessage(message);
         return result;
     }
 
     public static<T> Result<T> systemError(String message) {
         Result<T> result = new Result<>();
-        result.setCode(system_fail);
+        result.setCode(SYSTEM_ERROR_CODE);
         result.setMessage(message);
         return result;
     }
 
     public static<T> Result<T> systemError(String message, T data) {
         Result<T> result = new Result<>();
-        result.setCode(system_fail);
+        result.setCode(SYSTEM_ERROR_CODE);
         result.setMessage(message);
         result.setData(data);
         return result;

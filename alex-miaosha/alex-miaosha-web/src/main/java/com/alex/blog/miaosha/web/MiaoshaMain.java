@@ -12,8 +12,10 @@ import org.springframework.context.annotation.ComponentScan;
  *version:      1.0.0
  */
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.alex.blog.miaosha.web"})
 @MapperScan("com.alex.blog.miaosha.xo.mapper")
+@ComponentScan(basePackages = {
+        "com.alex.blog.miaosha",
+})
 public class MiaoshaMain {
 
     public static void main(String[] args) {
