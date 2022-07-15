@@ -3,5 +3,5 @@
 target
 .svn
 logs
-
-
+.mvn
+mvnw.*
