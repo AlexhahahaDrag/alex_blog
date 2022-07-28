@@ -26,8 +26,7 @@
         <module>alex_web</module>
         <module>alex_search</module>
         <module>alex-miaosha</module>
-        <module>alex_id</module>
-         <module>generate</module>
+        <module>generate</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
