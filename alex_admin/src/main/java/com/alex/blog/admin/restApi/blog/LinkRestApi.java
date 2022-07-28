@@ -15,6 +15,7 @@ import com.alex.blog.xo.service.blog.LinkService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -33,10 +34,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/link")
 @Api(value = "友情链接相关接口", tags = {"友情链接相关接口"})
+@RequiredArgsConstructor
 public class LinkRestApi {
 
-    @Autowired
-    private LinkService linkService;
+    private final LinkService linkService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取友情链接列表", notes = "获取友情链接列表", response = String.class)

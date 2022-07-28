@@ -1,5 +1,6 @@
 package com.alex.blog.admin;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.ComponentScan;
 })
 @EnableRabbit
 @EnableFeignClients(value = "com.alex.blog.common.feign")
+@EnableEncryptableProperties
 public class AdminMain {
 
     public static void main(String[] args) {

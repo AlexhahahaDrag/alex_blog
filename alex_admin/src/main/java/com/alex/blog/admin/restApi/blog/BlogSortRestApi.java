@@ -15,6 +15,7 @@ import com.alex.blog.xo.service.blog.BlogSortService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -33,10 +34,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/blogSort")
 @Api(value = "博客分类相关接口", tags = {"博客分类相关接口"})
+@RequiredArgsConstructor
 public class BlogSortRestApi {
 
-    @Autowired
-    private BlogSortService blogSortService;
+    private final BlogSortService blogSortService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取博客分类列表", notes = "获取博客分类列表", response = String.class)

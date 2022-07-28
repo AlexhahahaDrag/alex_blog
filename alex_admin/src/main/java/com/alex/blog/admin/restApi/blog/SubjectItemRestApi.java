@@ -10,6 +10,7 @@ import com.alex.blog.base.validator.group.Insert;
 import com.alex.blog.base.validator.group.Update;
 import com.alex.blog.common.exception.ThrowableUtils;
 import com.alex.blog.utils.utils.ResultUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -31,10 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "专题Item表相关接口", tags = {"专题Item表相关接口"})
 @RestController
 @RequestMapping("/subject-item")
+@RequiredArgsConstructor
 public class SubjectItemRestApi {
 
-    @Autowired
-    private SubjectItemService subjectItemService;
+    private final SubjectItemService subjectItemService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取专题Item表列表", notes = "获取专题Item表列表", response = String.class)

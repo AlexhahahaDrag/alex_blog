@@ -11,6 +11,7 @@ import com.alex.blog.xo.service.sys.ExceptionLogService;
 import com.alex.blog.xo.service.sys.SysLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -30,13 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "操作日志相关接口", tags = {"操作日志相关操作"})
 @RequestMapping(value = "/log")
 @Slf4j
+@RequiredArgsConstructor
 public class LogRestApi {
 
-    @Autowired
-    private SysLogService sysLogService;
+    private final SysLogService sysLogService;
 
-    @Autowired
-    private ExceptionLogService exceptionLogService;
+    private final ExceptionLogService exceptionLogService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取操作日志列表", notes = "获取操作日志列表", response = String.class)

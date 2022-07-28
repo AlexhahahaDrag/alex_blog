@@ -12,6 +12,7 @@ import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.xo.service.task.TodoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -28,10 +29,10 @@ import java.util.List;
 @RestController
 @Api(value = "待办事项相关接口", tags = {"待办事项相关接口"})
 @RequestMapping(value = "/todo")
+@RequiredArgsConstructor
 public class TodoRestApi {
 
-    @Autowired
-    private TodoService todoService;
+    private final TodoService todoService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取待办列表", notes = "获取待办列表", response = String.class)

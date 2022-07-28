@@ -7,7 +7,6 @@ import org.apache.ibatis.mapping.MappedStatement;
 
 public class TestHandle extends MybatisParameterHandler {
 
-
     public TestHandle(MappedStatement mappedStatement, Object parameter, BoundSql boundSql) {
         super(mappedStatement, parameter, boundSql);
     }

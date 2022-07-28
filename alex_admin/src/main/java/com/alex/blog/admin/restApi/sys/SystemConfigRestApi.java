@@ -9,6 +9,7 @@ import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.xo.service.sys.SystemConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -25,10 +26,10 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/systemConfig")
 @Api(value = "系统配置相关接口", tags = {"系统配置相关接口"})
+@RequiredArgsConstructor
 public class SystemConfigRestApi {
 
-    @Autowired
-    private SystemConfigService systemConfigService;
+    private final SystemConfigService systemConfigService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取系统配置", notes = "获取系统配置", response = String.class)

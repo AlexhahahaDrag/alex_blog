@@ -14,6 +14,7 @@ import com.alex.blog.xo.service.admin.CategoryMenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -30,10 +31,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/categoryMenu")
 @Api(value = "菜单信息相关接口", tags = {"菜单信息相关接口"})
 @Slf4j
+@RequiredArgsConstructor
 public class CategoryMenuRestApi {
 
-    @Autowired
-    private CategoryMenuService categoryMenuService;
+    private final CategoryMenuService categoryMenuService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取菜单列表", notes = "获取菜单列表", response = String.class)

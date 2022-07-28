@@ -10,6 +10,7 @@ import com.alex.blog.base.validator.group.Insert;
 import com.alex.blog.base.validator.group.Update;
 import com.alex.blog.common.exception.ThrowableUtils;
 import com.alex.blog.utils.utils.ResultUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -31,10 +32,10 @@ import org.springframework.stereotype.Controller;
 @Api(value = "相关接口", tags = {"相关接口"})
 @Controller
 @RequestMapping("/web-navbar")
+@RequiredArgsConstructor
 public class WebNavbarRestApi {
 
-    @Autowired
-    private WebNavbarService webNavbarService;
+    private final WebNavbarService webNavbarService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取列表", notes = "获取列表", response = String.class)

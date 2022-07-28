@@ -10,6 +10,7 @@ import com.alex.blog.base.validator.group.Update;
 import com.alex.blog.common.exception.ThrowableUtils;
 import com.alex.blog.common.vo.blog.ResourceSortVo;
 import com.alex.blog.utils.utils.ResultUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -31,10 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "资源分类表相关接口", tags = {"资源分类表相关接口"})
 @RestController
 @RequestMapping("/resource-sort")
+@RequiredArgsConstructor
 public class ResourceSortRestApi {
 
-    @Autowired
-    private ResourceSortService resourceSortService;
+    private final ResourceSortService resourceSortService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取资源分类表列表", notes = "获取资源分类表列表", response = String.class)

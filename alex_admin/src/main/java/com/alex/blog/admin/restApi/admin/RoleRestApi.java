@@ -13,6 +13,7 @@ import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.xo.service.admin.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -29,10 +30,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/role")
 @Api(value = "角色相关接口", tags = {"角色相关接口"})
 @Slf4j
+@RequiredArgsConstructor
 public class RoleRestApi {
 
-    @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取角色信息列表", notes = "获取角色信息列表")

@@ -10,6 +10,7 @@ import com.alex.blog.xo.service.blog.CommentService;
 import com.alex.blog.xo.service.sys.WebVisitService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,19 +28,16 @@ import java.util.Map;
 @RestController
 @Api(value = "首页相关接口", tags = {"首页相关接口"})
 @RequestMapping(value = "/index")
+@RequiredArgsConstructor
 public class IndexRestApi {
 
-    @Autowired
-    private BlogService blogService;
+    private final BlogService blogService;
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
 
-    @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
 
-    @Autowired
-    private WebVisitService webVisitService;
+    private final WebVisitService webVisitService;
 
     @ApiOperation(value = "首页初始化数据", notes = "首页初始化数据", response = String.class)
     @GetMapping(value = "/init")

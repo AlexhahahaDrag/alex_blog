@@ -15,6 +15,7 @@ import com.alex.blog.xo.service.blog.TagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -33,10 +34,10 @@ import java.util.List;
 @Api(value = "博客标签相关接口", tags = {"博客标签相关接口"})
 @RestController
 @RequestMapping("/tag")
+@RequiredArgsConstructor
 public class TagRestApi {
 
-    @Autowired
-    private TagService tagService;
+    private final TagService tagService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取标签列表", notes = "获取标签列表", response = String.class)

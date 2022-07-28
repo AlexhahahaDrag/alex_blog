@@ -14,6 +14,7 @@ import com.alex.blog.utils.utils.ResultUtil;
 import com.alex.blog.xo.service.blog.FeedbackService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -31,10 +32,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/feedback")
+@RequiredArgsConstructor
 public class FeedbackRestApi {
 
-    @Autowired
-    private FeedbackService feedbackService;
+    private final FeedbackService feedbackService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取反馈列表", notes = "获取反馈列表", response = String.class)

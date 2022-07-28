@@ -15,6 +15,7 @@ import com.alex.blog.xo.service.blog.CommentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -33,10 +34,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/comment")
 @Api(value = "用户评论相关接口", tags = {"用户评论相关接口"})
+@RequiredArgsConstructor
 public class CommentRestApi {
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取评论列表", notes = "获取评论列表", response = String.class)

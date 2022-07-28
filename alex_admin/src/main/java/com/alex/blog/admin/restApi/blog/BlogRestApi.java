@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -36,10 +37,10 @@ import java.util.Map;
 @RequestMapping(value = "/blog")
 @Api(value = "博客相关接口", tags = {"博客相关接口"})
 @Slf4j
+@RequiredArgsConstructor
 public class BlogRestApi {
 
-    @Autowired
-    private BlogService blogService;
+    private final BlogService blogService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取博客列表", notes = "获取博客列表", response = String.class)

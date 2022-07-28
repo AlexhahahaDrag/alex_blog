@@ -14,6 +14,7 @@ import com.alex.blog.xo.service.admin.AdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -32,10 +33,10 @@ import java.util.List;
 @RequestMapping("/admin")
 @Api(value = "管理员相关接口", tags = {"管理员相关接口"})
 @Slf4j
+@RequiredArgsConstructor
 public class AdminRestApi {
 
-    @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
 
     @AvoidRepeatableCommit
     @AuthorityVerify

@@ -14,6 +14,7 @@ import com.alex.blog.xo.service.sys.WebConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -33,19 +34,16 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/auth")
 @Api(value = "登陆相关接口", tags = {"登陆相关接口"})
 @Slf4j
+@RequiredArgsConstructor
 public class LoginRestApi {
 
-    @Autowired
-    private LoginService loginService;
+    private final LoginService loginService;
 
-    @Autowired
-    private RedisUtils redisUtils;
+    private final RedisUtils redisUtils;
 
-    @Autowired
-    private WebConfigService webConfigService;
+    private final WebConfigService webConfigService;
 
-    @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
 
     @PostMapping("/login")
     @ApiOperation(value = "登录", tags = "登录")

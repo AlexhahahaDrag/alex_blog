@@ -14,6 +14,7 @@ import com.alex.blog.xo.service.sys.SysParamsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -24,10 +25,10 @@ import java.util.List;
 @RestController
 @Api(value = "参数配置相关接口", tags = {"参数配置相关接口"})
 @RequestMapping(value = "/sysParam")
+@RequiredArgsConstructor
 public class SysParamsRestApi {
     
-    @Autowired
-    private SysParamsService sysParamsService;
+    private final SysParamsService sysParamsService;
 
     @AuthorityVerify
     @ApiOperation(value = "获取参数配置列表", notes = "获取参数配置列表", response = String.class)

@@ -25,7 +25,6 @@
         <module>alex_xo</module>
         <module>alex_web</module>
         <module>alex_search</module>
-        <module>alex-miaosha</module>
         <module>generate</module>
     </modules>
     <properties>
@@ -70,6 +69,8 @@
         <hutool.version>5.7.3</hutool.version>
         <ip2region.version>1.7.2</ip2region.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
+        <!--    配置文件加密    -->
+        <jasypt.version>3.0.4</jasypt.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -285,6 +286,12 @@
                 <groupId>com.qiniu</groupId>
                 <artifactId>qiniu-java-sdk</artifactId>
                 <version>${qiniu.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-spring-boot-starter</artifactId>
+                <version>${jasypt.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
