@@ -2,4 +2,4 @@ jasypt:
   encryptor:
     password: 02700083-9fd9-4b82-a4b4-9177e0560e92
     algorithm: PBEWithMD5AndDES
-#    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
