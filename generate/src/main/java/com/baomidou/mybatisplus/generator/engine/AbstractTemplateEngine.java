@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.util.FileUtils;
 import com.baomidou.mybatisplus.generator.util.RuntimeUtils;
-import org.jetbrains.annotations.NotNull;
+import com.sun.istack.internal.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -229,8 +229,8 @@ public abstract class AbstractTemplateEngine {
     @NotNull
     public Map<String, Object> getObjectMap(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
         StrategyConfig strategyConfig = config.getStrategyConfig();
-        Map<String, Object> controllerData = strategyConfig.controller().renderData(tableInfo);
-        Map<String, Object> objectMap = new HashMap(controllerData);
+        Map<String, Object> clientData = strategyConfig.client().renderData(tableInfo);
+        Map<String, Object> objectMap = new HashMap(clientData);
         Map<String, Object> mapperData = strategyConfig.mapper().renderData(tableInfo);
         objectMap.putAll(mapperData);
         Map<String, Object> serviceData = strategyConfig.service().renderData(tableInfo);
@@ -239,8 +239,8 @@ public abstract class AbstractTemplateEngine {
         objectMap.putAll(entityData);
         Map<String, Object> voData = strategyConfig.vo().renderData(tableInfo);
         objectMap.putAll(voData);
-        Map<String, Object> clientData = strategyConfig.client().renderData(tableInfo);
-        objectMap.putAll(clientData);
+        Map<String, Object> controllerData = strategyConfig.controller().renderData(tableInfo);
+        objectMap.putAll(controllerData);
         objectMap.put("config", config);
         objectMap.put("package", config.getPackageConfig().getPackageInfo());
         GlobalConfig globalConfig = config.getGlobalConfig();
